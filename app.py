@@ -7,14 +7,14 @@ import os
 
 discord_token = os.environ.get("discord_token")
 token = os.environ.get("token")
-incidentDatabseURL = os.environ.get("incidentDatabaseURL")
+incidentDatabaseURL = os.environ.get("incidentDatabaseURL")
 
 
     
 def queryTickets(gamertag):
     zprava = ""
     header = {"Authorization": token, "Notion-Version": "2021-05-13"}
-    r = requests.post(incidentDatabseURL, json = {
+    r = requests.post(incidentDatabaseURL, json = {
       "filter": {
       "property": "Reported By",
       "rich_text": {
@@ -42,7 +42,7 @@ def queryTickets(gamertag):
 
 def TicketDetailQuery(ticketNumber):
     header = {"Authorization": token,  "Notion-Version": "2021-05-13"}
-    req = requests.post(incidentDatabseURL, json = {
+    req = requests.post(incidentDatabaseURL, json = {
         "filter": {
         "property": "Case Number",
         "title": {
