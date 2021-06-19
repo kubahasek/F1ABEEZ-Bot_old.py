@@ -130,6 +130,10 @@ def TicketDetailQuery(ticketNumber):
 
 bot = commands.Bot(command_prefix=";")
 
+@bot.event
+async def on_ready():
+    print("We have logged in as {0.user}".format(bot))
+
 @bot.command(name="gettickets")
 async def GetTickets(ctx, gamertag):
     await ctx.send(queryTickets(gamertag))
