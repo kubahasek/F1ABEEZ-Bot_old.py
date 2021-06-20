@@ -1,6 +1,7 @@
 import discord
 from discord import client
 from discord.ext import tasks, commands
+from discord.ext.commands import CommandNotFound
 import requests
 import json
 import os
@@ -141,5 +142,11 @@ async def GetTickets(ctx, gamertag):
 @bot.command(name="ticketdetail")
 async def TicketDetail(ctx, ticketNum):
     await ctx.send(embed = TicketDetailQuery(ticketNum))
+
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, CommandNotFound):
+        ctx.send("Command not found")
+    print(error)
 
 bot.run(discord_token)
