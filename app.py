@@ -146,7 +146,7 @@ async def TicketDetail(ctx, ticketNum):
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
-        ctx.send("Command not found")
+        await ctx.send("Command not found")
     print(error)
 
 bot.run(discord_token)
