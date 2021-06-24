@@ -159,8 +159,11 @@ def profileQuery(gamertag):
 
     embed=discord.Embed(title=str(gamertag), color=16236412)
 
-    
-    gamertagQuery = d["results"][0]["properties"]["GamerTag"]["title"][0]["text"]["content"]
+    try: 
+        gamertagQuery = d["results"][0]["properties"]["GamerTag"]["title"][0]["text"]["content"]
+    except IndexError:
+        embed.add_field(name="Error", value="The profile for this gamertag doesn't exist in our database, please contact the admins if think that is a mistake.", inline=False)
+        return embed
 
     if(gamertagQuery != gamertag):
         embed.add_field(name="Error", value="The profile for this gamertag doesn't exist in our database, please contact the admins if think that is a mistake.", inline=False)
