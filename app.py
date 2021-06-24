@@ -70,8 +70,10 @@ def TicketDetailQuery(ticketNumber):
 
     c = json.loads(req)
     embed=discord.Embed(title="Incident Detail", color=16236412)
-
-    ticketNumber = c["results"][0]["properties"]["Case Number"]["title"][0]["text"]["content"]
+    try:
+        ticketNumber = c["results"][0]["properties"]["Case Number"]["title"][0]["text"]["content"]
+    except IndexError:
+        embed.add_field(name="Error", value="This ticket does not exist in our database.")
     driversInvolved = f'{c["results"][0]["properties"]["Reported By"]["rich_text"][0]["text"]["content"]} vs {c["results"][0]["properties"]["GamerTag(s) of Driver(s) involved incident (N/A for penalties)"]["rich_text"][0]["text"]["content"]}'
     status = c["results"][0]["properties"]["Status"]["select"]["name"]
 
