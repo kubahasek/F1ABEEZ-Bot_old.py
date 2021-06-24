@@ -42,8 +42,8 @@ def queryTickets(gamertag):
     b = json.loads(r)
 
     if (len(b["results"]) == 0):
-        zprava = "Gamertag is incorrect, please try again."
-        return zprava
+        embed.add_field(name="Error", value="Gamertag is incorrect, please try again.")
+        return embed
 
     for i in range(len(b["results"])):
         caseNumber = b["results"][i]["properties"]["Case Number"]["title"][0]["plain_text"]
