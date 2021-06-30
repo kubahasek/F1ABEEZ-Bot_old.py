@@ -1,7 +1,10 @@
+import asyncio
 import discord
 from discord import client
+from discord import message
 from discord.ext import tasks, commands
 from discord.ext.commands import CommandNotFound
+from discord.ext.commands.core import check
 import requests
 import json
 import os
@@ -10,6 +13,7 @@ discord_token = os.environ.get("discord_token")
 token = os.environ.get("token")
 incidentDatabaseURL = os.environ.get("incidentDatabaseURL")
 profileDatabaseURL = os.environ.get("profileDatabaseURL")
+incidentDatabaseId = os.environ.get("incidentDatabaseId")
 
 
     
@@ -46,7 +50,10 @@ def queryTickets(gamertag):
         return embed
 
     for i in range(len(b["results"])):
-        caseNumber = b["results"][i]["properties"]["Case Number"]["title"][0]["plain_text"]
+        try: 
+            caseNumber = b["results"][i]["properties"]["Case Number"]["title"][0]["plain_text"]
+        except IndexError:
+            caseNumber = "Case number hasn't been assigned yet (you cannot get this ticket with the bot until it has a case number)"
         driversInvolved = (f'{b["results"][i]["properties"]["Reported By"]["rich_text"][0]["text"]["content"]} vs {b["results"][i]["properties"]["GamerTag(s) of Driver(s) involved incident (N/A for penalties)"]["rich_text"][0]["text"]["content"]}\n')
         embed.add_field(name=caseNumber, value=driversInvolved, inline=False)
 
@@ -217,6 +224,75 @@ def GetHelpCommand():
     embed.add_field(name=";getprofile <gamertag>", value="This command gets you your profile from our profile database on the website. You can see how many penalty points you have or whether you have a quali or race ban as well as your team and tier. You can also see how many points you have scored in F1 or F2 tiers")
     return embed
 
+def submitAnIncident(gamertag, lap, description, tier, evidence, driverInvolved):
+    url = "https://api.notion.com/v1/pages/"
+    header = header = {"Authorization": token, "Notion-Version": "2021-05-13"}
+    r = requests.post(url, headers=header, json={
+  "parent": {
+    "database_id": incidentDatabaseId
+  },
+  "properties": {
+    "Description": {
+      "rich_text": [
+        {
+          "text": {
+            "content": description
+          }
+        }
+      ]
+    },
+    "Status": {
+      "select": {
+        "name": "In Progress",
+        "color": "red"
+      }
+    },
+    "Tier/Division": {
+      "select": {
+        "name": tier
+      }
+    },
+    "Video Evidence (other video sources are allowed)": {
+      "rich_text": [
+        {
+          "text": {
+            "content": evidence
+          }
+        }
+      ]
+    },
+    "Time Reported": {
+      "created_time": "2021-06-14T15:30:00.000Z"
+    },
+    "Lap of incident/penalty": {
+      "number": lap
+    },
+    "Reported By": {
+      "rich_text": [
+        {
+          "text": {
+            "content": gamertag
+          }
+        }
+      ]
+    },
+    "GamerTag(s) of Driver(s) involved incident (N/A for penalties)": {
+      "rich_text": [
+        {
+          "text": {
+            "content": driverInvolved
+          }
+        }
+      ]
+    }
+  }
+}
+)
+    if(r.status_code == 200):
+        return "Your ticket was successfully submitted!"
+    else:
+        return "There was an error submitting your ticket, please reach out to the admin team"
+
 bot = commands.Bot(command_prefix=";", help_command=None)
 bot.remove_command("help")
 
@@ -245,5 +321,42 @@ async def on_command_error(ctx, error):
 @bot.command(name="getprofile")
 async def getprofile(ctx, gamertag):
     await ctx.send(embed = profileQuery(gamertag))
+
+@bot.command(name="incidentreport")
+async def incidentreport(ctx):
+    def check(m):
+        return m.author == ctx.author and m.guild is None
+
+    try:
+        await ctx.author.send("What is your gamertag?")
+        gamertagOfUser = await bot.wait_for("message", check=check, timeout=60.0)
+        gamertagOfUser = gamertagOfUser.content
+        await ctx.author.send("Please describe your incident.")
+        description = await bot.wait_for("message", check=check, timeout=60.0)
+        description = description.content
+        await ctx.author.send("What is the tier or division this incident/penalty occured in? (Options: F1 - Tier 1, F1 - Tier 2, F1 - Tier 3, F1 - Tier 4, F2) Please reply with one of these exact options.")
+        tierOfIncident = await bot.wait_for("message", check=check, timeout=60.0)
+        tierOfIncident = tierOfIncident.content
+        await ctx.author.send("Please provide video evidence (Only reply with links to gamerdvr or other services)")
+        evidence = await bot.wait_for("message", check=check, timeout=60.0)
+        evidence = evidence.content
+        incorrect = True
+        while(incorrect == True):
+            await ctx.author.send("What lap did this incident/penalty occur on?")
+            lapOfIncident = await bot.wait_for("message", check=check, timeout=60.0)
+            try:
+                lapOfIncident = int(lapOfIncident.content)
+                incorrect = False
+            except ValueError:
+                await ctx.author.send("The content you entered wasn't a number, please enter a number")
+                incorrect = True
+        await ctx.author.send("What is the gamertag(s) of the driver(s) involved? (For penalties, reply with N/A)")
+        gamertagOfInvolevedDriver = await bot.wait_for("message", check=check, timeout=60.0)
+        gamertagOfInvolevedDriver = gamertagOfInvolevedDriver.content
+    except asyncio.TimeoutError:
+        await ctx.author.send("Unfortunately you took too long to reply (Limit is a minute per message). Please start a new incident if you want to proceed.")
+    response = submitAnIncident(gamertagOfUser, lapOfIncident, description, tierOfIncident, evidence, gamertagOfInvolevedDriver)
+    await ctx.author.send(response)
+
 
 bot.run(discord_token)
