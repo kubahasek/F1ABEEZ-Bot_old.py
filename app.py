@@ -14,6 +14,8 @@ token = os.environ.get("token")
 incidentDatabaseURL = os.environ.get("incidentDatabaseURL")
 profileDatabaseURL = os.environ.get("profileDatabaseURL")
 incidentDatabaseId = os.environ.get("incidentDatabaseId")
+appealsDatabaseURL = os.environ.get("appealsDatabaseURL")
+appealsDatabaseId = os.environ.get("appealsDatabaseId")
 
 
     
@@ -216,6 +218,123 @@ def profileQuery(gamertag):
 
     return embed
 
+def queryAppeals(gamertag):
+  header = {"Authorization": token, "Notion-Version": "2021-05-13"}
+  r = requests.post(appealsDatabaseURL, json = {
+      "filter": {
+  "or": [
+    {
+      "property": "Appealed By",
+      "rich_text": {
+        "contains": gamertag
+      }
+    },
+    {
+      "property": "GamerTag(s) involved",
+      "rich_text": {
+        "contains": gamertag
+      }
+    }
+  ]
+      },
+  "sorts": [{ "property": "Case Number", "direction": "ascending" }]}
+
+    , headers=header).text
+  
+
+  embed = discord.Embed(title=f"Appeals where {gamertag} was involved", color=16236412)
+
+  b = json.loads(r)
+  if (len(b["results"]) == 0):
+      embed.add_field(name="Error", value="Gamertag is incorrect, please try again.")
+      return embed
+
+  for i in range(len(b["results"])):
+      try: 
+          caseNumberAndStatus = f'{b["results"][i]["properties"]["AP-Case Number"]["title"][0]["text"]["content"]} - {b["results"][i]["properties"]["Status"]["select"]["name"]}'
+      except IndexError:
+          caseNumberAndStatus = "Case number hasn't been assigned yet (you cannot get this ticket with the bot until it has a case number)"
+      driversInvolved = (f'{b["results"][i]["properties"]["Appealed By"]["rich_text"][0]["text"]["content"]} vs {b["results"][i]["properties"]["GamerTag(s) involved"]["rich_text"][0]["text"]["content"]}\n')
+      embed.add_field(name=caseNumberAndStatus, value=driversInvolved, inline=False)
+  
+  return embed  
+
+def submitAppeal(caseNumber, evidence, gamertag, gamertagInvolved, reason, additionalInfo):
+  url = "https://api.notion.com/v1/pages/"
+  header = {"Authorization": token, "Notion-Version": "2021-05-13"}
+  r = requests.post(url, headers=header, json={
+  "parent": {
+    "database_id": appealsDatabaseId
+  },
+  "properties": {
+    "Case Number": {
+      "rich_text": [
+        {
+          "text": {
+            "content": caseNumber
+          }
+        }
+      ]
+    },
+  "Status": {
+    "select": {
+      "name": "In Progress",
+      "color": "pink"
+    }
+  },
+  "Additional Evidence": {
+    "rich_text": [
+      {
+        "text": {
+          "content": evidence
+        }
+      }
+    ]
+  },
+  "Appealed By": {
+    "rich_text": [
+      {
+        "text": {
+          "content": gamertag
+        }
+      }
+    ]
+  },
+  "GamerTag(s) involved": {
+    "rich_text": [
+      {
+        "text": {
+          "content": gamertagInvolved
+        }
+      }
+    ]
+  },
+  "Reason": {
+    "rich_text": [
+      {
+        "text": {
+          "content": reason
+        }
+      }
+    ]
+  },
+  "Additional Info": {
+    "rich_text": [
+      {
+        "text": {
+          "content": additionalInfo
+        }
+      }
+    ]
+  }
+}
+}
+)
+  if(r.status_code == 200):
+    return "Your appeal was successfully submitted!"
+  else:
+    return "There was an error submitting your appeal, please reach out to the admin team"
+
 
 def GetHelpCommand():
     embed = discord.Embed(title="Help")
@@ -312,6 +431,10 @@ async def HelpCommand(ctx):
 async def GetTickets(ctx, gamertag):
     await ctx.send(embed=queryTickets(gamertag))
 
+@bot.command(name="getappeals")
+async def GetAppeals(ctx, gamertag):
+  await ctx.send(embed = queryAppeals(gamertag))
+
 @bot.command(name="ticketdetail")
 async def TicketDetail(ctx, ticketNum):
     await ctx.send(embed = TicketDetailQuery(ticketNum))
@@ -384,6 +507,37 @@ async def incidentreport(ctx):
         await ctx.author.send("Unfortunately you took too long to reply (Limit is a minute per message). Please start a new incident if you want to proceed.")
     response = submitAnIncident(gamertagOfUser, lapOfIncident, description, tierOfIncident, evidence, gamertagOfInvolevedDriver)
     await ctx.author.send(response)
+
+@bot.command(name="appealadecision")
+async def decisionappeal(ctx):
+    def check(m):
+        return m.author == ctx.author and m.guild is None
+    
+    await ctx.send(f"Please follow the bot to your DMs to submit your appeal <@{ctx.author.id}>")
+    try:
+        await ctx.author.send("What is the case number you want to appeal (use ;querytickets in the bot channel in the server if you need to get it)")
+        caseNumber = await bot.wait_for("message", check=check, timeout=60.0)
+        caseNumber = caseNumber.content
+        await ctx.author.send("What is your gamertag?")
+        gamertagOfUser = await bot.wait_for("message", check=check, timeout=60.0)
+        gamertagOfUser = gamertagOfUser.content
+        await ctx.author.send("Please state the reason for you appeal.")
+        reason = await bot.wait_for("message", check=check, timeout=60.0)
+        reason = reason.content
+        await ctx.author.send("State any additional information to support your appeal (if you don't have any, reply with N/A)")
+        additionalInfo = await bot.wait_for("message", check=check, timeout=60.0)
+        additionalInfo = additionalInfo.content
+        await ctx.author.send("Please provide addition video evidence to support your appeal (Only reply with links to gamerdvr or other services)")
+        evidence = await bot.wait_for("message", check=check, timeout=60.0)
+        evidence = evidence.content
+        await ctx.author.send("What is the gamertag(s) of the driver(s) involved? (For penalties, reply with N/A)")
+        gamertagOfInvolevedDriver = await bot.wait_for("message", check=check, timeout=60.0)
+        gamertagOfInvolevedDriver = gamertagOfInvolevedDriver.content
+    except asyncio.TimeoutError:
+        await ctx.author.send("Unfortunately you took too long to reply (Limit is a minute per message). Please start a new incident if you want to proceed.")
+    response = submitAppeal(caseNumber, evidence, gamertagOfUser, gamertagOfInvolevedDriver, reason, additionalInfo)
+    await ctx.author.send(response)
+
 
 
 bot.run(discord_token)
