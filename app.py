@@ -294,8 +294,11 @@ def submitAnIncident(gamertag, lap, description, tier, evidence, driverInvolved)
     else:
         return "There was an error submitting your ticket, please reach out to the admin team"
 
-bot = commands.Bot(command_prefix=";", help_command=None)
+intents = discord.Intents.default()
+intents.reactions = True
+bot = commands.Bot(command_prefix=";", help_command=None, intents=intents)
 bot.remove_command("help")
+
 
 @bot.event
 async def on_ready():
@@ -324,10 +327,15 @@ async def getprofile(ctx, gamertag):
     await ctx.send(embed = profileQuery(gamertag))
 
 @bot.command(name="incidentreport")
+@bot.command(name="incidentreport")
 async def incidentreport(ctx):
     def check(m):
-        return m.author == ctx.author and m.guild is None
+        return m.author == ctx.author and m.guild is None 
 
+    def checkRaw(u):
+      return u.user_id == ctx.author.id and u.guild_id is None
+    
+    await ctx.send(f"Please follow the bot to your DMs to report your incident <@{ctx.author.id}>")
     try:
         await ctx.author.send("What is your gamertag?")
         gamertagOfUser = await bot.wait_for("message", check=check, timeout=60.0)
@@ -335,9 +343,28 @@ async def incidentreport(ctx):
         await ctx.author.send("Please describe your incident.")
         description = await bot.wait_for("message", check=check, timeout=60.0)
         description = description.content
-        await ctx.author.send("What is the tier or division this incident/penalty occured in? (Options: F1 - Tier 1, F1 - Tier 2, F1 - Tier 3, F1 - Tier 4, F2) Please reply with one of these exact options.")
-        tierOfIncident = await bot.wait_for("message", check=check, timeout=60.0)
-        tierOfIncident = tierOfIncident.content
+        tierOfIncidentMSG =  await ctx.author.send("What is the tier or division this incident/penalty occured in? \n1️⃣ = F1 - Tier 1\n2️⃣ = F1 - Tier 2\n3️⃣ = F1 - Tier 3\n4️⃣ = F1 - Tier 4\n5️⃣ = F2\nPlease react with the corresponding tier")
+        await tierOfIncidentMSG.add_reaction("1️⃣")
+        await tierOfIncidentMSG.add_reaction("2️⃣")
+        await tierOfIncidentMSG.add_reaction("3️⃣")
+        await tierOfIncidentMSG.add_reaction("4️⃣")
+        await tierOfIncidentMSG.add_reaction("5️⃣")
+        tierOfIncidentReaction = await bot.wait_for("raw_reaction_add", check=checkRaw, timeout=60.0)
+        if(str(tierOfIncidentReaction.emoji) == "1️⃣"):
+          tierOfIncident = "F1 - Tier 1"
+          await ctx.author.send("You chose "+tierOfIncident)
+        elif(str(tierOfIncidentReaction.emoji) == "2️⃣"):
+          tierOfIncident = "F1 - Tier 2"
+          await ctx.author.send("You chose "+tierOfIncident)
+        elif(str(tierOfIncidentReaction.emoji) == "3️⃣"):
+          tierOfIncident = "F1 - Tier 3"
+          await ctx.author.send("You chose "+tierOfIncident)
+        elif(str(tierOfIncidentReaction.emoji) == "4️⃣"):
+          tierOfIncident = "F1 - Tier 4"
+          await ctx.author.send("You chose "+tierOfIncident)
+        elif(str(tierOfIncidentReaction.emoji) == "5️⃣"):
+          tierOfIncident = "F2"
+          await ctx.author.send("You chose "+tierOfIncident)
         await ctx.author.send("Please provide video evidence (Only reply with links to gamerdvr or other services)")
         evidence = await bot.wait_for("message", check=check, timeout=60.0)
         evidence = evidence.content
