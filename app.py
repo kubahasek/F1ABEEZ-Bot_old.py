@@ -327,7 +327,6 @@ async def getprofile(ctx, gamertag):
     await ctx.send(embed = profileQuery(gamertag))
 
 @bot.command(name="incidentreport")
-@bot.command(name="incidentreport")
 async def incidentreport(ctx):
     def check(m):
         return m.author == ctx.author and m.guild is None 
