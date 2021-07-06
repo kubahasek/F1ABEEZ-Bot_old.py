@@ -510,6 +510,12 @@ async def incidentreport(ctx):
     except asyncio.TimeoutError:
         await ctx.author.send("Unfortunately you took too long to reply (Limit is a minute per message). Please start a new incident if you want to proceed.")
     response = submitAnIncident(gamertagOfUser, lapOfIncident, description, tierOfIncident, evidence, gamertagOfInvolevedDriver)
+    logEmbed = discord.Embed(title="⚠️New Ticket has been reported!⚠️")
+    logEmbed.add_field(name="Tier", value=tierOfIncident, inline=False)
+    logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUser} vs {gamertagOfInvolevedDriver}", inline=False)
+    channel = bot.get_channel(861939856481189908)
+    await channel.send("<@&774702830816067634>")
+    await channel.send(embed = logEmbed)
     await ctx.author.send(response)
 
 @bot.command(name="submitappeal")
@@ -540,6 +546,12 @@ async def decisionappeal(ctx):
     except asyncio.TimeoutError:
         await ctx.author.send("Unfortunately you took too long to reply (Limit is a minute per message). Please start a new incident if you want to proceed.")
     response = submitAppeal(caseNumber, evidence, gamertagOfUser, gamertagOfInvolevedDriver, reason, additionalInfo)
+    logEmbed = discord.Embed(title="⚠️New Appeal has been submitted!⚠️")
+    logEmbed.add_field(name="Case Number", value=caseNumber, inline=False)
+    logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUser} vs {gamertagOfInvolevedDriver}", inline=False)
+    channel = bot.get_channel(861939856481189908)
+    await channel.send("<@&774702830816067634>")
+    await channel.send(embed = logEmbed)
     await ctx.author.send(response)
 
 
@@ -547,97 +559,98 @@ async def decisionappeal(ctx):
 @commands.has_any_role("Admin", "Moderator")
 async def lobbyMSGtier1(ctx):
   await ctx.message.delete()
-  await ctx.send("<@795227294766727169>\n**Lobby is now open!**\nPlease join off <@805472151914283079>\nGamertag is - Playzz769\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+  await ctx.send("<@&795227294766727169>\n**Lobby is now open!**\nPlease join off <@805472151914283079>\nGamertag is - Playzz769\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
 
 @bot.command(name="lobbytier2")
 @commands.has_any_role("Admin", "Moderator")
 async def lobbyMSGtier2(ctx):
   await ctx.message.delete()
-  await ctx.send("<@795227317684928546>\n**Lobby is now open!**\nPlease join off <@434849746830622720>\nGamertag is - Chaviscool\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+  await ctx.send("<@&795227317684928546>\n**Lobby is now open!**\nPlease join off <@434849746830622720>\nGamertag is - Chaviscool\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
 
 @bot.command(name="lobbytier3")
 @commands.has_any_role("Admin", "Moderator")
 async def lobbyMSGtier3(ctx):
   await ctx.message.delete()
-  await ctx.send("<@813703851349245965>\n**Lobby is now open!**\nPlease join off <@401204069890523137>\nGamertag is - OwningLeMoNz\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+  await ctx.send("<@&813703851349245965>\n**Lobby is now open!**\nPlease join off <@401204069890523137>\nGamertag is - OwningLeMoNz\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
 
 @bot.command(name="lobbytier4")
 @commands.has_any_role("Admin", "Moderator")
 async def lobbyMSGtier4(ctx):
   await ctx.message.delete()
-  await ctx.send("<@840694396990521364>\n**Lobby is now open!**\nPlease join off <@637377176517345311>\nGamertag is - qpef\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+  await ctx.send("<@&840694396990521364>\n**Lobby is now open!**\nPlease join off <@637377176517345311>\nGamertag is - qpef\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
 
 @bot.command(name="lobbyf2")
 @commands.has_any_role("Admin", "Moderator")
 async def lobbyMSGf2(ctx):
   await ctx.message.delete()
-  await ctx.send("<@826954595715776542>\n**Lobby is now open!**\nPlease join off <@499568806469959691>\nGamertag is - MrJSmithy\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+  await ctx.send("<@&826954595715776542>\n**Lobby is now open!**\nPlease join off <@499568806469959691>\nGamertag is - MrJSmithy\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
 
 @bot.command(name="readytier1")
 @commands.has_any_role("Admin", "Moderator")
 async def readyMSGtier1(ctx):
   await ctx.message.delete()
-  await ctx.send("<@795227294766727169>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.")
+  await ctx.send("<@&795227294766727169>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.")
 
 @bot.command(name="readytier2")
 @commands.has_any_role("Admin", "Moderator")
 async def readyMSGtier2(ctx):
   await ctx.message.delete()
-  await ctx.send("<@795227317684928546>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.")
+  await ctx.send("<@&795227317684928546>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.")
 
 @bot.command(name="readytier3")
 @commands.has_any_role("Admin", "Moderator")
 async def readyMSGtier3(ctx):
   await ctx.message.delete()
-  await ctx.send("<@813703851349245965>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.")
+  await ctx.send("<@&813703851349245965>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.")
 
 @bot.command(name="readytier4")
 @commands.has_any_role("Admin", "Moderator")
 async def readyMSGtier4(ctx):
   await ctx.message.delete()
-  await ctx.send("<@840694396990521364>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.")
+  await ctx.send("<@&840694396990521364>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.")
 
 @bot.command(name="readyf2")
 @commands.has_any_role("Admin", "Moderator")
 async def readyMSGf2(ctx):
   await ctx.message.delete()
-  await ctx.send("<@826954595715776542>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.")
+  await ctx.send("<@&826954595715776542>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.")
 
 @bot.command(name="racetier1")
 @commands.has_any_role("Admin", "Moderator")
 async def raceMSGtier1(ctx):
   await ctx.message.delete()
-  await ctx.send("<@795227294766727169>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+  await ctx.send("<@&795227294766727169>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
 
 @bot.command(name="racetier2")
 @commands.has_any_role("Admin", "Moderator")
 async def raceMSGtier2(ctx):
   await ctx.message.delete()
-  await ctx.send("<@795227317684928546>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+  await ctx.send("<@&795227317684928546>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
 
 @bot.command(name="racetier3")
 @commands.has_any_role("Admin", "Moderator")
 async def raceMSGtier3(ctx):
   await ctx.message.delete()
-  await ctx.send("<@813703851349245965>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+  await ctx.send("<@&813703851349245965>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
 
 @bot.command(name="racetier4")
 @commands.has_any_role("Admin", "Moderator")
 async def raceMSGtier4(ctx):
   await ctx.message.delete()
-  await ctx.send("<@840694396990521364>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+  await ctx.send("<@&840694396990521364>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
 
 @bot.command(name="racef2")
 @commands.has_any_role("Admin", "Moderator")
 async def raceMSGf2(ctx):
   await ctx.message.delete()
-  await ctx.send("<@826954595715776542>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+  await ctx.send("<@&826954595715776542>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
 
 @bot.command(name="academymessage")
 @commands.has_any_role("Admin", "Moderator", "Trialist Manager")
 async def academyMSG(ctx):
   await ctx.message.delete()
-  msg =  await ctx.send("<@774740889557270539>\n**TRIAL RACE BRIEFING:**\nWelcome to the F1ABEEZ trial race! I would just like to run through what is expected of you from your trial:\n- Please drive clean - we are a clean racing league, show respect to your fellow drivers! dirty driving will not be tolerated\n- Drive fast! It's still a race after all, we would like to see a true reflection of your pace\n- Do not use medium tyres in Qualifying for this trial race, as this lets us compare your quali pace!\n- Have fun! That's what we're all here for\n\nThe format is short qualifying, 25% race\nAfter the race is completed, <@401204069890523137> will DM you individually with our decision\nPlease react with a thumbs up once you have read this, good luck!")
+  msg =  await ctx.send("<@&774740889557270539>\n**TRIAL RACE BRIEFING:**\nWelcome to the F1ABEEZ trial race! I would just like to run through what is expected of you from your trial:\n- Please drive clean - we are a clean racing league, show respect to your fellow drivers! dirty driving will not be tolerated\n- Drive fast! It's still a race after all, we would like to see a true reflection of your pace\n- Do not use medium tyres in Qualifying for this trial race, as this lets us compare your quali pace!\n- Have fun! That's what we're all here for\n\nThe format is short qualifying, 25% race\nAfter the race is completed, <@401204069890523137> will DM you individually with our decision\nPlease react with a thumbs up once you have read this, good luck!")
   await msg.add_reaction("👍")
+
 
 bot.run(discord_token)
