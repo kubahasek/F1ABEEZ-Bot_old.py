@@ -2,12 +2,14 @@ import asyncio
 import discord
 from discord import client
 from discord import message
+from discord.colour import Color
 from discord.ext import tasks, commands
 from discord.ext.commands import CommandNotFound
 from discord.ext.commands.core import check
 import requests
 import json
 import os
+import pymongo
 
 discord_token = os.environ.get("discord_token")
 token = os.environ.get("token")
@@ -16,6 +18,7 @@ profileDatabaseURL = os.environ.get("profileDatabaseURL")
 incidentDatabaseId = os.environ.get("incidentDatabaseId")
 appealsDatabaseURL = os.environ.get("appealsDatabaseURL")
 appealsDatabaseId = os.environ.get("appealsDatabaseId")
+mongoDBConnSTR = os.environ.get("mongoDBConnSTR")
 
 
     
@@ -651,6 +654,93 @@ async def academyMSG(ctx):
   await ctx.message.delete()
   msg =  await ctx.send("<@&774740889557270539>\n**TRIAL RACE BRIEFING:**\nWelcome to the F1ABEEZ trial race! I would just like to run through what is expected of you from your trial:\n- Please drive clean - we are a clean racing league, show respect to your fellow drivers! dirty driving will not be tolerated\n- Drive fast! It's still a race after all, we would like to see a true reflection of your pace\n- Do not use medium tyres in Qualifying for this trial race, as this lets us compare your quali pace!\n- Have fun! That's what we're all here for\n\nThe format is short qualifying, 25% race\nAfter the race is completed, <@401204069890523137> will DM you individually with our decision\nPlease react with a thumbs up once you have read this, good luck!")
   await msg.add_reaction("👍")
+
+@bot.command(name="warn")
+@commands.has_any_role("Admin")
+async def warnUser(ctx,user, *, reason=None):
+  if (reason is None):
+    await ctx.send("The reason for the warning is missing")
+    return
+  await ctx.message.delete()
+  member = ctx.message.mentions[0]
+  membername = ctx.message.mentions[0].name
+  memberid = ctx.message.mentions[0].id
+  embed = discord.Embed(title="A warning has been issued!", color=16236412)
+  embed.add_field(name="User", value=membername, inline=False)
+  embed.add_field(name="Warned by", value=ctx.author.name, inline=False)
+  embed.add_field(name="Reason", value=reason, inline=False)
+  client = pymongo.MongoClient(mongoDBConnSTR)
+  mydb = client["warningDatabase"]
+  mycol = mydb["WarningCollection"]
+  insert = {"discordid": memberid, "discordname": membername, "warnedby": ctx.author.name, "reason": reason}
+  mycol.insert_one(insert)
+  query = {"discordid": memberid}
+  warningCount = mycol.count_documents(query)
+  if (warningCount == 1):
+    embed.add_field(name="Number of Warnings", value=f"This is {membername}'s first and last warning.")
+    await ctx.send(embed=embed)
+  elif(warningCount == 2):
+    embed = discord.Embed(title="A ban has been issued!", color=16236412)
+    embed.add_field(name="User", value=membername, inline=False)
+    embed.add_field(name="Reason", value=reason, inline=False)
+    embed.add_field(name="Warnings", value="The user had two warnings.", inline=False)
+    mycol.delete_many(query)
+    channel = bot.get_channel(853679513406013460)
+    await channel.send(embed = embed)
+    await member.ban(reason = reason)
+    await ctx.send(embed = embed)
+
+@bot.command(name="warnings")
+@commands.has_any_role("Admin")
+async def GetWarnings(ctx, user=None):
+  if(user is None):
+    await ctx.send("The user wasn't mentioned")
+  client = pymongo.MongoClient(mongoDBConnSTR)
+  mydb = client["warningDatabase"]
+  mycol = mydb["WarningCollection"]
+  try:
+    memberid = ctx.message.mentions[0].id
+  except IndexError:
+    memberid = int(user)
+  query = {"discordid": memberid}
+  embed = discord.Embed(title=f"Warnings for user", color=16236412)
+  warningCount = mycol.count_documents(query)
+  if (warningCount == 0):
+    embed.add_field(name="Number of Warnings", value=f"<@{memberid}> has no warnings", inline=False)
+  elif (warningCount == 1):
+    embed.add_field(name="Number of Warnings", value=f"<@{memberid}> has one warning", inline=False)
+  await ctx.send(embed = embed)
+
+@bot.command(name="ban")
+@commands.has_any_role("Admin")
+async def ban(ctx, user=None, *, reason=None):
+  if(user is None):
+    await ctx.send("You didn't mention the user")
+    return
+  if(reason is None):
+    await ctx.send("You didn't provide a reason")
+    return
+
+  try: 
+    member = ctx.message.mentions[0]
+    membername = ctx.message.mentions[0].name
+  except IndexError:
+    print(user)
+    member = await ctx.guild.fetch_member(int(user))
+    print(member)
+    membername = member.name
+
+  embed = discord.Embed(title="A Ban has been issued", color=16236412)
+  embed.add_field(name="User", value=membername, inline=False)
+  embed.add_field(name="Reason", value=reason, inline=False)
+  channel = bot.get_channel(853679513406013460)
+  await channel.send(embed = embed)
+  await member.ban(reason = reason)
+  await ctx.send(embed = embed)   
+    
+
+
+
 
 
 bot.run(discord_token)
