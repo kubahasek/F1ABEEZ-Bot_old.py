@@ -432,12 +432,12 @@ async def HelpCommand(ctx):
     await ctx.send(embed = GetHelpCommand())
 
 @bot.command(name="gettickets")
-async def GetTickets(ctx, gamertag):
-    await ctx.send(embed=queryTickets(gamertag))
+async def GetTickets(ctx, *, arg):
+    await ctx.send(embed=queryTickets(arg))
 
 @bot.command(name="getappeals")
-async def GetAppeals(ctx, gamertag):
-  await ctx.send(embed = queryAppeals(gamertag))
+async def GetAppeals(ctx, *, arg):
+  await ctx.send(embed = queryAppeals(arg))
 
 @bot.command(name="ticketdetail")
 async def TicketDetail(ctx, ticketNum):
@@ -450,8 +450,8 @@ async def on_command_error(ctx, error):
     print(error)
 
 @bot.command(name="getprofile")
-async def getprofile(ctx, gamertag):
-    await ctx.send(embed = profileQuery(gamertag))
+async def getprofile(ctx, *, arg):
+    await ctx.send(embed = profileQuery(arg))
 
 @bot.command(name="incidentreport")
 async def incidentreport(ctx):
