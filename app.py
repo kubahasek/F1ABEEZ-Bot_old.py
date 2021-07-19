@@ -744,7 +744,7 @@ async def on_member_join(member):
   role = discord.utils.get(member.guild.roles, name="Academy Driver")
   await member.add_roles(role)
   channel = bot.get_channel(838841316519313408)
-  await channel.send(f"**Welcome! <@{member.id}>**\nPlease pop your gamertag in <#838840956114698310> and make sure to complete the <#774690435167682632>.\nOnce you have completed those go to <#839026060070879242>  and tick if you can attend the next trial race.\nAll the information will be in that channel! If you have any questions contact <@&833816169974202400>")
+  await channel.send(f"**Welcome <@{member.id}>**\n\nPlease use this chat if you have any questions and someone will be on hand.\n\nAll the information you need is on <#866576409060704286>")
 
 
 
