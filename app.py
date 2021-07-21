@@ -746,6 +746,11 @@ async def on_member_join(member):
   channel = bot.get_channel(838841316519313408)
   await channel.send(f"**Welcome <@{member.id}>**\n\nPlease use this chat if you have any questions and someone will be on hand.\n\nAll the information you need is on <#865379267977412618>")
 
+@bot.event
+async def on_member_remove(member):
+  memberName = member.name
+  channel = bot.get_channel(774605933661257729)
+  await channel.send(f"**{memberName}** has left the server."
 
 
 
