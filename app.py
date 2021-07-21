@@ -750,7 +750,7 @@ async def on_member_join(member):
 async def on_member_remove(member):
   memberName = member.name
   channel = bot.get_channel(774605933661257729)
-  await channel.send(f"**{memberName}** has left the server."
+  await channel.send(f"**{memberName}** has left the server.")
 
 
 
