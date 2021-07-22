@@ -468,10 +468,10 @@ async def incidentreport(ctx):
     await ctx.send(f"Please follow the bot to your DMs to report your incident <@{ctx.author.id}>")
     try:
         await ctx.author.send("What is your gamertag?")
-        gamertagOfUser = await bot.wait_for("message", check=check, timeout=60.0)
+        gamertagOfUser = await bot.wait_for("message", check=check, timeout=180.0)
         gamertagOfUser = gamertagOfUser.content
         await ctx.author.send("Please describe your incident.")
-        description = await bot.wait_for("message", check=check, timeout=60.0)
+        description = await bot.wait_for("message", check=check, timeout=180.0)
         description = description.content
         tierOfIncidentMSG =  await ctx.author.send("What is the tier or division this incident/penalty occured in? \n1️⃣ = F1 - Tier 1\n2️⃣ = F1 - Tier 2\n3️⃣ = F1 - Tier 3\n4️⃣ = F1 - Tier 4\n5️⃣ = F2\nPlease react with the corresponding tier")
         await tierOfIncidentMSG.add_reaction("1️⃣")
@@ -479,7 +479,7 @@ async def incidentreport(ctx):
         await tierOfIncidentMSG.add_reaction("3️⃣")
         await tierOfIncidentMSG.add_reaction("4️⃣")
         await tierOfIncidentMSG.add_reaction("5️⃣")
-        tierOfIncidentReaction = await bot.wait_for("raw_reaction_add", check=checkRaw, timeout=60.0)
+        tierOfIncidentReaction = await bot.wait_for("raw_reaction_add", check=checkRaw, timeout=180.0)
         if(str(tierOfIncidentReaction.emoji) == "1️⃣"):
           tierOfIncident = "F1 - Tier 1"
           await ctx.author.send("You chose "+tierOfIncident)
@@ -496,12 +496,12 @@ async def incidentreport(ctx):
           tierOfIncident = "F2"
           await ctx.author.send("You chose "+tierOfIncident)
         await ctx.author.send("Please provide video evidence (Only reply with links to gamerdvr or other services)")
-        evidence = await bot.wait_for("message", check=check, timeout=60.0)
+        evidence = await bot.wait_for("message", check=check, timeout=180.0)
         evidence = evidence.content
         incorrect = True
         while(incorrect == True):
             await ctx.author.send("What lap did this incident/penalty occur on?")
-            lapOfIncident = await bot.wait_for("message", check=check, timeout=60.0)
+            lapOfIncident = await bot.wait_for("message", check=check, timeout=180.0)
             try:
                 lapOfIncident = int(lapOfIncident.content)
                 incorrect = False
@@ -509,10 +509,10 @@ async def incidentreport(ctx):
                 await ctx.author.send("The content you entered wasn't a number, please enter a number")
                 incorrect = True
         await ctx.author.send("What is the gamertag(s) of the driver(s) involved? (For penalties, reply with N/A)")
-        gamertagOfInvolevedDriver = await bot.wait_for("message", check=check, timeout=60.0)
+        gamertagOfInvolevedDriver = await bot.wait_for("message", check=check, timeout=180.0)
         gamertagOfInvolevedDriver = gamertagOfInvolevedDriver.content
     except asyncio.TimeoutError:
-        await ctx.author.send("Unfortunately you took too long to reply (Limit is a minute per message). Please start a new incident if you want to proceed.")
+        await ctx.author.send("Unfortunately you took too long to reply (Limit is a three minutes per message). Please start a new incident if you want to proceed.")
     response = submitAnIncident(gamertagOfUser, lapOfIncident, description, tierOfIncident, evidence, gamertagOfInvolevedDriver)
     logEmbed = discord.Embed(title="⚠️New Ticket has been reported!⚠️")
     logEmbed.add_field(name="Tier", value=tierOfIncident, inline=False)
@@ -530,25 +530,25 @@ async def decisionappeal(ctx):
     await ctx.send(f"Please follow the bot to your DMs to submit your appeal <@{ctx.author.id}>")
     try:
         await ctx.author.send("What is the case number you want to appeal (use ;querytickets in the bot channel in the server if you need to get it)")
-        caseNumber = await bot.wait_for("message", check=check, timeout=60.0)
+        caseNumber = await bot.wait_for("message", check=check, timeout=180.0)
         caseNumber = caseNumber.content
         await ctx.author.send("What is your gamertag?")
-        gamertagOfUser = await bot.wait_for("message", check=check, timeout=60.0)
+        gamertagOfUser = await bot.wait_for("message", check=check, timeout=180.0)
         gamertagOfUser = gamertagOfUser.content
         await ctx.author.send("Please state the reason for you appeal.")
-        reason = await bot.wait_for("message", check=check, timeout=60.0)
+        reason = await bot.wait_for("message", check=check, timeout=180.0)
         reason = reason.content
         await ctx.author.send("State any additional information to support your appeal (if you don't have any, reply with N/A)")
-        additionalInfo = await bot.wait_for("message", check=check, timeout=60.0)
+        additionalInfo = await bot.wait_for("message", check=check, timeout=180.0)
         additionalInfo = additionalInfo.content
         await ctx.author.send("Please provide addition video evidence to support your appeal (Only reply with links to gamerdvr or other services)")
-        evidence = await bot.wait_for("message", check=check, timeout=60.0)
+        evidence = await bot.wait_for("message", check=check, timeout=180.0)
         evidence = evidence.content
         await ctx.author.send("What is the gamertag(s) of the driver(s) involved? (For penalties, reply with N/A)")
-        gamertagOfInvolevedDriver = await bot.wait_for("message", check=check, timeout=60.0)
+        gamertagOfInvolevedDriver = await bot.wait_for("message", check=check, timeout=180.0)
         gamertagOfInvolevedDriver = gamertagOfInvolevedDriver.content
     except asyncio.TimeoutError:
-        await ctx.author.send("Unfortunately you took too long to reply (Limit is a minute per message). Please start a new incident if you want to proceed.")
+        await ctx.author.send("Unfortunately you took too long to reply (Limit is a three minutes per message). Please start a new incident if you want to proceed.")
     response = submitAppeal(caseNumber, evidence, gamertagOfUser, gamertagOfInvolevedDriver, reason, additionalInfo)
     logEmbed = discord.Embed(title="⚠️New Appeal has been submitted!⚠️")
     logEmbed.add_field(name="Case Number", value=caseNumber, inline=False)
