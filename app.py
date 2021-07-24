@@ -514,6 +514,12 @@ async def incidentreport(ctx):
     except asyncio.TimeoutError:
         await ctx.author.send("Unfortunately you took too long to reply (Limit is a three minutes per message). Please start a new incident if you want to proceed.")
     response = submitAnIncident(gamertagOfUser, lapOfIncident, description, tierOfIncident, evidence, gamertagOfInvolevedDriver)
+    logEmbed = discord.Embed(title="⚠️New Ticket has been reported!⚠️")
+    logEmbed.add_field(name="Tier", value=tierOfIncident, inline=False)
+    logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUser} vs {gamertagOfInvolevedDriver}", inline=False)
+    channel = bot.get_channel(861939856481189908)
+    await channel.send("<@&774702830816067634>")
+    await channel.send(embed = logEmbed)
     await ctx.author.send(response)
 
 @bot.command(name="submitappeal")
@@ -544,6 +550,12 @@ async def decisionappeal(ctx):
     except asyncio.TimeoutError:
         await ctx.author.send("Unfortunately you took too long to reply (Limit is a three minutes per message). Please start a new incident if you want to proceed.")
     response = submitAppeal(caseNumber, evidence, gamertagOfUser, gamertagOfInvolevedDriver, reason, additionalInfo)
+    logEmbed = discord.Embed(title="⚠️New Appeal has been submitted!⚠️")
+    logEmbed.add_field(name="Case Number", value=caseNumber, inline=False)
+    logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUser} vs {gamertagOfInvolevedDriver}", inline=False)
+    channel = bot.get_channel(861939856481189908)
+    await channel.send("<@&774702830816067634>")
+    await channel.send(embed = logEmbed)
     await ctx.author.send(response)
 
 
