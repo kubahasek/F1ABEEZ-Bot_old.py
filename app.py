@@ -473,7 +473,7 @@ async def incidentreport(ctx):
         await ctx.author.send("Please describe your incident.")
         description = await bot.wait_for("message", check=check, timeout=180.0)
         description = description.content
-        tierOfIncidentMSG =  await ctx.author.send("What is the tier or division this incident/penalty occured in? \n1️⃣ = F1 - Tier 1\n2️⃣ = F1 - Tier 2\n3️⃣ = F1 - Tier 3\n4️⃣ = F1 - Tier 4\n5️⃣ = F2\nPlease react with the corresponding tier")
+        tierOfIncidentMSG =  await ctx.author.send("What is the tier or division this incident/penalty occured in? \n1️⃣ = F1 - Tier 1\n2️⃣ = F1 - Tier 2\n3️⃣ = F1 - Tier 3\n4️⃣ = F1 - Tier Mixed\n5️⃣ = F2\nPlease react with the corresponding tier")
         await tierOfIncidentMSG.add_reaction("1️⃣")
         await tierOfIncidentMSG.add_reaction("2️⃣")
         await tierOfIncidentMSG.add_reaction("3️⃣")
@@ -490,7 +490,7 @@ async def incidentreport(ctx):
           tierOfIncident = "F1 - Tier 3"
           await ctx.author.send("You chose "+tierOfIncident)
         elif(str(tierOfIncidentReaction.emoji) == "4️⃣"):
-          tierOfIncident = "F1 - Tier 4"
+          tierOfIncident = "F1 - Tier Mixed"
           await ctx.author.send("You chose "+tierOfIncident)
         elif(str(tierOfIncidentReaction.emoji) == "5️⃣"):
           tierOfIncident = "F2"
@@ -769,5 +769,22 @@ async def stewardsDecision(ctx, round):
     f2URL = f"<https://f1abeez.com/race-reports/F2-{f2round}>"
   
   await channel.send(f"🦺 @everyone\n\n**All Stewards decisions are finalised**\nPlease check this week's race-report for all the incidents reported and decisions made.\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier Mixed** - {tier4URL}\n**F2** - {f2URL}\n\nPlease file your appeals with the correct case number **in the next 24 hours**, and standings will be posted after all appeals are finalised \n\nThank you,\nStewards of F1ABEEZ")
+
+@bot.command(name="racereport")
+async def raceResults(ctx, round):
+  channel = bot.get_channel(774696889424805891)
+  roundNO = int(round)
+  f2RoundNO = roundNO - 1
+  f2round = f"R{f2RoundNO}"
+  round = f"R{roundNO}"
+  tier1URL = f"<https://f1abeez.com/race-reports/F1-Tier-1-{round}>"
+  tier2URL = f"<https://f1abeez.com/race-reports/F1-Tier-2-{round}>"
+  tier3URL = f"<https://f1abeez.com/race-reports/F1-Tier-3-{round}>"
+  tier4URL = f"<https://f1abeez.com/race-reports/F1-Tier-4-{round}>"
+  if(roundNO - 1 == 0):
+    f2URL = "F2 did not race"
+  else:
+    f2URL = f"<https://f1abeez.com/race-reports/F2-{f2round}>"
+  await channel.send(f"@everyone\n\n**Race standings have now been publishe for all tiers**\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier Mixed** - {tier4URL}\n**F2** - {f2URL}")
 
 bot.run(discord_token)
