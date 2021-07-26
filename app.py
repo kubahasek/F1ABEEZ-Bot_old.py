@@ -581,7 +581,7 @@ async def lobbyMSGtier3(ctx):
 @commands.has_any_role("Admin", "Moderator")
 async def lobbyMSGtier4(ctx):
   await ctx.message.delete()
-  await ctx.send("<@&840694396990521364>\n**Lobby is now open!**\nPlease join off <@637377176517345311>\nGamertag is - qpef\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+  await ctx.send("<@&840694396990521364>\n**Lobby is now open!**\nPlease join off <@483678704749510677>\nGamertag is - thxharvey\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
 
 @bot.command(name="lobbyf2")
 @commands.has_any_role("Admin", "Moderator")
