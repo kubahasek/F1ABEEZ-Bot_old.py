@@ -892,7 +892,6 @@ async def on_raw_reaction_add(payload):
       except asyncio.TimeoutError:
           await user.send("Unfortunately you took too long to reply (Limit is a minute per message). Please start a new incident if you want to proceed.")
       response = submitAppeal(caseNumber, evidence, gamertagOfUser, gamertagOfInvolevedDriver, reason, additionalInfo)
-      await user.send(response)
       logEmbed = discord.Embed(title="⚠️New Appeal has been submitted!⚠️")
       logEmbed.add_field(name="Case Number", value=caseNumber, inline=False)
       logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUser} vs {gamertagOfInvolevedDriver}", inline=False)
