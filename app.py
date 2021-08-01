@@ -392,7 +392,13 @@ def submitAnIncident(gamertag, lap, description, tier, evidence, driverInvolved)
       "created_time": "2021-06-14T15:30:00.000Z"
     },
     "Lap of incident/penalty": {
-      "number": lap
+      "rich_text": [
+        {
+          "text": {
+            "content": lap
+          }
+        }
+      ]
     },
     "Reported By": {
       "rich_text": [
@@ -498,16 +504,9 @@ async def incidentreport(ctx):
         await ctx.author.send("Please provide video evidence (Only reply with links to gamerdvr or other services)")
         evidence = await bot.wait_for("message", check=check, timeout=180.0)
         evidence = evidence.content
-        incorrect = True
-        while(incorrect == True):
-            await ctx.author.send("What lap did this incident/penalty occur on?")
-            lapOfIncident = await bot.wait_for("message", check=check, timeout=180.0)
-            try:
-                lapOfIncident = int(lapOfIncident.content)
-                incorrect = False
-            except ValueError:
-                await ctx.author.send("The content you entered wasn't a number, please enter a number")
-                incorrect = True
+        await ctx.author.send("What lap did this incident/penalty occur on?")
+        lapOfIncident = await bot.wait_for("message", check=check, timeout=180.0)
+        lapOfIncident = lapOfIncident.content
         await ctx.author.send("What is the gamertag(s) of the driver(s) involved? (For penalties, reply with N/A)")
         gamertagOfInvolevedDriver = await bot.wait_for("message", check=check, timeout=180.0)
         gamertagOfInvolevedDriver = gamertagOfInvolevedDriver.content
