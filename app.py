@@ -338,6 +338,7 @@ def submitAppeal(caseNumber, evidence, gamertag, gamertagInvolved, reason, addit
   if(r.status_code == 200):
     return "Your appeal was successfully submitted!"
   else:
+    print(r.text)
     return "There was an error submitting your appeal, please reach out to the admin team"
 
 
@@ -388,9 +389,6 @@ def submitAnIncident(gamertag, lap, description, tier, evidence, driverInvolved)
         }
       ]
     },
-    "Time Reported": {
-      "created_time": "2021-06-14T15:30:00.000Z"
-    },
     "Lap of incident/penalty": {
       "rich_text": [
         {
@@ -424,6 +422,7 @@ def submitAnIncident(gamertag, lap, description, tier, evidence, driverInvolved)
     if(r.status_code == 200):
         return "Your ticket was successfully submitted!"
     else:
+        print(r.text)
         return "There was an error submitting your ticket, please reach out to the admin team"
 
 intents = discord.Intents.default()
