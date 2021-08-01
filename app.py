@@ -869,7 +869,7 @@ async def on_raw_reaction_add(payload):
       def check(m):
         return m.author == user and m.guild is None 
         
-      await channel.send(f"Please follow the bot to your DMs to submit your appeal <@{user.id}>")
+      await channel.send(f"Please follow the bot to your DMs to submit your appeal <@{user.id}>", delete_after=60)
       try:
           await user.send("What is the case number you want to appeal (use ;querytickets in the bot channel in the server if you need to get it)")
           caseNumber = await bot.wait_for("message", check=check, timeout=180.0)
