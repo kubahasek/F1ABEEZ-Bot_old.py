@@ -437,7 +437,7 @@ def submitAnIncident(gamertag, lap, description, tier, evidence, driverInvolved,
                 "start": date
             }
     },
-    "Submitted through": {
+    "Submitted Through": {
       "select": {
         "name": "F1ABEEZ Bot",
         "color": "pink"
