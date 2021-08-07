@@ -10,6 +10,8 @@ import requests
 import json
 import os
 import pymongo
+import datetime
+import pytz
 
 discord_token = os.environ.get("discord_token")
 token = os.environ.get("token")
@@ -158,68 +160,71 @@ def TicketDetailQuery(ticketNumber):
 
     return embed    
 
-def profileQuery(gamertag):
-    gamertag = str(gamertag)
-    header = {"Authorization": token,  "Notion-Version": "2021-05-13"}
-    req2 = requests.post(profileDatabaseURL, headers=header, json={
-      "filter": {
-      "property": "GamerTag",
-      "title": {
-          "contains": gamertag
-      }
-      }
-    }).text
 
-    d = json.loads(req2)
+## Currently not working, due to Notion not returning all values
 
-    embed=discord.Embed(title=str(gamertag), color=16236412)
+# def profileQuery(gamertag):
+#     gamertag = str(gamertag)
+#     header = {"Authorization": token,  "Notion-Version": "2021-05-13"}
+#     req2 = requests.post(profileDatabaseURL, headers=header, json={
+#       "filter": {
+#       "property": "GamerTag",
+#       "title": {
+#           "contains": gamertag
+#       }
+#       }
+#     }).text
 
-    try: 
-        gamertagQuery = d["results"][0]["properties"]["GamerTag"]["title"][0]["text"]["content"]
-    except IndexError:
-        embed.add_field(name="Error", value="The profile for this gamertag doesn't exist in our database, please contact the admins if think that is a mistake.", inline=False)
-        return embed
+#     d = json.loads(req2)
 
-    if(gamertagQuery != gamertag):
-        embed.add_field(name="Error", value="The profile for this gamertag doesn't exist in our database, please contact the admins if think that is a mistake.", inline=False)
-        return embed
+#     embed=discord.Embed(title=str(gamertag), color=16236412)
 
-    try:
-        tier = d["results"][0]["properties"]["S3 Tier"]["rollup"]["array"][0]["select"]["name"]
-    except IndexError:
-        embed.add_field(name="Tier", value="You don't have a tier assigned, please contact the admins if you think that is a mistake", inline=False)
-    embed.add_field(name="Tier", value=str(tier))
+#     try: 
+#         gamertagQuery = d["results"][0]["properties"]["GamerTag"]["title"][0]["text"]["content"]
+#     except IndexError:
+#         embed.add_field(name="Error", value="The profile for this gamertag doesn't exist in our database, please contact the admins if think that is a mistake.", inline=False)
+#         return embed
 
-    try: 
-        team = d["results"][0]["properties"]["Team"]["rollup"]["array"][0]["select"]["name"]
-    except IndexError:
-        team = ""
-        embed.add_field(name="Team", value="You don't have a team assigned, please contact the admins if you think that is a mistake", inline=False)
+#     if(gamertagQuery != gamertag):
+#         embed.add_field(name="Error", value="The profile for this gamertag doesn't exist in our database, please contact the admins if think that is a mistake.", inline=False)
+#         return embed
 
-    if (team != ""):
-        embed.add_field(name="Team", value=str(team), inline=False)
+#     try:
+#         tier = d["results"][0]["properties"]["S3 Tier"]["rollup"]["array"][0]["select"]["name"]
+#     except IndexError:
+#         embed.add_field(name="Tier", value="You don't have a tier assigned, please contact the admins if you think that is a mistake", inline=False)
+#     embed.add_field(name="Tier", value=str(tier))
 
-    try:
-        numberOfF1Points = d["results"][0]["properties"]["Total F1 Points"]["rollup"]["number"]
-    except KeyError:
-        numberOfF1Points = 0
-    embed.add_field(name="Points", value=str(numberOfF1Points), inline=False) 
+#     try: 
+#         team = d["results"][0]["properties"]["Team"]["rollup"]["array"][0]["select"]["name"]
+#     except IndexError:
+#         team = ""
+#         embed.add_field(name="Team", value="You don't have a team assigned, please contact the admins if you think that is a mistake", inline=False)
 
-    try:
-        numberOfPenPoints = d["results"][0]["properties"]["Penalty Points"]["rollup"]["number"]
-    except KeyError:
-        numberOfPenPoints = 0
-    embed.add_field(name="Penalty Points", value=str(numberOfPenPoints), inline=False)
+#     if (team != ""):
+#         embed.add_field(name="Team", value=str(team), inline=False)
 
-    f2Participant = d["results"][0]["properties"]["F2 Participant"]["rollup"]["array"][0]["checkbox"]
-    if(f2Participant == True):
-        try:
-            f2Points = d["results"][0]["properties"]["Total F2 Points"]["rollup"]["number"]
-        except KeyError:
-            f2Points = 0
-        embed.add_field(name="F2 Points", value=str(f2Points))
+#     try:
+#         numberOfF1Points = d["results"][0]["properties"]["Total F1 Points"]["rollup"]["number"]
+#     except KeyError:
+#         numberOfF1Points = 0
+#     embed.add_field(name="Points", value=str(numberOfF1Points), inline=False) 
 
-    return embed
+#     try:
+#         numberOfPenPoints = d["results"][0]["properties"]["Penalty Points"]["rollup"]["number"]
+#     except KeyError:
+#         numberOfPenPoints = 0
+#     embed.add_field(name="Penalty Points", value=str(numberOfPenPoints), inline=False)
+
+#     f2Participant = d["results"][0]["properties"]["F2 Participant"]["rollup"]["array"][0]["checkbox"]
+#     if(f2Participant == True):
+#         try:
+#             f2Points = d["results"][0]["properties"]["Total F2 Points"]["rollup"]["number"]
+#         except KeyError:
+#             f2Points = 0
+#         embed.add_field(name="F2 Points", value=str(f2Points))
+
+#     return embed
 
 def queryAppeals(gamertag):
   header = {"Authorization": token, "Notion-Version": "2021-05-13"}
@@ -264,7 +269,7 @@ def queryAppeals(gamertag):
   
   return embed  
 
-def submitAppeal(caseNumber, evidence, gamertag, gamertagInvolved, reason, additionalInfo):
+def submitAppeal(caseNumber, evidence, gamertag, gamertagInvolved, reason, additionalInfo, date):
   url = "https://api.notion.com/v1/pages/"
   header = {"Authorization": token, "Notion-Version": "2021-05-13"}
   r = requests.post(url, headers=header, json={
@@ -331,8 +336,19 @@ def submitAppeal(caseNumber, evidence, gamertag, gamertagInvolved, reason, addit
         }
       }
     ]
+  },
+    "Time Reported": {
+        "date": {
+                "start": date
+            }
+    },
+    "Submitted through": {
+      "select": {
+        "name": "F1ABEEZ Bot",
+        "color": "pink"
+      }
+    }
   }
-}
 }
 )
   if(r.status_code == 200):
@@ -347,12 +363,12 @@ def GetHelpCommand():
     embed.add_field(name=";gettickets <gamertag>", value="This command is useful when you don’t know the number of your ticket. The command lists all tickets you’ve been involved (whether you reported it or someone else reported you) and gives you the number of the ticket.", inline=False)
     embed.add_field(name=";getappeals <gamertag>", value="This command gets you a list of appeals you've been involeved in (whether you appealed or someone appealed against you) and gives you the number of the appeal and it's status.")
     embed.add_field(name=";ticketdetail <number of ticket>", value="This command gets you the details of ticket you provide. It lists the status, penalty that was awarded and who was involved.", inline=False)
-    embed.add_field(name=";getprofile <gamertag>", value="This command gets you your profile from our profile database on the website. You can see how many penalty points you have or whether you have a quali or race ban as well as your team and tier. You can also see how many points you have scored in F1 or F2 tiers", inline=False)
+    # embed.add_field(name=";getprofile <gamertag>", value="This command gets you your profile from our profile database on the website. You can see how many penalty points you have or whether you have a quali or race ban as well as your team and tier. You can also see how many points you have scored in F1 or F2 tiers", inline=False)
     embed.add_field(name=";incidentreport", value="This command allows you to submit an incident from discord. Please read the messages carefully and reply correctly.", inline=False)
     embed.add_field(name=";submitappeal", value="This command allows you to submit an appeal to a decision that has been made by the stewards. Please use ;gettickets before you start submitting it to make sure you know the case number of the incident you want to appeal", inline=False)
     return embed
 
-def submitAnIncident(gamertag, lap, description, tier, evidence, driverInvolved):
+def submitAnIncident(gamertag, lap, description, tier, evidence, driverInvolved, date):
     url = "https://api.notion.com/v1/pages/"
     header = header = {"Authorization": token, "Notion-Version": "2021-05-13"}
     r = requests.post(url, headers=header, json={
@@ -415,6 +431,17 @@ def submitAnIncident(gamertag, lap, description, tier, evidence, driverInvolved)
           }
         }
       ]
+    },
+    "Time Reported": {
+        "date": {
+                "start": date
+            }
+    },
+    "Submitted through": {
+      "select": {
+        "name": "F1ABEEZ Bot",
+        "color": "pink"
+      }
     }
   }
 }
@@ -458,12 +485,14 @@ async def on_command_error(ctx, error):
         await ctx.send("Command not found")
     print(error)
 
-@bot.command(name="getprofile")
-async def getprofile(ctx, *, arg):
-    await ctx.send(embed = profileQuery(arg))
+# @bot.command(name="getprofile")
+# async def getprofile(ctx, *, arg):
+#     await ctx.send(embed = profileQuery(arg))
 
 @bot.command(name="incidentreport")
 async def incidentreport(ctx):
+    bst = pytz.timezone("Europe/London")
+    today = datetime.datetime.now(tz=bst)
     def check(m):
         return m.author == ctx.author and m.guild is None 
 
@@ -511,7 +540,7 @@ async def incidentreport(ctx):
         gamertagOfInvolevedDriver = gamertagOfInvolevedDriver.content
     except asyncio.TimeoutError:
         await ctx.author.send("Unfortunately you took too long to reply (Limit is a three minutes per message). Please start a new incident if you want to proceed.")
-    response = submitAnIncident(gamertagOfUser, lapOfIncident, description, tierOfIncident, evidence, gamertagOfInvolevedDriver)
+    response = submitAnIncident(gamertagOfUser, lapOfIncident, description, tierOfIncident, evidence, gamertagOfInvolevedDriver, today)
     logEmbed = discord.Embed(title="⚠️New Ticket has been reported!⚠️")
     logEmbed.add_field(name="Tier", value=tierOfIncident, inline=False)
     logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUser} vs {gamertagOfInvolevedDriver}", inline=False)
@@ -522,6 +551,8 @@ async def incidentreport(ctx):
 
 @bot.command(name="submitappeal")
 async def decisionappeal(ctx):
+    bst = pytz.timezone("Europe/London")
+    today = datetime.datetime.now(tz=bst)
     def check(m):
         return m.author == ctx.author and m.guild is None
     
@@ -547,7 +578,7 @@ async def decisionappeal(ctx):
         gamertagOfInvolevedDriver = gamertagOfInvolevedDriver.content
     except asyncio.TimeoutError:
         await ctx.author.send("Unfortunately you took too long to reply (Limit is a three minutes per message). Please start a new incident if you want to proceed.")
-    response = submitAppeal(caseNumber, evidence, gamertagOfUser, gamertagOfInvolevedDriver, reason, additionalInfo)
+    response = submitAppeal(caseNumber, evidence, gamertagOfUser, gamertagOfInvolevedDriver, reason, additionalInfo, today)
     logEmbed = discord.Embed(title="⚠️New Appeal has been submitted!⚠️")
     logEmbed.add_field(name="Case Number", value=caseNumber, inline=False)
     logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUser} vs {gamertagOfInvolevedDriver}", inline=False)
@@ -591,31 +622,31 @@ async def lobbyMSGf2(ctx):
 @commands.has_any_role("Admin", "Moderator")
 async def readyMSGtier1(ctx):
   await ctx.message.delete()
-  await ctx.send("<@&795227294766727169>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.")
+  await ctx.send("<@&795227294766727169>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.\nDon't forget to not use wet tyres in qualifying as this will results in a quali ban")
 
 @bot.command(name="readytier2")
 @commands.has_any_role("Admin", "Moderator")
 async def readyMSGtier2(ctx):
   await ctx.message.delete()
-  await ctx.send("<@&795227317684928546>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.")
+  await ctx.send("<@&795227317684928546>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.\nDon't forget to not use wet tyres in qualifying as this will results in a quali ban")
 
 @bot.command(name="readytier3")
 @commands.has_any_role("Admin", "Moderator")
 async def readyMSGtier3(ctx):
   await ctx.message.delete()
-  await ctx.send("<@&813703851349245965>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.")
+  await ctx.send("<@&813703851349245965>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.\nDon't forget to not use wet tyres in qualifying as this will results in a quali ban")
 
 @bot.command(name="readytier4")
 @commands.has_any_role("Admin", "Moderator")
 async def readyMSGtier4(ctx):
   await ctx.message.delete()
-  await ctx.send("<@&840694396990521364>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.")
+  await ctx.send("<@&840694396990521364>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.\nDon't forget to not use wet tyres in qualifying as this will results in a quali ban")
 
 @bot.command(name="readyf2")
 @commands.has_any_role("Admin", "Moderator")
 async def readyMSGf2(ctx):
   await ctx.message.delete()
-  await ctx.send("**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.")
+  await ctx.send("**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.\nDon't forget to not use wet tyres in qualifying as this will results in a quali ban")
 
 @bot.command(name="racetier1")
 @commands.has_any_role("Admin", "Moderator")
@@ -766,7 +797,7 @@ async def stewardsDecision(ctx, round):
   else:
     f2URL = f"<https://f1abeez.com/race-reports/F2-{f2round}>"
   
-  await channel.send(f"🦺 @everyone\n\n**All Stewards decisions are finalised**\nPlease check this week's race-report for all the incidents reported and decisions made.\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier Mixed** - {tier4URL}\n**F2** - {f2URL}\n\nPlease file your appeals with the correct case number **in the next 24 hours**, and standings will be posted after all appeals are finalised \n\nThank you,\nStewards of F1ABEEZ")
+  await channel.send(f"🦺 @everyone\n\n**All Stewards decisions are finalised**\nPlease check this week's race-report for all the incidents reported and decisions made.\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier Mixed** - {tier4URL}\n**F2** - {f2URL}\n\nPlease file your appeals with the correct case number **in the next 24 hours**, and standings will be posted after all appeals are finalised \nFollow the instructions in <#872221407491289089> to submit your appeals \n\nThank you,\nStewards of F1ABEEZ")
 
 @bot.command(name="racereport")
 async def raceResults(ctx, round):
@@ -783,7 +814,6 @@ async def raceResults(ctx, round):
     f2URL = "F2 did not race"
   else:
     f2URL = f"<https://f1abeez.com/race-reports/F2-{f2round}>"
-  await channel.send(f"@everyone\n\n**Race standings have now been publishe for all tiers**\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier Mixed** - {tier4URL}\n**F2** - {f2URL}")
 
 @bot.command(name="incidentchannel")
 async def incidentChannel(ctx):
@@ -802,7 +832,6 @@ async def appealChannel(ctx):
 @bot.event
 async def on_raw_reaction_add(payload):
   emoji, user, member, channel = payload.emoji.name, await bot.fetch_user(user_id=payload.user_id), payload.member, bot.get_channel(payload.channel_id)
-  channel = await bot.fetch_channel(payload.channel_id)
   message = await channel.fetch_message(payload.message_id)
   if (emoji == "📨" and user.id != bot.user.id and (channel.id == 871334405359144970 or channel.id == 871334445716766800)):
     await message.remove_reaction(emoji, member)
@@ -822,7 +851,7 @@ async def on_raw_reaction_add(payload):
           await user.send("Please describe your incident.")
           description = await bot.wait_for("message", check=check, timeout=180.0)
           description = description.content
-          tierOfIncidentMSG =  await user.send("What is the tier or division this incident/penalty occured in? \n1️⃣ = F1 - Tier 1\n2️⃣ = F1 - Tier 2\n3️⃣ = F1 - Tier 3\n4️⃣ = F1 - Tier 4\n5️⃣ = F2\nPlease react with the corresponding tier")
+          tierOfIncidentMSG =  await user.send("What is the tier or division this incident/penalty occured in? \n1️⃣ = F1 - Tier 1\n2️⃣ = F1 - Tier 2\n3️⃣ = F1 - Tier 3\n4️⃣ = F1 - Tier Mixed\n5️⃣ = F2\nPlease react with the corresponding tier")
           await tierOfIncidentMSG.add_reaction("1️⃣")
           await tierOfIncidentMSG.add_reaction("2️⃣")
           await tierOfIncidentMSG.add_reaction("3️⃣")
@@ -839,7 +868,7 @@ async def on_raw_reaction_add(payload):
             tierOfIncident = "F1 - Tier 3"
             await user.send("You chose "+tierOfIncident)
           elif(str(tierOfIncidentReaction.emoji) == "4️⃣"):
-            tierOfIncident = "F1 - Tier 4"
+            tierOfIncident = "F1 - Tier Mixed"
             await user.send("You chose "+tierOfIncident)
           elif(str(tierOfIncidentReaction.emoji) == "5️⃣"):
             tierOfIncident = "F2"
@@ -854,7 +883,7 @@ async def on_raw_reaction_add(payload):
           gamertagOfInvolevedDriver = await bot.wait_for("message", check=check, timeout=180.0)
           gamertagOfInvolevedDriver = gamertagOfInvolevedDriver.content
       except asyncio.TimeoutError:
-          await user.send("Unfortunately you took too long to reply (Limit is a minute per message). Please start a new incident if you want to proceed.")
+          await user.send("Unfortunately you took too long to reply (Limit is three minutes per message). Please start a new incident if you want to proceed.")
       response = submitAnIncident(gamertagOfUser, lapOfIncident, description, tierOfIncident, evidence, gamertagOfInvolevedDriver)
       logEmbed = discord.Embed(title="⚠️New Ticket has been reported!⚠️")
       logEmbed.add_field(name="Tier", value=tierOfIncident, inline=False)
@@ -889,7 +918,7 @@ async def on_raw_reaction_add(payload):
           gamertagOfInvolevedDriver = await bot.wait_for("message", check=check, timeout=180.0)
           gamertagOfInvolevedDriver = gamertagOfInvolevedDriver.content
       except asyncio.TimeoutError:
-          await user.send("Unfortunately you took too long to reply (Limit is a minute per message). Please start a new incident if you want to proceed.")
+          await user.send("Unfortunately you took too long to reply (Limit is a three minutes per message). Please start a new incident if you want to proceed.")
       response = submitAppeal(caseNumber, evidence, gamertagOfUser, gamertagOfInvolevedDriver, reason, additionalInfo)
       logEmbed = discord.Embed(title="⚠️New Appeal has been submitted!⚠️")
       logEmbed.add_field(name="Case Number", value=caseNumber, inline=False)
