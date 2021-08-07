@@ -836,6 +836,8 @@ async def on_raw_reaction_add(payload):
   if (emoji == "📨" and user.id != bot.user.id and (channel.id == 871334405359144970 or channel.id == 871334445716766800)):
     await message.remove_reaction(emoji, member)
     if(channel.id == 871334405359144970):
+      bst = pytz.timezone("Europe/London")
+      today = datetime.datetime.now(tz=bst).isoformat()
       def check(m):
         return m.author == user and m.guild is None 
 
@@ -884,7 +886,7 @@ async def on_raw_reaction_add(payload):
           gamertagOfInvolevedDriver = gamertagOfInvolevedDriver.content
       except asyncio.TimeoutError:
           await user.send("Unfortunately you took too long to reply (Limit is three minutes per message). Please start a new incident if you want to proceed.")
-      response = submitAnIncident(gamertagOfUser, lapOfIncident, description, tierOfIncident, evidence, gamertagOfInvolevedDriver)
+      response = submitAnIncident(gamertagOfUser, lapOfIncident, description, tierOfIncident, evidence, gamertagOfInvolevedDriver, today)
       logEmbed = discord.Embed(title="⚠️New Ticket has been reported!⚠️")
       logEmbed.add_field(name="Tier", value=tierOfIncident, inline=False)
       logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUser} vs {gamertagOfInvolevedDriver}", inline=False)
@@ -894,6 +896,8 @@ async def on_raw_reaction_add(payload):
       await user.send(response)
     
     if(channel.id == 871334445716766800):
+      bst = pytz.timezone("Europe/London")
+      today = datetime.datetime.now(tz=bst).isoformat()
       def check(m):
         return m.author == user and m.guild is None 
         
@@ -919,7 +923,7 @@ async def on_raw_reaction_add(payload):
           gamertagOfInvolevedDriver = gamertagOfInvolevedDriver.content
       except asyncio.TimeoutError:
           await user.send("Unfortunately you took too long to reply (Limit is a three minutes per message). Please start a new incident if you want to proceed.")
-      response = submitAppeal(caseNumber, evidence, gamertagOfUser, gamertagOfInvolevedDriver, reason, additionalInfo)
+      response = submitAppeal(caseNumber, evidence, gamertagOfUser, gamertagOfInvolevedDriver, reason, additionalInfo, today)
       logEmbed = discord.Embed(title="⚠️New Appeal has been submitted!⚠️")
       logEmbed.add_field(name="Case Number", value=caseNumber, inline=False)
       logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUser} vs {gamertagOfInvolevedDriver}", inline=False)
