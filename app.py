@@ -342,7 +342,7 @@ def submitAppeal(caseNumber, evidence, gamertag, gamertagInvolved, reason, addit
                 "start": date
             }
     },
-    "Submitted through": {
+    "Submitted Through": {
       "select": {
         "name": "F1ABEEZ Bot",
         "color": "pink"
@@ -437,7 +437,7 @@ def submitAnIncident(gamertag, lap, description, tier, evidence, driverInvolved,
                 "start": date
             }
     },
-    "Submitted Through": {
+    "Submitted through": {
       "select": {
         "name": "F1ABEEZ Bot",
         "color": "pink"
