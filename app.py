@@ -492,7 +492,7 @@ async def on_command_error(ctx, error):
 @bot.command(name="incidentreport")
 async def incidentreport(ctx):
     bst = pytz.timezone("Europe/London")
-    today = datetime.datetime.now(tz=bst)
+    today = datetime.datetime.now(tz=bst).isoformat()
     def check(m):
         return m.author == ctx.author and m.guild is None 
 
@@ -552,7 +552,7 @@ async def incidentreport(ctx):
 @bot.command(name="submitappeal")
 async def decisionappeal(ctx):
     bst = pytz.timezone("Europe/London")
-    today = datetime.datetime.now(tz=bst)
+    today = datetime.datetime.now(tz=bst).isoformat()
     def check(m):
         return m.author == ctx.author and m.guild is None
     
