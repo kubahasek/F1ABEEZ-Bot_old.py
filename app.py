@@ -545,7 +545,6 @@ async def incidentreport(ctx):
     logEmbed.add_field(name="Tier", value=tierOfIncident, inline=False)
     logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUser} vs {gamertagOfInvolevedDriver}", inline=False)
     channel = bot.get_channel(861939856481189908)
-    await channel.send("<@&774702830816067634>")
     await channel.send(embed = logEmbed)
     await ctx.author.send(response)
 
@@ -583,7 +582,6 @@ async def decisionappeal(ctx):
     logEmbed.add_field(name="Case Number", value=caseNumber, inline=False)
     logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUser} vs {gamertagOfInvolevedDriver}", inline=False)
     channel = bot.get_channel(861939856481189908)
-    await channel.send("<@&774702830816067634>")
     await channel.send(embed = logEmbed)
     await ctx.author.send(response)
 
@@ -891,7 +889,6 @@ async def on_raw_reaction_add(payload):
       logEmbed.add_field(name="Tier", value=tierOfIncident, inline=False)
       logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUser} vs {gamertagOfInvolevedDriver}", inline=False)
       channel = bot.get_channel(861939856481189908)
-      await channel.send("<@&774702830816067634>")
       await channel.send(embed = logEmbed)
       await user.send(response)
     
@@ -928,7 +925,6 @@ async def on_raw_reaction_add(payload):
       logEmbed.add_field(name="Case Number", value=caseNumber, inline=False)
       logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUser} vs {gamertagOfInvolevedDriver}", inline=False)
       channel = bot.get_channel(861939856481189908)
-      await channel.send("<@&774702830816067634>")
       await channel.send(embed = logEmbed)
       await user.send(response)
 
