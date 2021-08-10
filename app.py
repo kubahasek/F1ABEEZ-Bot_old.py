@@ -789,7 +789,7 @@ async def stewardsDecision(ctx, round):
   tier1URL = f"<https://f1abeez.com/race-reports/F1-Tier-1-{round}>"
   tier2URL = f"<https://f1abeez.com/race-reports/F1-Tier-2-{round}>"
   tier3URL = f"<https://f1abeez.com/race-reports/F1-Tier-3-{round}>"
-  tier4URL = f"<https://f1abeez.com/race-reports/F1-Tier-4-{round}>"
+  tier4URL = f"<https://f1abeez.com/race-reports/F1-Tier-M-{round}>"
   if(roundNO - 1 == 0):
     f2URL = "F2 did not race"
   else:
@@ -807,7 +807,7 @@ async def raceResults(ctx, round):
   tier1URL = f"<https://f1abeez.com/race-reports/F1-Tier-1-{round}>"
   tier2URL = f"<https://f1abeez.com/race-reports/F1-Tier-2-{round}>"
   tier3URL = f"<https://f1abeez.com/race-reports/F1-Tier-3-{round}>"
-  tier4URL = f"<https://f1abeez.com/race-reports/F1-Tier-4-{round}>"
+  tier4URL = f"<https://f1abeez.com/race-reports/F1-Tier-M-{round}>"
   if(roundNO - 1 == 0):
     f2URL = "F2 did not race"
   else:
