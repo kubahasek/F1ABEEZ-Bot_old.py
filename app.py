@@ -12,7 +12,6 @@ import os
 import pymongo
 import datetime
 import pytz
-import aiocron
 
 discord_token = os.environ.get("discord_token")
 token = os.environ.get("token")
