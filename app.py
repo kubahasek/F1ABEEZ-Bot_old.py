@@ -929,10 +929,4 @@ async def on_raw_reaction_add(payload):
       await channel.send(embed = logEmbed)
       await user.send(response)
 
-@aiocron.crontab('45 18 * * Tue')
-async def attime():
-    channel = bot.get_channel(856600146069553152)
-    await channel.send("It's 18:45 on a Tuesday")
-
 bot.run(discord_token)
-asyncio.get_event_loop().run_forever()
