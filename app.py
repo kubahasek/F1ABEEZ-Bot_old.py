@@ -161,70 +161,74 @@ def TicketDetailQuery(ticketNumber):
     return embed    
 
 
-## Currently not working, due to Notion not returning all values
+def profileQuery(gamertag):
+    gamertag = str(gamertag)
+    header = {"Authorization": token,  "Notion-Version": "2021-05-13"}
+    req2 = requests.post(profileDatabaseURL, headers=header, json={
+      "filter": {
+      "property": "GamerTag",
+      "title": {
+          "contains": gamertag
+      }
+      }
+    }).text
 
-# def profileQuery(gamertag):
-#     gamertag = str(gamertag)
-#     header = {"Authorization": token,  "Notion-Version": "2021-05-13"}
-#     req2 = requests.post(profileDatabaseURL, headers=header, json={
-#       "filter": {
-#       "property": "GamerTag",
-#       "title": {
-#           "contains": gamertag
-#       }
-#       }
-#     }).text
+    d = json.loads(req2)
 
-#     d = json.loads(req2)
+    embed=discord.Embed(title=str(gamertag), color=16236412)
 
-#     embed=discord.Embed(title=str(gamertag), color=16236412)
+    try: 
+        gamertagQuery = d["results"][0]["properties"]["GamerTag"]["title"][0]["text"]["content"]
+    except IndexError:
+        embed.add_field(name="Error", value="The profile for this gamertag doesn't exist in our database, please contact the admins if think that is a mistake.", inline=False)
+        return embed
 
-#     try: 
-#         gamertagQuery = d["results"][0]["properties"]["GamerTag"]["title"][0]["text"]["content"]
-#     except IndexError:
-#         embed.add_field(name="Error", value="The profile for this gamertag doesn't exist in our database, please contact the admins if think that is a mistake.", inline=False)
-#         return embed
+    if(gamertagQuery != gamertag):
+        embed.add_field(name="Error", value="The profile for this gamertag doesn't exist in our database, please contact the admins if think that is a mistake.", inline=False)
+        return embed
 
-#     if(gamertagQuery != gamertag):
-#         embed.add_field(name="Error", value="The profile for this gamertag doesn't exist in our database, please contact the admins if think that is a mistake.", inline=False)
-#         return embed
+    try:
+        tier = d["results"][0]["properties"]["S3 Tier"]["rollup"]["array"][0]["select"]["name"]
+    except IndexError:
+        embed.add_field(name="Tier", value="You don't have a tier assigned, please contact the admins if you think that is a mistake", inline=False)
+    embed.add_field(name="Tier", value=str(tier))
 
-#     try:
-#         tier = d["results"][0]["properties"]["S3 Tier"]["rollup"]["array"][0]["select"]["name"]
-#     except IndexError:
-#         embed.add_field(name="Tier", value="You don't have a tier assigned, please contact the admins if you think that is a mistake", inline=False)
-#     embed.add_field(name="Tier", value=str(tier))
+    try: 
+        team = d["results"][0]["properties"]["SE:Team"]["rollup"]["array"][0]["select"]["name"]
+    except IndexError:
+        team = ""
+        embed.add_field(name="Team", value="You don't have a team assigned, please contact the admins if you think that is a mistake", inline=False)
 
-#     try: 
-#         team = d["results"][0]["properties"]["Team"]["rollup"]["array"][0]["select"]["name"]
-#     except IndexError:
-#         team = ""
-#         embed.add_field(name="Team", value="You don't have a team assigned, please contact the admins if you think that is a mistake", inline=False)
+    if (team != ""):
+        embed.add_field(name="Team", value=str(team), inline=False)
 
-#     if (team != ""):
-#         embed.add_field(name="Team", value=str(team), inline=False)
+    try:
+        numberOfF1Points = d["results"][0]["properties"]["Total F1 Points"]["rollup"]["number"]
+    except KeyError:
+        numberOfF1Points = 0
+    embed.add_field(name="Points", value=str(numberOfF1Points), inline=False) 
 
-#     try:
-#         numberOfF1Points = d["results"][0]["properties"]["Total F1 Points"]["rollup"]["number"]
-#     except KeyError:
-#         numberOfF1Points = 0
-#     embed.add_field(name="Points", value=str(numberOfF1Points), inline=False) 
+    try:
+        numberOfPenPoints = d["results"][0]["properties"]["Penalty Points"]["rollup"]["number"]
+    except KeyError:
+        numberOfPenPoints = 0
+    embed.add_field(name="Penalty Points", value=str(numberOfPenPoints), inline=False)
 
-#     try:
-#         numberOfPenPoints = d["results"][0]["properties"]["Penalty Points"]["rollup"]["number"]
-#     except KeyError:
-#         numberOfPenPoints = 0
-#     embed.add_field(name="Penalty Points", value=str(numberOfPenPoints), inline=False)
+    f2Participant = d["results"][0]["properties"]["F2 Participant"]["rollup"]["array"][0]["checkbox"]
+    if(f2Participant == True):
+      try:
+        f2Points = d["results"][0]["properties"]["Total F2 Points"]["rollup"]["number"]
+      except KeyError:
+          f2Points = 0
+      embed.add_field(name="F2 Points", value=str(f2Points))
 
-#     f2Participant = d["results"][0]["properties"]["F2 Participant"]["rollup"]["array"][0]["checkbox"]
-#     if(f2Participant == True):
-#         try:
-#             f2Points = d["results"][0]["properties"]["Total F2 Points"]["rollup"]["number"]
-#         except KeyError:
-#             f2Points = 0
-#         embed.add_field(name="F2 Points", value=str(f2Points))
+    try:
+      bansImposed = d["results"][0]["properties"]["Bans Imposed"]["select"]["name"]
+    except KeyError:
+      bansImposed = "None"
 
-#     return embed
+    embed.add_field(name="Bans Imposed", value=str(bansImposed), inline=False)
+    return embed
 
 def queryAppeals(gamertag):
   header = {"Authorization": token, "Notion-Version": "2021-05-13"}
@@ -363,7 +367,7 @@ def GetHelpCommand():
     embed.add_field(name=";gettickets <gamertag>", value="This command is useful when you don’t know the number of your ticket. The command lists all tickets you’ve been involved (whether you reported it or someone else reported you) and gives you the number of the ticket.", inline=False)
     embed.add_field(name=";getappeals <gamertag>", value="This command gets you a list of appeals you've been involeved in (whether you appealed or someone appealed against you) and gives you the number of the appeal and it's status.")
     embed.add_field(name=";ticketdetail <number of ticket>", value="This command gets you the details of ticket you provide. It lists the status, penalty that was awarded and who was involved.", inline=False)
-    # embed.add_field(name=";getprofile <gamertag>", value="This command gets you your profile from our profile database on the website. You can see how many penalty points you have or whether you have a quali or race ban as well as your team and tier. You can also see how many points you have scored in F1 or F2 tiers", inline=False)
+    embed.add_field(name=";getprofile <gamertag>", value="This command gets you your profile from our profile database on the website. You can see how many penalty points you have or whether you have a quali or race ban as well as your team and tier. You can also see how many points you have scored in F1 or F2 tiers", inline=False)
     embed.add_field(name=";incidentreport", value="This command allows you to submit an incident from discord. Please read the messages carefully and reply correctly.", inline=False)
     embed.add_field(name=";submitappeal", value="This command allows you to submit an appeal to a decision that has been made by the stewards. Please use ;gettickets before you start submitting it to make sure you know the case number of the incident you want to appeal", inline=False)
     return embed
@@ -485,9 +489,9 @@ async def on_command_error(ctx, error):
         await ctx.send("Command not found")
     print(error)
 
-# @bot.command(name="getprofile")
-# async def getprofile(ctx, *, arg):
-#     await ctx.send(embed = profileQuery(arg))
+@bot.command(name="getprofile")
+async def getprofile(ctx, *, arg):
+    await ctx.send(embed = profileQuery(arg))
 
 @bot.command(name="incidentreport")
 async def incidentreport(ctx):
