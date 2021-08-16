@@ -789,7 +789,7 @@ async def on_raw_reaction_add(payload):
           lapOfIncidentInc = lapOfIncidentInc.content
           await user.send("What is the gamertag(s) of the driver(s) involved? (For penalties, reply with N/A)")
           gamertagOfInvolevedDriverInc = await bot.wait_for("message", check=check, timeout=180.0)
-          gamertagOfInvolevedDriverIng = gamertagOfInvolevedDriverInc.content
+          gamertagOfInvolevedDriverInc = gamertagOfInvolevedDriverInc.content
       except asyncio.TimeoutError:
           await user.send("Unfortunately you took too long to reply (Limit is three minutes per message). Please start a new incident if you want to proceed.")
       response = submitAnIncident(gamertagOfUserInc, lapOfIncidentInc, descriptionInc, tierOfIncidentInc, evidenceInc, gamertagOfInvolevedDriverInc, todayInc)
