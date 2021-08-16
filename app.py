@@ -743,7 +743,7 @@ async def on_raw_reaction_add(payload):
     await message.remove_reaction(emoji, member)
     if(channel.id == 871334405359144970):
       bst = pytz.timezone("Europe/London")
-      today = datetime.datetime.now(tz=bst).isoformat()
+      todayInc = datetime.datetime.now(tz=bst).isoformat()
       def check(m):
         return m.author == user and m.guild is None 
 
@@ -754,11 +754,11 @@ async def on_raw_reaction_add(payload):
 
       try:
           await user.send("What is your gamertag?")
-          gamertagOfUser = await bot.wait_for("message", check=check, timeout=180.0)
-          gamertagOfUser = gamertagOfUser.content
+          gamertagOfUserInc = await bot.wait_for("message", check=check, timeout=180.0)
+          gamertagOfUserInc = gamertagOfUserInc.content
           await user.send("Please describe your incident.")
-          description = await bot.wait_for("message", check=check, timeout=180.0)
-          description = description.content
+          descriptionInc = await bot.wait_for("message", check=check, timeout=180.0)
+          descriptionInc = descriptionInc.content
           tierOfIncidentMSG =  await user.send("What is the tier or division this incident/penalty occured in? \n1️⃣ = F1 - Tier 1\n2️⃣ = F1 - Tier 2\n3️⃣ = F1 - Tier 3\n4️⃣ = F1 - Tier Mixed\n5️⃣ = F2\nPlease react with the corresponding tier")
           await tierOfIncidentMSG.add_reaction("1️⃣")
           await tierOfIncidentMSG.add_reaction("2️⃣")
@@ -767,71 +767,71 @@ async def on_raw_reaction_add(payload):
           await tierOfIncidentMSG.add_reaction("5️⃣")
           tierOfIncidentReaction = await bot.wait_for("raw_reaction_add", check=checkRaw, timeout=180.0)
           if(str(tierOfIncidentReaction.emoji) == "1️⃣"):
-            tierOfIncident = "F1 - Tier 1"
-            await user.send("You chose "+tierOfIncident)
+            tierOfIncidentInc = "F1 - Tier 1"
+            await user.send("You chose "+tierOfIncidentInc)
           elif(str(tierOfIncidentReaction.emoji) == "2️⃣"):
-            tierOfIncident = "F1 - Tier 2"
-            await user.send("You chose "+tierOfIncident)
+            tierOfIncidentInc = "F1 - Tier 2"
+            await user.send("You chose "+tierOfIncidentInc)
           elif(str(tierOfIncidentReaction.emoji) == "3️⃣"):
-            tierOfIncident = "F1 - Tier 3"
-            await user.send("You chose "+tierOfIncident)
+            tierOfIncidentInc = "F1 - Tier 3"
+            await user.send("You chose "+tierOfIncidentInc)
           elif(str(tierOfIncidentReaction.emoji) == "4️⃣"):
-            tierOfIncident = "F1 - Tier Mixed"
-            await user.send("You chose "+tierOfIncident)
+            tierOfIncidentInc = "F1 - Tier Mixed"
+            await user.send("You chose "+tierOfIncidentInc)
           elif(str(tierOfIncidentReaction.emoji) == "5️⃣"):
-            tierOfIncident = "F2"
-            await user.send("You chose "+tierOfIncident)
+            tierOfIncidentInc = "F2"
+            await user.send("You chose "+tierOfIncidentInc)
           await user.send("Please provide video evidence (Only reply with links to gamerdvr or other services)")
-          evidence = await bot.wait_for("message", check=check, timeout=180.0)
-          evidence = evidence.content
+          evidenceInc = await bot.wait_for("message", check=check, timeout=180.0)
+          evidenceInc = evidenceInc.content
           await user.send("What lap did this incident/penalty occur on?")
-          lapOfIncident = await bot.wait_for("message", check=check, timeout=180.0)
-          lapOfIncident = lapOfIncident.content
+          lapOfIncidentInc = await bot.wait_for("message", check=check, timeout=180.0)
+          lapOfIncidentInc = lapOfIncidentInc.content
           await user.send("What is the gamertag(s) of the driver(s) involved? (For penalties, reply with N/A)")
-          gamertagOfInvolevedDriver = await bot.wait_for("message", check=check, timeout=180.0)
-          gamertagOfInvolevedDriver = gamertagOfInvolevedDriver.content
+          gamertagOfInvolevedDriverInc = await bot.wait_for("message", check=check, timeout=180.0)
+          gamertagOfInvolevedDriverIng = gamertagOfInvolevedDriverInc.content
       except asyncio.TimeoutError:
           await user.send("Unfortunately you took too long to reply (Limit is three minutes per message). Please start a new incident if you want to proceed.")
-      response = submitAnIncident(gamertagOfUser, lapOfIncident, description, tierOfIncident, evidence, gamertagOfInvolevedDriver, today)
+      response = submitAnIncident(gamertagOfUserInc, lapOfIncidentInc, descriptionInc, tierOfIncidentInc, evidenceInc, gamertagOfInvolevedDriverInc, todayInc)
       logEmbed = discord.Embed(title="⚠️New Ticket has been reported!⚠️")
-      logEmbed.add_field(name="Tier", value=tierOfIncident, inline=False)
-      logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUser} vs {gamertagOfInvolevedDriver}", inline=False)
+      logEmbed.add_field(name="Tier", value=tierOfIncidentInc, inline=False)
+      logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUserInc} vs {gamertagOfInvolevedDriverInc}", inline=False)
       channel = bot.get_channel(861939856481189908)
       await channel.send(embed = logEmbed)
       await user.send(response)
     
     if(channel.id == 871334445716766800):
       bst = pytz.timezone("Europe/London")
-      today = datetime.datetime.now(tz=bst).isoformat()
+      todayApp = datetime.datetime.now(tz=bst).isoformat()
       def check(m):
         return m.author == user and m.guild is None 
         
       await channel.send(f"Please follow the bot to your DMs to submit your appeal <@{user.id}>", delete_after=60)
       try:
           await user.send("What is the case number you want to appeal (use ;querytickets in the bot channel in the server if you need to get it)")
-          caseNumber = await bot.wait_for("message", check=check, timeout=180.0)
-          caseNumber = caseNumber.content
+          caseNumberApp = await bot.wait_for("message", check=check, timeout=180.0)
+          caseNumberApp = caseNumberApp.content
           await user.send("What is your gamertag?")
-          gamertagOfUser = await bot.wait_for("message", check=check, timeout=180.0)
-          gamertagOfUser = gamertagOfUser.content
+          gamertagOfUserApp = await bot.wait_for("message", check=check, timeout=180.0)
+          gamertagOfUserApp = gamertagOfUserApp.content
           await user.send("Please state the reason for you appeal.")
-          reason = await bot.wait_for("message", check=check, timeout=180.0)
-          reason = reason.content
+          reasonApp = await bot.wait_for("message", check=check, timeout=180.0)
+          reasonApp = reasonApp.content
           await user.send("State any additional information to support your appeal (if you don't have any, reply with N/A)")
-          additionalInfo = await bot.wait_for("message", check=check, timeout=180.0)
-          additionalInfo = additionalInfo.content
+          additionalInfoApp = await bot.wait_for("message", check=check, timeout=180.0)
+          additionalInfoApp = additionalInfoApp.content
           await user.send("Please provide addition video evidence to support your appeal (Only reply with links to gamerdvr or other services)")
-          evidence = await bot.wait_for("message", check=check, timeout=180.0)
-          evidence = evidence.content
+          evidenceApp = await bot.wait_for("message", check=check, timeout=180.0)
+          evidenceApp = evidenceApp.content
           await user.send("What is the gamertag(s) of the driver(s) involved? (For penalties, reply with N/A)")
-          gamertagOfInvolevedDriver = await bot.wait_for("message", check=check, timeout=180.0)
-          gamertagOfInvolevedDriver = gamertagOfInvolevedDriver.content
+          gamertagOfInvolevedDriverApp = await bot.wait_for("message", check=check, timeout=180.0)
+          gamertagOfInvolevedDriverApp = gamertagOfInvolevedDriverApp.content
       except asyncio.TimeoutError:
           await user.send("Unfortunately you took too long to reply (Limit is a three minutes per message). Please start a new incident if you want to proceed.")
-      response = submitAppeal(caseNumber, evidence, gamertagOfUser, gamertagOfInvolevedDriver, reason, additionalInfo, today)
+      response = submitAppeal(caseNumberApp, evidenceApp, gamertagOfUserApp, gamertagOfInvolevedDriverApp, reasonApp, additionalInfoApp, todayApp)
       logEmbed = discord.Embed(title="⚠️New Appeal has been submitted!⚠️")
-      logEmbed.add_field(name="Case Number", value=caseNumber, inline=False)
-      logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUser} vs {gamertagOfInvolevedDriver}", inline=False)
+      logEmbed.add_field(name="Case Number", value=caseNumberApp, inline=False)
+      logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUserApp} vs {gamertagOfInvolevedDriverApp}", inline=False)
       channel = bot.get_channel(861939856481189908)
       await channel.send(embed = logEmbed)
       await user.send(response)
