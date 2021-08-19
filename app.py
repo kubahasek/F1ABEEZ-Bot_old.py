@@ -746,7 +746,7 @@ async def suggestionChannel(ctx):
 async def on_raw_reaction_add(payload):
   emoji, user, member, channel = payload.emoji.name, await bot.fetch_user(user_id=payload.user_id), payload.member, bot.get_channel(payload.channel_id)
   message = await channel.fetch_message(payload.message_id)
-  if (emoji == "📨" and user.id != bot.user.id and (channel.id == 871334405359144970 or channel.id == 871334445716766800)):
+  if (emoji == "📨" and user.id != bot.user.id and (channel.id == 871334405359144970 or channel.id == 871334445716766800 or channel.id == 877977932914651176)):
     await message.remove_reaction(emoji, member)
     if(channel.id == 871334405359144970):
       bst = pytz.timezone("Europe/London")
@@ -843,6 +843,7 @@ async def on_raw_reaction_add(payload):
       await channel.send(embed = logEmbed)
       await user.send(response)
     if(channel.id == 877977932914651176):
+      await channel.send(f"Please follow the bot to your DMs to submit your suggestion <@{user.id}>", delete_after=60)
       def check(m):
         return m.author == user and m.guild is None 
       try:
