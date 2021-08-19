@@ -735,6 +735,13 @@ async def appealChannel(ctx):
   msg = await ctx.send(embed = embed)
   await msg.add_reaction("📨")
 
+@bot.command(name="suggestionchannel")
+async def suggestionChannel(ctx):
+  await ctx.message.delete()
+  embed = discord.Embed(title="Submit a suggestion",description="React to this message to submit a suggestion by clicking  the 📨 reaction", color=16236412)
+  msg = await ctx.send(embed = embed)
+  await msg.add_reaction("📨")
+
 @bot.event
 async def on_raw_reaction_add(payload):
   emoji, user, member, channel = payload.emoji.name, await bot.fetch_user(user_id=payload.user_id), payload.member, bot.get_channel(payload.channel_id)
@@ -835,5 +842,19 @@ async def on_raw_reaction_add(payload):
       channel = bot.get_channel(861939856481189908)
       await channel.send(embed = logEmbed)
       await user.send(response)
+    if(channel.id == 871334445716766800):
+      def check(m):
+        return m.author == user and m.guild is None 
+      try:
+        await user.send("Please type your suggestion here, the admins will have a look at it as soon as possible. Thank you, Admins of F1ABEEZ")
+        suggestion = await bot.wait_for("message", check=check, timeout=300.0)
+        suggestion = suggestion.content
+      except asyncio.TimeoutError:
+        await user.send("Unfortunately you took too long. The limit is 5 minutes per message")
 
+      suggestionLogEmbed = discord.Embed(title="🚨A new suggestion has been submitted🚨")
+      suggestionLogEmbed.add_field(name="**Suggestion**", value=suggestion, inline=False)
+      channel = bot.get_channel(877979327273246772)
+      await channel.send(embed = suggestionLogEmbed)
+      await user.send("Your suggestion has been submitted to the admins!")
 bot.run(discord_token)
