@@ -854,7 +854,7 @@ async def on_raw_reaction_add(payload):
         await user.send("Unfortunately you took too long. The limit is 5 minutes per message")
 
       suggestionLogEmbed = discord.Embed(title="🚨A new suggestion has been submitted🚨")
-      suggestionLogEmbed.add_field(name="**Submitted by:**", value=user.name, inline=False)
+      suggestionLogEmbed.add_field(name="**Submitted by:**", value=user.display_name, inline=False)
       suggestionLogEmbed.add_field(name="**Suggestion**", value=suggestion, inline=False)
       channel = bot.get_channel(877979327273246772)
       await channel.send(embed = suggestionLogEmbed)
