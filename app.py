@@ -842,7 +842,7 @@ async def on_raw_reaction_add(payload):
       channel = bot.get_channel(861939856481189908)
       await channel.send(embed = logEmbed)
       await user.send(response)
-    if(channel.id == 871334445716766800):
+    if(channel.id == 877977932914651176):
       def check(m):
         return m.author == user and m.guild is None 
       try:
