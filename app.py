@@ -1,11 +1,11 @@
 import asyncio
-import discord
-from discord import client
-from discord import message
-from discord.colour import Color
-from discord.ext import tasks, commands
-from discord.ext.commands import CommandNotFound
-from discord.ext.commands.core import check
+import nextcord
+from nextcord import client
+from nextcord import message
+from nextcord.colour import Color
+from nextcord.ext import tasks, commands
+from nextcord.ext.commands import CommandNotFound
+from nextcord.ext.commands.core import check
 import requests
 import json
 import os
@@ -21,9 +21,18 @@ incidentDatabaseId = os.environ.get("incidentDatabaseId")
 appealsDatabaseURL = os.environ.get("appealsDatabaseURL")
 appealsDatabaseId = os.environ.get("appealsDatabaseId")
 mongoDBConnSTR = os.environ.get("mongoDBConnSTR")
-
-
     
+color = 16236412
+warningChannel = 853679513406013460
+welcomeChannel = 838841316519313408
+stewardsAnnoucementChannel = 864564506368933888
+generalAnnoucementChannel = 774696889424805891
+incidentReportChannel = 871334405359144970
+appealReportChannel = 871334445716766800
+suggestionSubmitChannel = 877977932914651176
+incidentLogChannel = 861939856481189908
+suggestionLogChannel = 877979327273246772
+
 def queryTickets(gamertag):
     zprava = ""
     header = {"Authorization": token, "Notion-Version": "2021-05-13"}
@@ -48,7 +57,7 @@ def queryTickets(gamertag):
 
     , headers=header).text
 
-    embed = discord.Embed(title=f"Tickets where {gamertag} was involved", color=16236412)
+    embed = nextcord.Embed(title=f"Tickets where {gamertag} was involved", color=color)
 
     b = json.loads(r)
 
@@ -83,7 +92,7 @@ def TicketDetailQuery(ticketNumber):
         , headers=header).text
 
     c = json.loads(req)
-    embed=discord.Embed(title="Incident Detail", color=16236412)
+    embed=nextcord.Embed(title="Incident Detail", color=color)
     try:
         ticketNumber = c["results"][0]["properties"]["Case Number"]["title"][0]["text"]["content"]
     except IndexError:
@@ -175,7 +184,7 @@ def profileQuery(gamertag):
 
     d = json.loads(req2)
 
-    embed=discord.Embed(title=str(gamertag), color=16236412)
+    embed=nextcord.Embed(title=str(gamertag), color=color)
 
     try: 
         gamertagQuery = d["results"][0]["properties"]["GamerTag"]["title"][0]["text"]["content"]
@@ -254,7 +263,7 @@ def queryAppeals(gamertag):
     , headers=header).text
   
 
-  embed = discord.Embed(title=f"Appeals where {gamertag} was involved", color=16236412)
+  embed = nextcord.Embed(title=f"Appeals where {gamertag} was involved", color=color)
 
   b = json.loads(r)
   if (len(b["results"]) == 0):
@@ -363,12 +372,12 @@ def submitAppeal(caseNumber, evidence, gamertag, gamertagInvolved, reason, addit
 
 
 def GetHelpCommand():
-    embed = discord.Embed(title="Help")
+    embed = nextcord.Embed(title="Help")
     embed.add_field(name=";gettickets <gamertag>", value="This command is useful when you don’t know the number of your ticket. The command lists all tickets you’ve been involved (whether you reported it or someone else reported you) and gives you the number of the ticket.", inline=False)
     embed.add_field(name=";getappeals <gamertag>", value="This command gets you a list of appeals you've been involeved in (whether you appealed or someone appealed against you) and gives you the number of the appeal and it's status.")
     embed.add_field(name=";ticketdetail <number of ticket>", value="This command gets you the details of ticket you provide. It lists the status, penalty that was awarded and who was involved.", inline=False)
     embed.add_field(name=";getprofile <gamertag>", value="This command gets you your profile from our profile database on the website. You can see how many penalty points you have or whether you have a quali or race ban as well as your team and tier. You can also see how many points you have scored in F1 or F2 tiers", inline=False)
-    embed.add_field(name=";incidentreport", value="This command allows you to submit an incident from discord. Please read the messages carefully and reply correctly.", inline=False)
+    embed.add_field(name=";incidentreport", value="This command allows you to submit an incident from nextcord. Please read the messages carefully and reply correctly.", inline=False)
     embed.add_field(name=";submitappeal", value="This command allows you to submit an appeal to a decision that has been made by the stewards. Please use ;gettickets before you start submitting it to make sure you know the case number of the incident you want to appeal", inline=False)
     return embed
 
@@ -456,7 +465,7 @@ def submitAnIncident(gamertag, lap, description, tier, evidence, driverInvolved,
         print(r.text)
         return "There was an error submitting your ticket, please reach out to the admin team"
 
-intents = discord.Intents.default()
+intents = nextcord.Intents.default()
 intents.reactions = True
 intents.members = True
 bot = commands.Bot(command_prefix=";", help_command=None, intents=intents)
@@ -600,27 +609,27 @@ async def warnUser(ctx,user, *, reason=None):
   member = ctx.message.mentions[0]
   membername = ctx.message.mentions[0].name
   memberid = ctx.message.mentions[0].id
-  embed = discord.Embed(title="A warning has been issued!", color=16236412)
+  embed = nextcord.Embed(title="A warning has been issued!", color=color)
   embed.add_field(name="User", value=membername, inline=False)
   embed.add_field(name="Warned by", value=ctx.author.name, inline=False)
   embed.add_field(name="Reason", value=reason, inline=False)
   client = pymongo.MongoClient(mongoDBConnSTR)
   mydb = client["warningDatabase"]
   mycol = mydb["WarningCollection"]
-  insert = {"discordid": memberid, "discordname": membername, "warnedby": ctx.author.name, "reason": reason}
+  insert = {"nextcordid": memberid, "nextcordname": membername, "warnedby": ctx.author.name, "reason": reason}
   mycol.insert_one(insert)
-  query = {"discordid": memberid}
+  query = {"nextcordid": memberid}
   warningCount = mycol.count_documents(query)
   if (warningCount == 1):
     embed.add_field(name="Number of Warnings", value=f"This is {membername}'s first and last warning.")
     await ctx.send(embed=embed)
   elif(warningCount == 2):
-    embed = discord.Embed(title="A ban has been issued!", color=16236412)
+    embed = nextcord.Embed(title="A ban has been issued!", color=color)
     embed.add_field(name="User", value=membername, inline=False)
     embed.add_field(name="Reason", value=reason, inline=False)
     embed.add_field(name="Warnings", value="The user had two warnings.", inline=False)
     mycol.delete_many(query)
-    channel = bot.get_channel(853679513406013460)
+    channel = bot.get_channel(warningChannel)
     await channel.send(embed = embed)
     await member.ban(reason = reason)
     await ctx.send(embed = embed)
@@ -637,8 +646,8 @@ async def GetWarnings(ctx, user=None):
     memberid = ctx.message.mentions[0].id
   except IndexError:
     memberid = int(user)
-  query = {"discordid": memberid}
-  embed = discord.Embed(title=f"Warnings for user", color=16236412)
+  query = {"nextcordid": memberid}
+  embed = nextcord.Embed(title=f"Warnings for user", color=color)
   warningCount = mycol.count_documents(query)
   if (warningCount == 0):
     embed.add_field(name="Number of Warnings", value=f"<@{memberid}> has no warnings", inline=False)
@@ -665,30 +674,30 @@ async def ban(ctx, user=None, *, reason=None):
     print(member)
     membername = member.name
 
-  embed = discord.Embed(title="A Ban has been issued", color=16236412)
+  embed = nextcord.Embed(title="A Ban has been issued", color=color)
   embed.add_field(name="User", value=membername, inline=False)
   embed.add_field(name="Reason", value=reason, inline=False)
-  channel = bot.get_channel(853679513406013460)
+  channel = bot.get_channel(warningChannel)
   await channel.send(embed = embed)
   await member.ban(reason = reason)
   await ctx.send(embed = embed)   
     
 @bot.event
 async def on_member_join(member):
-  role = discord.utils.get(member.guild.roles, name="Academy Driver")
+  role = nextcord.utils.get(member.guild.roles, name="Academy Driver")
   await member.add_roles(role)
-  channel = bot.get_channel(838841316519313408)
+  channel = bot.get_channel(welcomeChannel)
   await channel.send(f"**Welcome <@{member.id}>**\n\nPlease use this chat if you have any questions and someone will be on hand.\n\nAll the information you need is on <#865379267977412618>")
 
 @bot.event
 async def on_member_remove(member):
   memberName = member.name
-  channel = bot.get_channel(774605933661257729)
+  channel = bot.get_channel(welcomeChannel)
   await channel.send(f"**{memberName}** has left the server.")
 
 @bot.command(name="stewardsdecisions")
 async def stewardsDecision(ctx, round):
-  channel = bot.get_channel(864564506368933888)
+  channel = bot.get_channel(stewardsAnnoucementChannel)
   roundNO = int(round)
   f2RoundNO = roundNO - 1
   f2round = f"R{f2RoundNO}"
@@ -706,7 +715,7 @@ async def stewardsDecision(ctx, round):
 
 @bot.command(name="racereport")
 async def raceResults(ctx, round):
-  channel = bot.get_channel(774696889424805891)
+  channel = bot.get_channel(generalAnnoucementChannel)
   roundNO = int(round)
   f2RoundNO = roundNO - 1
   f2round = f"R{f2RoundNO}"
@@ -724,21 +733,21 @@ async def raceResults(ctx, round):
 @bot.command(name="incidentchannel")
 async def incidentChannel(ctx):
   await ctx.message.delete()
-  embed = discord.Embed(title="Report an incident",description="React to this message to report an incident by clicking  the 📨 reaction", color=16236412)
+  embed = nextcord.Embed(title="Report an incident",description="React to this message to report an incident by clicking  the 📨 reaction", color=color)
   msg = await ctx.send(embed = embed)
   await msg.add_reaction("📨")
 
 @bot.command(name="appealchannel")
 async def appealChannel(ctx):
   await ctx.message.delete()
-  embed = discord.Embed(title="Submit an appeal",description="React to this message to submit an appeal by clicking  the 📨 reaction", color=16236412)
+  embed = nextcord.Embed(title="Submit an appeal",description="React to this message to submit an appeal by clicking  the 📨 reaction", color=color)
   msg = await ctx.send(embed = embed)
   await msg.add_reaction("📨")
 
 @bot.command(name="suggestionchannel")
 async def suggestionChannel(ctx):
   await ctx.message.delete()
-  embed = discord.Embed(title="Submit a suggestion",description="React to this message to submit a suggestion by clicking  the 📨 reaction", color=16236412)
+  embed = nextcord.Embed(title="Submit a suggestion",description="React to this message to submit a suggestion by clicking  the 📨 reaction", color=color)
   msg = await ctx.send(embed = embed)
   await msg.add_reaction("📨")
 
@@ -746,9 +755,9 @@ async def suggestionChannel(ctx):
 async def on_raw_reaction_add(payload):
   emoji, user, member, channel = payload.emoji.name, await bot.fetch_user(user_id=payload.user_id), payload.member, bot.get_channel(payload.channel_id)
   message = await channel.fetch_message(payload.message_id)
-  if (emoji == "📨" and user.id != bot.user.id and (channel.id == 871334405359144970 or channel.id == 871334445716766800 or channel.id == 877977932914651176)):
+  if (emoji == "📨" and user.id != bot.user.id and (channel.id == incidentReportChannel or channel.id == appealReportChannel or channel.id == suggestionSubmitChannel)):
     await message.remove_reaction(emoji, member)
-    if(channel.id == 871334405359144970):
+    if(channel.id == incidentReportChannel):
       bst = pytz.timezone("Europe/London")
       todayInc = datetime.datetime.now(tz=bst).isoformat()
       def check(m):
@@ -800,14 +809,14 @@ async def on_raw_reaction_add(payload):
       except asyncio.TimeoutError:
           await user.send("Unfortunately you took too long to reply (Limit is three minutes per message). Please start a new incident if you want to proceed.")
       response = submitAnIncident(gamertagOfUserInc, lapOfIncidentInc, descriptionInc, tierOfIncidentInc, evidenceInc, gamertagOfInvolevedDriverInc, todayInc)
-      logEmbed = discord.Embed(title="⚠️New Ticket has been reported!⚠️")
+      logEmbed = nextcord.Embed(title="⚠️New Ticket has been reported!⚠️")
       logEmbed.add_field(name="Tier", value=tierOfIncidentInc, inline=False)
       logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUserInc} vs {gamertagOfInvolevedDriverInc}", inline=False)
-      channel = bot.get_channel(861939856481189908)
+      channel = bot.get_channel(incidentLogChannel)
       await channel.send(embed = logEmbed)
       await user.send(response)
     
-    if(channel.id == 871334445716766800):
+    if(channel.id == appealReportChannel):
       bst = pytz.timezone("Europe/London")
       todayApp = datetime.datetime.now(tz=bst).isoformat()
       def check(m):
@@ -836,13 +845,13 @@ async def on_raw_reaction_add(payload):
       except asyncio.TimeoutError:
           await user.send("Unfortunately you took too long to reply (Limit is a three minutes per message). Please start a new incident if you want to proceed.")
       response = submitAppeal(caseNumberApp, evidenceApp, gamertagOfUserApp, gamertagOfInvolevedDriverApp, reasonApp, additionalInfoApp, todayApp)
-      logEmbed = discord.Embed(title="⚠️New Appeal has been submitted!⚠️")
+      logEmbed = nextcord.Embed(title="⚠️New Appeal has been submitted!⚠️")
       logEmbed.add_field(name="Case Number", value=caseNumberApp, inline=False)
       logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUserApp} vs {gamertagOfInvolevedDriverApp}", inline=False)
-      channel = bot.get_channel(861939856481189908)
+      channel = bot.get_channel(incidentLogChannel)
       await channel.send(embed = logEmbed)
       await user.send(response)
-    if(channel.id == 877977932914651176):
+    if(channel.id == suggestionSubmitChannel):
       await channel.send(f"Please follow the bot to your DMs to submit your suggestion <@{user.id}>", delete_after=60)
       def check(m):
         return m.author == user and m.guild is None 
@@ -853,10 +862,10 @@ async def on_raw_reaction_add(payload):
       except asyncio.TimeoutError:
         await user.send("Unfortunately you took too long. The limit is 5 minutes per message")
 
-      suggestionLogEmbed = discord.Embed(title="🚨A new suggestion has been submitted🚨")
+      suggestionLogEmbed = nextcord.Embed(title="🚨A new suggestion has been submitted🚨")
       suggestionLogEmbed.add_field(name="**Submitted by:**", value=user.display_name, inline=False)
       suggestionLogEmbed.add_field(name="**Suggestion**", value=suggestion, inline=False)
-      channel = bot.get_channel(877979327273246772)
+      channel = bot.get_channel(suggestionLogChannel)
       await channel.send(embed = suggestionLogEmbed)
       await user.send("Your suggestion has been submitted to the admins!")
 bot.run(discord_token)
