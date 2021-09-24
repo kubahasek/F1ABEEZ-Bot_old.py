@@ -753,7 +753,7 @@ async def suggestionChannel(ctx):
 
 @bot.event
 async def on_raw_reaction_add(payload):
-  emoji, user, member, channel = payload.emoji.name, await bot.fetch_user(user_id=payload.user_id), payload.member, bot.get_channel(payload.channel_id)
+  emoji, user, member, channel = payload.emoji.name, await bot.fetch_user(payload.user_id), payload.member, bot.get_channel(payload.channel_id)
   message = await channel.fetch_message(payload.message_id)
   if (emoji == "📨" and user.id != bot.user.id and (channel.id == incidentReportChannel or channel.id == appealReportChannel or channel.id == suggestionSubmitChannel)):
     await message.remove_reaction(emoji, member)
