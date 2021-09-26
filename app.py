@@ -32,6 +32,7 @@ appealReportChannel = 871334445716766800
 suggestionSubmitChannel = 877977932914651176
 incidentLogChannel = 861939856481189908
 suggestionLogChannel = 877979327273246772
+leavingChannel = 774605933661257729
 
 def queryTickets(gamertag):
     zprava = ""
@@ -692,7 +693,7 @@ async def on_member_join(member):
 @bot.event
 async def on_member_remove(member):
   memberName = member.name
-  channel = bot.get_channel(welcomeChannel)
+  channel = bot.get_channel(leavingChannel)
   await channel.send(f"**{memberName}** has left the server.")
 
 @bot.command(name="stewardsdecisions")
