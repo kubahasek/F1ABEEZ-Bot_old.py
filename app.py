@@ -2,15 +2,15 @@ import asyncio
 import nextcord
 from nextcord import client
 from nextcord import message
-from nextcord import role
 from nextcord.colour import Color
 from nextcord.ext import tasks, commands
 from nextcord.ext.commands import CommandNotFound
 from nextcord.ext.commands.core import check
+from nextcord.ui import view
+from nextcord.ui.view import View
 import requests
 import json
 import os
-import pymongo
 import datetime
 import pytz
 
@@ -22,6 +22,7 @@ incidentDatabaseId = os.environ.get("incidentDatabaseId")
 appealsDatabaseURL = os.environ.get("appealsDatabaseURL")
 appealsDatabaseId = os.environ.get("appealsDatabaseId")
 mongoDBConnSTR = os.environ.get("mongoDBConnSTR")
+figmaToken = os.environ.get("figma_token")
     
 color = 16236412
 warningChannel = 853679513406013460
@@ -44,6 +45,184 @@ reserveTier3Role = 813715758793228319
 tierMRole = 840694396990521364
 reserveTierMRole = 850433806246871102
 academyRole = 774740889557270539
+
+class TierMenu(nextcord.ui.View):
+  def __init__(self):
+    super().__init__(timeout=None)
+
+  
+  async def handle_click(self, button, interaction):
+    if(str(button.custom_id) == "Tier_1"):
+      self.tierSelected = "F1 - Tier 1"
+      self.stop()
+    elif(str(button.custom_id) == "Tier_2"):
+      self.tierSelected = "F1 - Tier 2"
+      self.stop()
+    elif(str(button.custom_id) == "Tier_3"):
+      self.tierSelected = "F1 - Tier 3"
+      self.stop()
+    elif(str(button.custom_id) == "Tier_M"):
+      self.tierSelected = "F1 - Tier Mixed"
+      self.stop()
+    elif(str(button.custom_id) == "F2"):
+      self.tierSelected = "F2"
+      self.stop()
+
+  @nextcord.ui.button(label="Tier 1", style=nextcord.ButtonStyle.primary, custom_id="Tier_1")
+  async def tier1ButtonClicked(self, button, interaction):
+    await self.handle_click(button, interaction)
+  
+  @nextcord.ui.button(label="Tier 2", style=nextcord.ButtonStyle.primary, custom_id="Tier_2")
+  async def tier2ButtonClicked(self, button, interaction):
+    await self.handle_click(button, interaction)
+
+  @nextcord.ui.button(label="Tier 3", style=nextcord.ButtonStyle.primary, custom_id="Tier_3")
+  async def tier3ButtonClicked(self, button, interaction):
+    await self.handle_click(button, interaction)
+
+  @nextcord.ui.button(label="Tier Mixed", style=nextcord.ButtonStyle.primary, custom_id="Tier_M")
+  async def tiermButtonClicked(self, button, interaction):
+    await self.handle_click(button, interaction)
+
+  @nextcord.ui.button(label="F2", style=nextcord.ButtonStyle.primary, custom_id="F2", disabled=True)
+  async def f2ButtonClicked(self, button, interaction):
+    await self.handle_click(button, interaction)
+
+class reportMenu(nextcord.ui.View):
+  def __init__(self):
+    super().__init__(timeout=None)
+
+  async def handle_click(self, button, interaction):
+    user = interaction.user
+    channel = interaction.channel
+    if(interaction.channel_id == incidentReportChannel):
+      bst = pytz.timezone("Europe/London")
+      todayInc = datetime.datetime.now(tz=bst).isoformat()
+      def check(m):
+        return m.author == user and m.guild is None 
+
+      def checkRaw(u):
+        return u.user_id == user.id and u.guild_id is None
+      
+      await interaction.response.send_message(f"Please follow the bot to your DMs to report your incident <@{user.id}>")
+
+      try:
+          await user.send("What is your gamertag?")
+          gamertagOfUserInc = await bot.wait_for("message", check=check, timeout=180.0)
+          gamertagOfUserInc = gamertagOfUserInc.content
+          await user.send("Please describe your incident.")
+          descriptionInc = await bot.wait_for("message", check=check, timeout=180.0)
+          descriptionInc = descriptionInc.content
+
+          view = TierMenu()
+          await user.send("Select in which tier did the incident occur", view=view)
+          await view.wait()
+          if(view.tierSelected == "F1 - Tier 1"):
+            tierOfIncidentInc = view.tierSelected
+            await user.send(f"You selected {tierOfIncidentInc}")
+          elif(view.tierSelected == "F1 - Tier 2"):
+            tierOfIncidentInc = view.tierSelected
+            await user.send(f"You selected {tierOfIncidentInc}")
+          elif(view.tierSelected == "F1 - Tier 3"):
+            tierOfIncidentInc = view.tierSelected
+            await user.send(f"You selected {tierOfIncidentInc}")
+          elif(view.tierSelected == "F1 - Tier Mixed"):
+            tierOfIncidentInc = view.tierSelected
+            await user.send(f"You selected {tierOfIncidentInc}")
+          elif(view.tierSelected == "F2"):
+            tierOfIncidentInc = view.tierSelected
+            await user.send(f"You selected {tierOfIncidentInc}")
+          await user.send("Please provide video evidence (Only reply with links to gamerdvr or other services)")
+          evidenceInc = await bot.wait_for("message", check=check, timeout=180.0)
+          evidenceInc = evidenceInc.content
+          await user.send("What lap did this incident/penalty occur on?")
+          lapOfIncidentInc = await bot.wait_for("message", check=check, timeout=180.0)
+          lapOfIncidentInc = lapOfIncidentInc.content
+          await user.send("What is the gamertag(s) of the driver(s) involved? (For penalties, reply with N/A)")
+          gamertagOfInvolevedDriverInc = await bot.wait_for("message", check=check, timeout=180.0)
+          gamertagOfInvolevedDriverInc = gamertagOfInvolevedDriverInc.content
+      except asyncio.TimeoutError:
+          await user.send("Unfortunately you took too long to reply (Limit is three minutes per message). Please start a new incident if you want to proceed.")
+      except Exception as e:
+        print("incident report:")
+        print(e)
+      response = submitAnIncident(gamertagOfUserInc, lapOfIncidentInc, descriptionInc, tierOfIncidentInc, evidenceInc, gamertagOfInvolevedDriverInc, todayInc)
+      logEmbed = nextcord.Embed(title="⚠️New Ticket has been reported!⚠️")
+      logEmbed.add_field(name="Tier", value=tierOfIncidentInc, inline=False)
+      logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUserInc} vs {gamertagOfInvolevedDriverInc}", inline=False)
+      channel = bot.get_channel(incidentLogChannel)
+      await channel.send(embed = logEmbed)
+      await user.send(response)
+      await interaction.delete_original_message()
+
+
+    if(interaction.channel.id == appealReportChannel):
+      bst = pytz.timezone("Europe/London")
+      todayApp = datetime.datetime.now(tz=bst).isoformat()
+      def check(m):
+        return m.author == user and m.guild is None 
+        
+      await interaction.response.send_message(f"Please follow the bot to your DMs to submit your appeal <@{user.id}>")
+      try:
+          await user.send("What is the case number you want to appeal (use ;querytickets in the bot channel in the server if you need to get it)")
+          caseNumberApp = await bot.wait_for("message", check=check, timeout=180.0)
+          caseNumberApp = caseNumberApp.content
+          await user.send("What is your gamertag?")
+          gamertagOfUserApp = await bot.wait_for("message", check=check, timeout=180.0)
+          gamertagOfUserApp = gamertagOfUserApp.content
+          await user.send("Please state the reason for you appeal.")
+          reasonApp = await bot.wait_for("message", check=check, timeout=180.0)
+          reasonApp = reasonApp.content
+          await user.send("State any additional information to support your appeal (if you don't have any, reply with N/A)")
+          additionalInfoApp = await bot.wait_for("message", check=check, timeout=180.0)
+          additionalInfoApp = additionalInfoApp.content
+          await user.send("Please provide addition video evidence to support your appeal (Only reply with links to gamerdvr or other services)")
+          evidenceApp = await bot.wait_for("message", check=check, timeout=180.0)
+          evidenceApp = evidenceApp.content
+          await user.send("What is the gamertag(s) of the driver(s) involved? (For penalties, reply with N/A)")
+          gamertagOfInvolevedDriverApp = await bot.wait_for("message", check=check, timeout=180.0)
+          gamertagOfInvolevedDriverApp = gamertagOfInvolevedDriverApp.content
+      except asyncio.TimeoutError:
+          await user.send("Unfortunately you took too long to reply (Limit is a three minutes per message). Please start a new incident if you want to proceed.")
+      except Exception as e:
+        print("Appeal:")
+        print(e)
+      response = submitAppeal(caseNumberApp, evidenceApp, gamertagOfUserApp, gamertagOfInvolevedDriverApp, reasonApp, additionalInfoApp, todayApp)
+      logEmbed = nextcord.Embed(title="⚠️New Appeal has been submitted!⚠️")
+      logEmbed.add_field(name="Case Number", value=caseNumberApp, inline=False)
+      logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUserApp} vs {gamertagOfInvolevedDriverApp}", inline=False)
+      channel = bot.get_channel(incidentLogChannel)
+      await channel.send(embed = logEmbed)
+      await user.send(response)
+      await interaction.delete_original_message()
+
+
+    if(interaction.channel.id == suggestionSubmitChannel):
+      await interaction.response.send_message(f"Please follow the bot to your DMs to submit your suggestion <@{user.id}>")
+      def check(m):
+        return m.author == user and m.guild is None 
+      try:
+        await user.send("Please type your suggestion here, the admins will have a look at it as soon as possible. Thank you, Admins of F1ABEEZ")
+        suggestion = await bot.wait_for("message", check=check, timeout=300.0)
+        suggestion = suggestion.content
+      except asyncio.TimeoutError:
+        await user.send("Unfortunately you took too long. The limit is 5 minutes per message")
+      except Exception as e:
+        print("suggestion:")
+        print(e)
+
+      suggestionLogEmbed = nextcord.Embed(title="🚨A new suggestion has been submitted🚨")
+      suggestionLogEmbed.add_field(name="**Submitted by:**", value=user.display_name, inline=False)
+      suggestionLogEmbed.add_field(name="**Suggestion**", value=suggestion, inline=False)
+      channel = bot.get_channel(suggestionLogChannel)
+      await channel.send(embed = suggestionLogEmbed)
+      await user.send("Your suggestion has been submitted to the admins!")
+      await interaction.delete_original_message()
+
+  @nextcord.ui.button(label="", emoji="📨", style=nextcord.ButtonStyle.primary, custom_id="id")
+  async def reportButtonClicked(self, button, interaction):
+    await self.handle_click(button, interaction)
+
 
 def queryTickets(gamertag):
     zprava = ""
@@ -78,18 +257,20 @@ def queryTickets(gamertag):
         return embed
 
     for i in range(len(b["results"])):
+        url = b["results"][i]["url"]
+        url = "https://f1abeez.com/" + url[22:]
+        url = f"[LINK]({url})"
         try: 
             caseNumber = b["results"][i]["properties"]["Case Number"]["title"][0]["plain_text"]
         except IndexError:
             caseNumber = "Case number hasn't been assigned yet (you cannot get this ticket with the bot until it has a case number)"
-        driversInvolved = (f'{b["results"][i]["properties"]["Reported By"]["rich_text"][0]["text"]["content"]} vs {b["results"][i]["properties"]["GamerTag(s) of Driver(s) involved incident (N/A for penalties)"]["rich_text"][0]["text"]["content"]}\n')
+        except Exception as e:
+          print("appeal method:")
+          print(e)
+        driversInvolved = (f'{b["results"][i]["properties"]["Reported By"]["rich_text"][0]["text"]["content"]} vs {b["results"][i]["properties"]["GamerTag(s) of Driver(s) involved incident (N/A for penalties)"]["rich_text"][0]["text"]["content"]} {url}\n')
         embed.add_field(name=caseNumber, value=driversInvolved, inline=False)
 
     return embed
-
-
-
-
 
 def TicketDetailQuery(ticketNumber):
     header = {"Authorization": token,  "Notion-Version": "2021-05-13"}
@@ -110,146 +291,31 @@ def TicketDetailQuery(ticketNumber):
     except IndexError:
         embed.add_field(name="Error", value="This ticket does not exist in our database.")
         return embed
+    except Exception as e:
+      print("ticket detail query:")
+      print(e)
+    try: 
+      actionTaken = c["results"][0]["properties"]["Action(s) Taken"]["rich_text"][0]["plain_text"]
+    except IndexError:
+      actionTaken = "Not specified"
+    except Exception as e:
+      print("ticket detail query:")
+      print(e)
     driversInvolved = f'{c["results"][0]["properties"]["Reported By"]["rich_text"][0]["text"]["content"]} vs {c["results"][0]["properties"]["GamerTag(s) of Driver(s) involved incident (N/A for penalties)"]["rich_text"][0]["text"]["content"]}'
     status = c["results"][0]["properties"]["Status"]["select"]["name"]
-
+    url = c["results"][0]["url"]
+    url = "https://f1abeez.com/" + url[22:]
     description = c["results"][0]["properties"]["Description"]["rich_text"][0]["text"]["content"]
 
     embed.add_field(name="Status", value=str(status), inline=False)
     embed.add_field(name="Ticket Number", value=str(ticketNumber), inline=True)
     embed.add_field(name="Drivers Involved", value=str(driversInvolved), inline=True)
     embed.add_field(name="Description", value=str(description), inline=False)
+    embed.add_field(name="Action Taken", value=str(actionTaken), inline=False)
+    embed.add_field(name="Link", value=str(url), inline=False)
 
-    ## Time Penalty
-    try:
-        timePenalty = c["results"][0]["properties"]["Time Penalty Given"]["rich_text"][0]["text"]["content"]
-    except KeyError:
-        timePenalty = "N/A"
-    except IndexError:
-        timePenalty = "N/A"
-
-    if(timePenalty != "N/A"):
-        embed.add_field(name="Time Penalty", value=str(timePenalty), inline=False)
-
-    ##Penalty Points    
-
-    try:
-        penaltyPoints = c["results"][0]["properties"]["Penalty Points Given"]["number"]
-    except KeyError:
-        penaltyPoints = "N/A"
-    except IndexError:
-        penaltyPoints = "N/A"
-
-    if(penaltyPoints != "N/A"):
-        embed.add_field(name="Penalty Points", value=str(penaltyPoints), inline=False)
-
-    ## Grid Penalty
-
-    try:
-        gridPenalty = c["results"][0]["properties"]["Grid Penalty"]["rich_text"][0]["text"]["content"]
-    except IndexError:
-        gridPenalty = "N/A"
-    except KeyError:
-        gridPenalty = "N/A"
-
-    if(gridPenalty != "N/A"):
-        embed.add_field(name="Grid Penalty", value=str(gridPenalty), inline=False)
-
-    ## Penalty awarded to
-
-    try:
-        penaltyAwardedTo = c["results"][0]["properties"]["Penalty to"]["rich_text"][0]["text"]["content"]
-    except IndexError:
-        penaltyAwardedTo = "Not specified"
-    except KeyError:
-        penaltyAwardedTo = "Not specified"
-
-    if(penaltyAwardedTo != "N/A"):
-        embed.add_field(name="Penalty Awarded To", value=str(penaltyAwardedTo), inline=False)
-
-    ## Warning awarded
-
-    try:
-        warningAwarded = c["results"][0]["properties"]["Warning given"]["number"]
-    except KeyError:
-        warningAwarded = "N/A"  
-    except IndexError:
-        warningAwarded = "N/A"    
-
-    if(warningAwarded != "N/A"):
-        embed.add_field(name="Warning awarded to", value=str(warningAwarded), inline=False)
 
     return embed    
-
-
-def profileQuery(gamertag):
-    gamertag = str(gamertag)
-    header = {"Authorization": token,  "Notion-Version": "2021-05-13"}
-    req2 = requests.post(profileDatabaseURL, headers=header, json={
-      "filter": {
-      "property": "GamerTag",
-      "title": {
-          "contains": gamertag
-      }
-      }
-    }).text
-
-    d = json.loads(req2)
-
-    embed=nextcord.Embed(title=str(gamertag), color=color)
-
-    try: 
-        gamertagQuery = d["results"][0]["properties"]["GamerTag"]["title"][0]["text"]["content"]
-    except IndexError:
-        embed.add_field(name="Error", value="The profile for this gamertag doesn't exist in our database, please contact the admins if think that is a mistake.", inline=False)
-        return embed
-
-    if(gamertagQuery != gamertag):
-        embed.add_field(name="Error", value="The profile for this gamertag doesn't exist in our database, please contact the admins if think that is a mistake.", inline=False)
-        return embed
-
-    try:
-        tier = d["results"][0]["properties"]["S3 Tier"]["rollup"]["array"][0]["select"]["name"]
-    except IndexError:
-        embed.add_field(name="Tier", value="You don't have a tier assigned, please contact the admins if you think that is a mistake", inline=False)
-    embed.add_field(name="Tier", value=str(tier))
-
-    try: 
-        team = d["results"][0]["properties"]["SE:Team"]["rollup"]["array"][0]["select"]["name"]
-    except IndexError:
-        team = ""
-        embed.add_field(name="Team", value="You don't have a team assigned, please contact the admins if you think that is a mistake", inline=False)
-
-    if (team != ""):
-        embed.add_field(name="Team", value=str(team), inline=False)
-
-    try:
-        numberOfF1Points = d["results"][0]["properties"]["Total F1 Points"]["rollup"]["number"]
-    except KeyError:
-        numberOfF1Points = 0
-    embed.add_field(name="Points", value=str(numberOfF1Points), inline=False) 
-
-    try:
-        numberOfPenPoints = d["results"][0]["properties"]["Penalty Points"]["rollup"]["number"]
-    except KeyError:
-        numberOfPenPoints = 0
-    embed.add_field(name="Penalty Points", value=str(numberOfPenPoints), inline=False)
-
-    f2Participant = d["results"][0]["properties"]["F2 Participant"]["rollup"]["array"][0]["checkbox"]
-    if(f2Participant == True):
-      try:
-        f2Points = d["results"][0]["properties"]["Total F2 Points"]["rollup"]["number"]
-      except KeyError:
-          f2Points = 0
-      embed.add_field(name="F2 Points", value=str(f2Points))
-
-    try:
-      bansImposed = d["results"][0]["properties"]["Bans Imposed"]["select"]["name"]
-    except KeyError:
-      bansImposed = "None"
-
-    embed.add_field(name="Bans Imposed", value=str(bansImposed), inline=False)
-    return embed
 
 def queryAppeals(gamertag):
   header = {"Authorization": token, "Notion-Version": "2021-05-13"}
@@ -283,13 +349,19 @@ def queryAppeals(gamertag):
       return embed
 
   for i in range(len(b["results"])):
+      url = b["results"][i]["url"]
+      url = "https://f1abeez.com/" + url[22:]
+      url = f"[LINK]({url})"
       try: 
           caseNumberAndStatus = f'{b["results"][i]["properties"]["AP-Case Number"]["title"][0]["text"]["content"]} - {b["results"][i]["properties"]["Status"]["select"]["name"]}'
       except IndexError:
           caseNumberAndStatus = "Case number hasn't been assigned yet (you cannot get this ticket with the bot until it has a case number)"
       except KeyError:
           caseNumberAndStatus = "The stewards haven't got to the appeal yet, please check back later"
-      driversInvolved = (f'{b["results"][i]["properties"]["Appealed By"]["rich_text"][0]["text"]["content"]} vs {b["results"][i]["properties"]["GamerTag(s) involved"]["rich_text"][0]["text"]["content"]}\n')
+      except Exception as e:
+        print("appeal query:")
+        print(e)
+      driversInvolved = (f'{b["results"][i]["properties"]["Appealed By"]["rich_text"][0]["text"]["content"]} vs {b["results"][i]["properties"]["GamerTag(s) involved"]["rich_text"][0]["text"]["content"]} {url}\n')
       embed.add_field(name=caseNumberAndStatus, value=driversInvolved, inline=False)
   
   return embed  
@@ -384,11 +456,12 @@ def submitAppeal(caseNumber, evidence, gamertag, gamertagInvolved, reason, addit
 
 
 def GetHelpCommand():
-    embed = nextcord.Embed(title="Help")
-    embed.add_field(name=";gettickets <gamertag>", value="This command is useful when you don’t know the number of your ticket. The command lists all tickets you’ve been involved (whether you reported it or someone else reported you) and gives you the number of the ticket.", inline=False)
-    embed.add_field(name=";getappeals <gamertag>", value="This command gets you a list of appeals you've been involeved in (whether you appealed or someone appealed against you) and gives you the number of the appeal and it's status.")
+    embed = nextcord.Embed(title="Help", color=color)
+    embed.add_field(name=";standings", value="This command gives you a menu to select the tier of which you want to see standings and then it returns them in the channel.", inline=False)
+    embed.add_field(name=";calendar", value="This command gets the current calendar and sends it in the channel.", inline=False)
+    embed.add_field(name=";gettickets <gamertag>", value="This command is useful when you don’t know the number of your ticket. The command lists all tickets you’ve been involved (whether you reported it or someone else reported you) and gives you the number of the ticket and the direct link to the website.", inline=False)
+    embed.add_field(name=";getappeals <gamertag>", value="This command gets you a list of appeals you've been involeved in (whether you appealed or someone appealed against you) and gives you the number of the appeal, a direct link to the website and the status of the appeal.")
     embed.add_field(name=";ticketdetail <number of ticket>", value="This command gets you the details of ticket you provide. It lists the status, penalty that was awarded and who was involved.", inline=False)
-    embed.add_field(name=";getprofile <gamertag>", value="This command gets you your profile from our profile database on the website. You can see how many penalty points you have or whether you have a quali or race ban as well as your team and tier. You can also see how many points you have scored in F1 or F2 tiers", inline=False)
     embed.add_field(name=";incidentreport", value="This command allows you to submit an incident from nextcord. Please read the messages carefully and reply correctly.", inline=False)
     embed.add_field(name=";submitappeal", value="This command allows you to submit an appeal to a decision that has been made by the stewards. Please use ;gettickets before you start submitting it to make sure you know the case number of the incident you want to appeal", inline=False)
     return embed
@@ -487,6 +560,8 @@ bot.remove_command("help")
 @bot.event
 async def on_ready():
     print("We have logged in as {0.user}".format(bot))
+    bot.add_view(reportMenu())
+    await bot.change_presence(activity=nextcord.Activity(type=nextcord.ActivityType.watching, name="F1ABEEZ Server 🚀"))
 
 @bot.command(name="help")
 async def HelpCommand(ctx):
@@ -509,10 +584,6 @@ async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
         await ctx.send("Command not found")
     print(error)
-
-@bot.command(name="getprofile")
-async def getprofile(ctx, *, arg):
-    await ctx.send(embed = profileQuery(arg))
 
 @bot.command(name="lobbytier1")
 @commands.has_any_role("Admin", "Moderator")
@@ -611,62 +682,6 @@ async def academyMSG(ctx):
   msg =  await ctx.send(f"<@&{academyRole}>\n**TRIAL RACE BRIEFING:**\nWelcome to the F1ABEEZ trial race! I would just like to run through what is expected of you from your trial:\n- Please drive clean - we are a clean racing league, show respect to your fellow drivers! dirty driving will not be tolerated\n- Drive fast! It's still a race after all, we would like to see a true reflection of your pace\n- Do not use medium tyres in Qualifying for this trial race, as this lets us compare your quali pace!\n- Have fun! That's what we're all here for\n\nThe format is short qualifying, 25% race\nAfter the race is completed, <@401204069890523137> will DM you individually with our decision\nPlease react with a thumbs up once you have read this, good luck!")
   await msg.add_reaction("👍")
 
-@bot.command(name="warn")
-@commands.has_any_role("Admin")
-async def warnUser(ctx,user, *, reason=None):
-  if (reason is None):
-    await ctx.send("The reason for the warning is missing")
-    return
-  await ctx.message.delete()
-  member = ctx.message.mentions[0]
-  membername = ctx.message.mentions[0].name
-  memberid = ctx.message.mentions[0].id
-  embed = nextcord.Embed(title="A warning has been issued!", color=color)
-  embed.add_field(name="User", value=membername, inline=False)
-  embed.add_field(name="Warned by", value=ctx.author.name, inline=False)
-  embed.add_field(name="Reason", value=reason, inline=False)
-  client = pymongo.MongoClient(mongoDBConnSTR)
-  mydb = client["warningDatabase"]
-  mycol = mydb["WarningCollection"]
-  insert = {"nextcordid": memberid, "nextcordname": membername, "warnedby": ctx.author.name, "reason": reason}
-  mycol.insert_one(insert)
-  query = {"nextcordid": memberid}
-  warningCount = mycol.count_documents(query)
-  if (warningCount == 1):
-    embed.add_field(name="Number of Warnings", value=f"This is {membername}'s first and last warning.")
-    await ctx.send(embed=embed)
-  elif(warningCount == 2):
-    embed = nextcord.Embed(title="A ban has been issued!", color=color)
-    embed.add_field(name="User", value=membername, inline=False)
-    embed.add_field(name="Reason", value=reason, inline=False)
-    embed.add_field(name="Warnings", value="The user had two warnings.", inline=False)
-    mycol.delete_many(query)
-    channel = bot.get_channel(warningChannel)
-    await channel.send(embed = embed)
-    await member.ban(reason = reason)
-    await ctx.send(embed = embed)
-
-@bot.command(name="warnings")
-@commands.has_any_role("Admin")
-async def GetWarnings(ctx, user=None):
-  if(user is None):
-    await ctx.send("The user wasn't mentioned")
-  client = pymongo.MongoClient(mongoDBConnSTR)
-  mydb = client["warningDatabase"]
-  mycol = mydb["WarningCollection"]
-  try:
-    memberid = ctx.message.mentions[0].id
-  except IndexError:
-    memberid = int(user)
-  query = {"nextcordid": memberid}
-  embed = nextcord.Embed(title=f"Warnings for user", color=color)
-  warningCount = mycol.count_documents(query)
-  if (warningCount == 0):
-    embed.add_field(name="Number of Warnings", value=f"<@{memberid}> has no warnings", inline=False)
-  elif (warningCount == 1):
-    embed.add_field(name="Number of Warnings", value=f"<@{memberid}> has one warning", inline=False)
-  await ctx.send(embed = embed)
-
 @bot.command(name="ban")
 @commands.has_any_role("Admin")
 async def ban(ctx, user=None, *, reason=None):
@@ -685,6 +700,9 @@ async def ban(ctx, user=None, *, reason=None):
     member = await ctx.guild.fetch_member(int(user))
     print(member)
     membername = member.name
+  except Exception as e:
+    print("ban:")
+    print(e)
 
   embed = nextcord.Embed(title="A Ban has been issued", color=color)
   embed.add_field(name="User", value=membername, inline=False)
@@ -704,180 +722,260 @@ async def on_member_join(member):
 @bot.event
 async def on_member_remove(member):
   memberName = member.name
-  channel = bot.get_channel(leavingChannel)
+  channel = bot.get_channel(welcomeChannel)
   await channel.send(f"**{memberName}** has left the server.")
 
 @bot.command(name="stewardsdecisions")
 async def stewardsDecision(ctx, round):
   channel = bot.get_channel(stewardsAnnoucementChannel)
   roundNO = int(round)
-  f2RoundNO = roundNO - 1
-  f2round = f"R{f2RoundNO}"
+  # f2RoundNO = roundNO - 1
+  # f2round = f"R{f2RoundNO}"
   round = f"R{roundNO}"
   tier1URL = f"<https://f1abeez.com/race-reports/F1-Tier-1-{round}>"
   tier2URL = f"<https://f1abeez.com/race-reports/F1-Tier-2-{round}>"
   tier3URL = f"<https://f1abeez.com/race-reports/F1-Tier-3-{round}>"
   tier4URL = f"<https://f1abeez.com/race-reports/F1-Tier-M-{round}>"
-  if(roundNO - 1 == 0):
-    f2URL = "F2 did not race"
-  else:
-    f2URL = f"<https://f1abeez.com/race-reports/F2-{f2round}>"
+  # if(roundNO - 1 == 0):
+  #   f2URL = "F2 did not race"
+  # else:
+  #   f2URL = f"<https://f1abeez.com/race-reports/F2-{f2round}>"
   
-  await channel.send(f"🦺 @everyone\n\n**All Stewards decisions are finalised**\nPlease check this week's race-report for all the incidents reported and decisions made.\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier Mixed** - {tier4URL}\n**F2** - {f2URL}\n\nPlease file your appeals with the correct case number **in the next 24 hours**, and standings will be posted after all appeals are finalised \nFollow the instructions in <#864999507238322186> to submit your appeals \n\nThank you,\nStewards of F1ABEEZ")
+  await channel.send(f"🦺 @everyone\n\n**All Stewards decisions are finalised**\nPlease check this week's race-report for all the incidents reported and decisions made.\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier Mixed** - {tier4URL}\n\nPlease file your appeals with the correct case number **in the next 24 hours**, and standings will be posted after all appeals are finalised \nFollow the instructions in <#864999507238322186> to submit your appeals \n\nThank you,\nStewards of F1ABEEZ")
 
 @bot.command(name="racereport")
 async def raceResults(ctx, round):
   channel = bot.get_channel(generalAnnoucementChannel)
   roundNO = int(round)
-  f2RoundNO = roundNO - 1
-  f2round = f"R{f2RoundNO}"
+  # f2RoundNO = roundNO - 1
+  # f2round = f"R{f2RoundNO}"
   round = f"R{roundNO}"
   tier1URL = f"<https://f1abeez.com/race-reports/F1-Tier-1-{round}>"
   tier2URL = f"<https://f1abeez.com/race-reports/F1-Tier-2-{round}>"
   tier3URL = f"<https://f1abeez.com/race-reports/F1-Tier-3-{round}>"
   tier4URL = f"<https://f1abeez.com/race-reports/F1-Tier-M-{round}>"
-  if(roundNO - 1 == 0):
-    f2URL = "F2 did not race"
-  else:
-    f2URL = f"<https://f1abeez.com/race-reports/F2-{f2round}>"
-  await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier Mixed** - {tier4URL}\n**F2** - {f2URL}\n\nThank you,\nKuba")
+  # if(roundNO - 1 == 0):
+  #   f2URL = "F2 did not race"
+  # else:
+  #   f2URL = f"<https://f1abeez.com/race-reports/F2-{f2round}>"
+  await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier Mixed** - {tier4URL}\n\nThank you,\nKuba")
 
 @bot.command(name="incidentchannel")
 async def incidentChannel(ctx):
   await ctx.message.delete()
-  embed = nextcord.Embed(title="Report an incident",description="React to this message to report an incident by clicking  the 📨 reaction", color=color)
-  msg = await ctx.send(embed = embed)
-  await msg.add_reaction("📨")
+  embed = nextcord.Embed(title="Report an incident",description="React to this message to report an incident by clicking the 📨 button", color=color)
+  await ctx.send(embed=embed, view=reportMenu())
+  # msg = await ctx.send(embed = embed)
+  # await msg.add_reaction("📨")
 
 @bot.command(name="appealchannel")
 async def appealChannel(ctx):
   await ctx.message.delete()
-  embed = nextcord.Embed(title="Submit an appeal",description="React to this message to submit an appeal by clicking  the 📨 reaction", color=color)
-  msg = await ctx.send(embed = embed)
-  await msg.add_reaction("📨")
+  embed = nextcord.Embed(title="Submit an appeal",description="React to this message to submit an appeal by clicking the 📨 button", color=color)
+  await ctx.send(embed=embed, view=reportMenu())
 
 @bot.command(name="suggestionchannel")
 async def suggestionChannel(ctx):
   await ctx.message.delete()
-  embed = nextcord.Embed(title="Submit a suggestion",description="React to this message to submit a suggestion by clicking  the 📨 reaction", color=color)
-  msg = await ctx.send(embed = embed)
-  await msg.add_reaction("📨")
+  embed = nextcord.Embed(title="Submit a suggestion",description="React to this message to submit a suggestion by clicking the 📨 button", color=color)
+  await ctx.send(embed=embed, view=reportMenu())
 
-@bot.event
-async def on_raw_reaction_add(payload):
-  emoji, user, member, channel = payload.emoji.name, await bot.fetch_user(payload.user_id), payload.member, bot.get_channel(payload.channel_id)
-  message = await channel.fetch_message(payload.message_id)
-  if (emoji == "📨" and user.id != bot.user.id and (channel.id == incidentReportChannel or channel.id == appealReportChannel or channel.id == suggestionSubmitChannel)):
-    await message.remove_reaction(emoji, member)
-    if(channel.id == incidentReportChannel):
-      bst = pytz.timezone("Europe/London")
-      todayInc = datetime.datetime.now(tz=bst).isoformat()
-      def check(m):
-        return m.author == user and m.guild is None 
+@bot.command(name="calendar")
+async def getCalendar(ctx):
+  await ctx.message.delete()
+  msg = await ctx.send("Getting the F1 Calendar...")
+  try:
+    r = requests.get("https://api.figma.com/v1/images/370pbEDgxwiSR1RJlxsYSW/?ids=174%3A25&format=png", headers={"X-Figma-Token": figmaToken})
+    r = r.json()
+    if(r):
+      await msg.delete()
+    url = r["images"]["174:25"]
+    e = nextcord.Embed(color=color) 
+    e.set_image(url=url) 
+    await ctx.send(embed=e)
+  except Exception as e:
+    await ctx.send(f"There was an error getting the calendar, please report this issue to the admins.")
+    print("calendar:")
+    print(e)
 
-      def checkRaw(u):
-        return u.user_id == user.id and u.guild_id is None
+@bot.command(name="standings")
+async def getStandings(ctx):
+  await ctx.message.delete()
+  view = TierMenu()
+  selectMSG = await ctx.send("For which tier do you want to see standings?", view=view)
+  await view.wait()
+  try:
+    if(view.tierSelected == "F1 - Tier 1"):
+      await selectMSG.delete()
+      msg = await ctx.send("Getting Tier 1 Standings...")
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": figmaToken})
+      if(r):
+        await msg.delete()
+      r = r.json()
+      url = r["images"]["2:16"]
+      e = nextcord.Embed(color=color) 
+      e.set_image(url=url) 
+      await ctx.send(embed=e)
+    elif(view.tierSelected == "F1 - Tier 2"):
+      await selectMSG.delete()
+      msg = await ctx.send("Getting Tier 2 Standings...")
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=4%3A446&format=png", headers={"X-Figma-Token": figmaToken})
+      if(r):
+        await msg.delete()
+      r = r.json()
+      url = r["images"]["4:446"]
+      e = nextcord.Embed(color=color) 
+      e.set_image(url=url) 
+      await ctx.send(embed=e)
+    elif(view.tierSelected == "F1 - Tier 3"):
+      await selectMSG.delete()
+      msg = await ctx.send("Getting Tier 3 Standings...")
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=4%3A265&format=png", headers={"X-Figma-Token": figmaToken})
+      if(r):
+        await msg.delete()
+      r = r.json()
+      url = r["images"]["4:265"]
+      e = nextcord.Embed(color=color) 
+      e.set_image(url=url) 
+      await ctx.send(embed=e)
+    elif(view.tierSelected == "F1 - Tier Mixed"):
+      await selectMSG.delete()
+      msg = await ctx.send("Getting Tier M Standings...")
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=4%3A351&format=png", headers={"X-Figma-Token": figmaToken})
+      if(r):
+        await msg.delete()
+      r = r.json()
+      url = r["images"]["4:351"]
+      e = nextcord.Embed(color=color) 
+      e.set_image(url=url) 
+      await ctx.send(embed=e)
+    elif(view.tierSelected == "F2"):
+      await ctx.send("F2 standings are currently not available")
+  except KeyError:
+    await ctx.send("There was an error while getting the standings. Please report this issue to the admins")
+  except Exception as e:
+    print("standings:")
+    print(e)
+
+
+## currently unsused, but saved if needed in the future
+
+# @bot.event
+# async def on_raw_reaction_add(payload):
+#   emoji, user, member, channel = payload.emoji.name, await bot.fetch_user(payload.user_id), payload.member, bot.get_channel(payload.channel_id)
+#   message = await channel.fetch_message(payload.message_id)
+#   if (emoji == "📨" and user.id != bot.user.id and (channel.id == incidentReportChannel or channel.id == appealReportChannel or channel.id == suggestionSubmitChannel)):
+#     await message.remove_reaction(emoji, member)
+#     if(channel.id == incidentReportChannel):
+#       bst = pytz.timezone("Europe/London")
+#       todayInc = datetime.datetime.now(tz=bst).isoformat()
+#       def check(m):
+#         return m.author == user and m.guild is None 
+
+#       def checkRaw(u):
+#         return u.user_id == user.id and u.guild_id is None
       
-      await channel.send(f"Please follow the bot to your DMs to report your incident <@{user.id}>", delete_after=60)
+#       await channel.send(f"Please follow the bot to your DMs to report your incident <@{user.id}>", delete_after=60)
 
-      try:
-          await user.send("What is your gamertag?")
-          gamertagOfUserInc = await bot.wait_for("message", check=check, timeout=180.0)
-          gamertagOfUserInc = gamertagOfUserInc.content
-          await user.send("Please describe your incident.")
-          descriptionInc = await bot.wait_for("message", check=check, timeout=180.0)
-          descriptionInc = descriptionInc.content
-          tierOfIncidentMSG =  await user.send("What is the tier or division this incident/penalty occured in? \n1️⃣ = F1 - Tier 1\n2️⃣ = F1 - Tier 2\n3️⃣ = F1 - Tier 3\n4️⃣ = F1 - Tier Mixed\n5️⃣ = F2\nPlease react with the corresponding tier")
-          await tierOfIncidentMSG.add_reaction("1️⃣")
-          await tierOfIncidentMSG.add_reaction("2️⃣")
-          await tierOfIncidentMSG.add_reaction("3️⃣")
-          await tierOfIncidentMSG.add_reaction("4️⃣")
-          await tierOfIncidentMSG.add_reaction("5️⃣")
-          tierOfIncidentReaction = await bot.wait_for("raw_reaction_add", check=checkRaw, timeout=180.0)
-          if(str(tierOfIncidentReaction.emoji) == "1️⃣"):
-            tierOfIncidentInc = "F1 - Tier 1"
-            await user.send("You chose "+tierOfIncidentInc)
-          elif(str(tierOfIncidentReaction.emoji) == "2️⃣"):
-            tierOfIncidentInc = "F1 - Tier 2"
-            await user.send("You chose "+tierOfIncidentInc)
-          elif(str(tierOfIncidentReaction.emoji) == "3️⃣"):
-            tierOfIncidentInc = "F1 - Tier 3"
-            await user.send("You chose "+tierOfIncidentInc)
-          elif(str(tierOfIncidentReaction.emoji) == "4️⃣"):
-            tierOfIncidentInc = "F1 - Tier Mixed"
-            await user.send("You chose "+tierOfIncidentInc)
-          elif(str(tierOfIncidentReaction.emoji) == "5️⃣"):
-            tierOfIncidentInc = "F2"
-            await user.send("You chose "+tierOfIncidentInc)
-          await user.send("Please provide video evidence (Only reply with links to gamerdvr or other services)")
-          evidenceInc = await bot.wait_for("message", check=check, timeout=180.0)
-          evidenceInc = evidenceInc.content
-          await user.send("What lap did this incident/penalty occur on?")
-          lapOfIncidentInc = await bot.wait_for("message", check=check, timeout=180.0)
-          lapOfIncidentInc = lapOfIncidentInc.content
-          await user.send("What is the gamertag(s) of the driver(s) involved? (For penalties, reply with N/A)")
-          gamertagOfInvolevedDriverInc = await bot.wait_for("message", check=check, timeout=180.0)
-          gamertagOfInvolevedDriverInc = gamertagOfInvolevedDriverInc.content
-      except asyncio.TimeoutError:
-          await user.send("Unfortunately you took too long to reply (Limit is three minutes per message). Please start a new incident if you want to proceed.")
-      response = submitAnIncident(gamertagOfUserInc, lapOfIncidentInc, descriptionInc, tierOfIncidentInc, evidenceInc, gamertagOfInvolevedDriverInc, todayInc)
-      logEmbed = nextcord.Embed(title="⚠️New Ticket has been reported!⚠️")
-      logEmbed.add_field(name="Tier", value=tierOfIncidentInc, inline=False)
-      logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUserInc} vs {gamertagOfInvolevedDriverInc}", inline=False)
-      channel = bot.get_channel(incidentLogChannel)
-      await channel.send(embed = logEmbed)
-      await user.send(response)
+#       try:
+#           await user.send("What is your gamertag?")
+#           gamertagOfUserInc = await bot.wait_for("message", check=check, timeout=180.0)
+#           gamertagOfUserInc = gamertagOfUserInc.content
+#           await user.send("Please describe your incident.")
+#           descriptionInc = await bot.wait_for("message", check=check, timeout=180.0)
+#           descriptionInc = descriptionInc.content
+#           tierOfIncidentMSG =  await user.send("What is the tier or division this incident/penalty occured in? \n1️⃣ = F1 - Tier 1\n2️⃣ = F1 - Tier 2\n3️⃣ = F1 - Tier 3\n4️⃣ = F1 - Tier Mixed\n5️⃣ = F2\nPlease react with the corresponding tier")
+#           await tierOfIncidentMSG.add_reaction("1️⃣")
+#           await tierOfIncidentMSG.add_reaction("2️⃣")
+#           await tierOfIncidentMSG.add_reaction("3️⃣")
+#           await tierOfIncidentMSG.add_reaction("4️⃣")
+#           await tierOfIncidentMSG.add_reaction("5️⃣")
+#           tierOfIncidentReaction = await bot.wait_for("raw_reaction_add", check=checkRaw, timeout=180.0)
+#           if(str(tierOfIncidentReaction.emoji) == "1️⃣"):
+#             tierOfIncidentInc = "F1 - Tier 1"
+#             await user.send("You chose "+tierOfIncidentInc)
+#           elif(str(tierOfIncidentReaction.emoji) == "2️⃣"):
+#             tierOfIncidentInc = "F1 - Tier 2"
+#             await user.send("You chose "+tierOfIncidentInc)
+#           elif(str(tierOfIncidentReaction.emoji) == "3️⃣"):
+#             tierOfIncidentInc = "F1 - Tier 3"
+#             await user.send("You chose "+tierOfIncidentInc)
+#           elif(str(tierOfIncidentReaction.emoji) == "4️⃣"):
+#             tierOfIncidentInc = "F1 - Tier Mixed"
+#             await user.send("You chose "+tierOfIncidentInc)
+#           elif(str(tierOfIncidentReaction.emoji) == "5️⃣"):
+#             tierOfIncidentInc = "F2"
+#             await user.send("You chose "+tierOfIncidentInc)
+#           await user.send("Please provide video evidence (Only reply with links to gamerdvr or other services)")
+#           evidenceInc = await bot.wait_for("message", check=check, timeout=180.0)
+#           evidenceInc = evidenceInc.content
+#           await user.send("What lap did this incident/penalty occur on?")
+#           lapOfIncidentInc = await bot.wait_for("message", check=check, timeout=180.0)
+#           lapOfIncidentInc = lapOfIncidentInc.content
+#           await user.send("What is the gamertag(s) of the driver(s) involved? (For penalties, reply with N/A)")
+#           gamertagOfInvolevedDriverInc = await bot.wait_for("message", check=check, timeout=180.0)
+#           gamertagOfInvolevedDriverInc = gamertagOfInvolevedDriverInc.content
+#       except asyncio.TimeoutError:
+#           await user.send("Unfortunately you took too long to reply (Limit is three minutes per message). Please start a new incident if you want to proceed.")
+#       response = submitAnIncident(gamertagOfUserInc, lapOfIncidentInc, descriptionInc, tierOfIncidentInc, evidenceInc, gamertagOfInvolevedDriverInc, todayInc)
+#       logEmbed = nextcord.Embed(title="⚠️New Ticket has been reported!⚠️")
+#       logEmbed.add_field(name="Tier", value=tierOfIncidentInc, inline=False)
+#       logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUserInc} vs {gamertagOfInvolevedDriverInc}", inline=False)
+#       channel = bot.get_channel(incidentLogChannel)
+#       await channel.send(embed = logEmbed)
+#       await user.send(response)
     
-    if(channel.id == appealReportChannel):
-      bst = pytz.timezone("Europe/London")
-      todayApp = datetime.datetime.now(tz=bst).isoformat()
-      def check(m):
-        return m.author == user and m.guild is None 
+#     if(channel.id == appealReportChannel):
+#       bst = pytz.timezone("Europe/London")
+#       todayApp = datetime.datetime.now(tz=bst).isoformat()
+#       def check(m):
+#         return m.author == user and m.guild is None 
         
-      await channel.send(f"Please follow the bot to your DMs to submit your appeal <@{user.id}>", delete_after=60)
-      try:
-          await user.send("What is the case number you want to appeal (use ;querytickets in the bot channel in the server if you need to get it)")
-          caseNumberApp = await bot.wait_for("message", check=check, timeout=180.0)
-          caseNumberApp = caseNumberApp.content
-          await user.send("What is your gamertag?")
-          gamertagOfUserApp = await bot.wait_for("message", check=check, timeout=180.0)
-          gamertagOfUserApp = gamertagOfUserApp.content
-          await user.send("Please state the reason for you appeal.")
-          reasonApp = await bot.wait_for("message", check=check, timeout=180.0)
-          reasonApp = reasonApp.content
-          await user.send("State any additional information to support your appeal (if you don't have any, reply with N/A)")
-          additionalInfoApp = await bot.wait_for("message", check=check, timeout=180.0)
-          additionalInfoApp = additionalInfoApp.content
-          await user.send("Please provide addition video evidence to support your appeal (Only reply with links to gamerdvr or other services)")
-          evidenceApp = await bot.wait_for("message", check=check, timeout=180.0)
-          evidenceApp = evidenceApp.content
-          await user.send("What is the gamertag(s) of the driver(s) involved? (For penalties, reply with N/A)")
-          gamertagOfInvolevedDriverApp = await bot.wait_for("message", check=check, timeout=180.0)
-          gamertagOfInvolevedDriverApp = gamertagOfInvolevedDriverApp.content
-      except asyncio.TimeoutError:
-          await user.send("Unfortunately you took too long to reply (Limit is a three minutes per message). Please start a new incident if you want to proceed.")
-      response = submitAppeal(caseNumberApp, evidenceApp, gamertagOfUserApp, gamertagOfInvolevedDriverApp, reasonApp, additionalInfoApp, todayApp)
-      logEmbed = nextcord.Embed(title="⚠️New Appeal has been submitted!⚠️")
-      logEmbed.add_field(name="Case Number", value=caseNumberApp, inline=False)
-      logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUserApp} vs {gamertagOfInvolevedDriverApp}", inline=False)
-      channel = bot.get_channel(incidentLogChannel)
-      await channel.send(embed = logEmbed)
-      await user.send(response)
-    if(channel.id == suggestionSubmitChannel):
-      await channel.send(f"Please follow the bot to your DMs to submit your suggestion <@{user.id}>", delete_after=60)
-      def check(m):
-        return m.author == user and m.guild is None 
-      try:
-        await user.send("Please type your suggestion here, the admins will have a look at it as soon as possible. Thank you, Admins of F1ABEEZ")
-        suggestion = await bot.wait_for("message", check=check, timeout=300.0)
-        suggestion = suggestion.content
-      except asyncio.TimeoutError:
-        await user.send("Unfortunately you took too long. The limit is 5 minutes per message")
+#       await channel.send(f"Please follow the bot to your DMs to submit your appeal <@{user.id}>", delete_after=60)
+#       try:
+#           await user.send("What is the case number you want to appeal (use ;querytickets in the bot channel in the server if you need to get it)")
+#           caseNumberApp = await bot.wait_for("message", check=check, timeout=180.0)
+#           caseNumberApp = caseNumberApp.content
+#           await user.send("What is your gamertag?")
+#           gamertagOfUserApp = await bot.wait_for("message", check=check, timeout=180.0)
+#           gamertagOfUserApp = gamertagOfUserApp.content
+#           await user.send("Please state the reason for you appeal.")
+#           reasonApp = await bot.wait_for("message", check=check, timeout=180.0)
+#           reasonApp = reasonApp.content
+#           await user.send("State any additional information to support your appeal (if you don't have any, reply with N/A)")
+#           additionalInfoApp = await bot.wait_for("message", check=check, timeout=180.0)
+#           additionalInfoApp = additionalInfoApp.content
+#           await user.send("Please provide addition video evidence to support your appeal (Only reply with links to gamerdvr or other services)")
+#           evidenceApp = await bot.wait_for("message", check=check, timeout=180.0)
+#           evidenceApp = evidenceApp.content
+#           await user.send("What is the gamertag(s) of the driver(s) involved? (For penalties, reply with N/A)")
+#           gamertagOfInvolevedDriverApp = await bot.wait_for("message", check=check, timeout=180.0)
+#           gamertagOfInvolevedDriverApp = gamertagOfInvolevedDriverApp.content
+#       except asyncio.TimeoutError:
+#           await user.send("Unfortunately you took too long to reply (Limit is a three minutes per message). Please start a new incident if you want to proceed.")
+#       response = submitAppeal(caseNumberApp, evidenceApp, gamertagOfUserApp, gamertagOfInvolevedDriverApp, reasonApp, additionalInfoApp, todayApp)
+#       logEmbed = nextcord.Embed(title="⚠️New Appeal has been submitted!⚠️")
+#       logEmbed.add_field(name="Case Number", value=caseNumberApp, inline=False)
+#       logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUserApp} vs {gamertagOfInvolevedDriverApp}", inline=False)
+#       channel = bot.get_channel(incidentLogChannel)
+#       await channel.send(embed = logEmbed)
+#       await user.send(response)
+#     if(channel.id == suggestionSubmitChannel):
+#       await channel.send(f"Please follow the bot to your DMs to submit your suggestion <@{user.id}>", delete_after=60)
+#       def check(m):
+#         return m.author == user and m.guild is None 
+#       try:
+#         await user.send("Please type your suggestion here, the admins will have a look at it as soon as possible. Thank you, Admins of F1ABEEZ")
+#         suggestion = await bot.wait_for("message", check=check, timeout=300.0)
+#         suggestion = suggestion.content
+#       except asyncio.TimeoutError:
+#         await user.send("Unfortunately you took too long. The limit is 5 minutes per message")
 
-      suggestionLogEmbed = nextcord.Embed(title="🚨A new suggestion has been submitted🚨")
-      suggestionLogEmbed.add_field(name="**Submitted by:**", value=user.display_name, inline=False)
-      suggestionLogEmbed.add_field(name="**Suggestion**", value=suggestion, inline=False)
-      channel = bot.get_channel(suggestionLogChannel)
-      await channel.send(embed = suggestionLogEmbed)
-      await user.send("Your suggestion has been submitted to the admins!")
+#       suggestionLogEmbed = nextcord.Embed(title="🚨A new suggestion has been submitted🚨")
+#       suggestionLogEmbed.add_field(name="**Submitted by:**", value=user.display_name, inline=False)
+#       suggestionLogEmbed.add_field(name="**Suggestion**", value=suggestion, inline=False)
+#       channel = bot.get_channel(suggestionLogChannel)
+#       await channel.send(embed = suggestionLogEmbed)
+#       await user.send("Your suggestion has been submitted to the admins!")
+
 bot.run(discord_token)
