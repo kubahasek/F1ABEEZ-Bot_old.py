@@ -785,11 +785,11 @@ async def getCalendar(ctx):
   await ctx.message.delete()
   msg = await ctx.send("Getting the F1 Calendar...")
   try:
-    r = requests.get("https://api.figma.com/v1/images/370pbEDgxwiSR1RJlxsYSW/?ids=174%3A25&format=png", headers={"X-Figma-Token": figmaToken})
+    r = requests.get("https://api.figma.com/v1/images/8mL0mwOKyIUcoLG3goL7wk/?ids=2%3A138&format=png", headers={"X-Figma-Token": figmaToken})
     r = r.json()
     if(r):
       await msg.delete()
-    url = r["images"]["174:25"]
+    url = r["images"]["2:138"]
     e = nextcord.Embed(color=color) 
     e.set_image(url=url) 
     await ctx.send(embed=e)
