@@ -806,7 +806,7 @@ async def suggestionChannel(ctx):
 async def getCalendar(ctx):
   await ctx.message.delete()
   view = CalendarMenu()
-  selectMSG = await ctx.send("For which tier do you want to see standings?", view=view)
+  selectMSG = await ctx.send("For which division do you want to see the calendar?", view=view)
   await view.wait()
   if(view.tierSelected == "F1"):
     msg = await ctx.send("Getting the F1 calendar...")
