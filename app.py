@@ -46,6 +46,28 @@ tierMRole = 840694396990521364
 reserveTierMRole = 850433806246871102
 academyRole = 774740889557270539
 
+class CalendarMenu(nextcord.ui.View):
+  def __init__(self):
+    super().__init__(timeout=None)
+
+  
+  async def handle_click(self, button, interaction):
+    if(str(button.custom_id) == "F1"):
+      self.tierSelected = "F1"
+      self.stop()
+    elif(str(button.custom_id) == "Nations_League"):
+      self.tierSelected = "Nations League"
+      self.stop()
+
+  @nextcord.ui.button(label="Tier 1", style=nextcord.ButtonStyle.primary, custom_id="F1")
+  async def tier1ButtonClicked(self, button, interaction):
+    await self.handle_click(button, interaction)
+  
+  @nextcord.ui.button(label="Nations League", style=nextcord.ButtonStyle.primary, custom_id="Nations_League")
+  async def tier2ButtonClicked(self, button, interaction):
+    await self.handle_click(button, interaction)
+
+
 class TierMenu(nextcord.ui.View):
   def __init__(self):
     super().__init__(timeout=None)
@@ -458,7 +480,7 @@ def submitAppeal(caseNumber, evidence, gamertag, gamertagInvolved, reason, addit
 def GetHelpCommand():
     embed = nextcord.Embed(title="Help", color=color)
     embed.add_field(name=";standings", value="This command gives you a menu to select the tier of which you want to see standings and then it returns them in the channel.", inline=False)
-    embed.add_field(name=";calendar", value="This command gets the current calendar and sends it in the channel.", inline=False)
+    embed.add_field(name=";calendar", value="This command gives you a selection of the F1 or Nations League calendar and then sends it in the channel.", inline=False)
     embed.add_field(name=";gettickets <gamertag>", value="This command is useful when you don’t know the number of your ticket. The command lists all tickets you’ve been involved (whether you reported it or someone else reported you) and gives you the number of the ticket and the direct link to the website.", inline=False)
     embed.add_field(name=";getappeals <gamertag>", value="This command gets you a list of appeals you've been involeved in (whether you appealed or someone appealed against you) and gives you the number of the appeal, a direct link to the website and the status of the appeal.")
     embed.add_field(name=";ticketdetail <number of ticket>", value="This command gets you the details of ticket you provide. It lists the status, penalty that was awarded and who was involved.", inline=False)
@@ -783,20 +805,41 @@ async def suggestionChannel(ctx):
 @bot.command(name="calendar")
 async def getCalendar(ctx):
   await ctx.message.delete()
-  msg = await ctx.send("Getting the F1 Calendar...")
-  try:
-    r = requests.get("https://api.figma.com/v1/images/8mL0mwOKyIUcoLG3goL7wk/?ids=2%3A138&format=png", headers={"X-Figma-Token": figmaToken})
-    r = r.json()
-    if(r):
-      await msg.delete()
-    url = r["images"]["2:138"]
-    e = nextcord.Embed(color=color) 
-    e.set_image(url=url) 
-    await ctx.send(embed=e)
-  except Exception as e:
-    await ctx.send(f"There was an error getting the calendar, please report this issue to the admins.")
-    print("calendar:")
-    print(e)
+  view = CalendarMenu()
+  selectMSG = await ctx.send("For which tier do you want to see standings?", view=view)
+  await view.wait()
+  if(view.tierSelected == "F1"):
+    msg = await ctx.send("Getting the F1 calendar...")
+    try:
+      await selectMSG.delete()
+      r = requests.get("https://api.figma.com/v1/images/8mL0mwOKyIUcoLG3goL7wk/?ids=2%3A138&format=png", headers={"X-Figma-Token": figmaToken})
+      r = r.json()
+      if(r):
+        await msg.delete()
+      url = r["images"]["2:138"]
+      e = nextcord.Embed(color=color) 
+      e.set_image(url=url) 
+      await ctx.send(embed=e)
+    except Exception as e:
+      await ctx.send(f"There was an error getting the calendar, please report this issue to the admins.")
+      print("calendar:")
+      print(e)
+  elif(view.tierSelected == "Nations League"):
+    msg = await ctx.send("Getting the Nations League calendar...")
+    try:
+      await selectMSG.delete()
+      r = requests.get("https://api.figma.com/v1/images/8mL0mwOKyIUcoLG3goL7wk/?ids=15%3A2&format=png", headers={"X-Figma-Token": figmaToken})
+      r = r.json()
+      if(r):
+        await msg.delete()
+      url = r["images"]["15:2"]
+      e = nextcord.Embed(color=color) 
+      e.set_image(url=url) 
+      await ctx.send(embed=e)
+    except Exception as e:
+      await ctx.send(f"There was an error getting the calendar, please report this issue to the admins.")
+      print("calendar:")
+      print(e)
 
 @bot.command(name="standings")
 async def getStandings(ctx):
