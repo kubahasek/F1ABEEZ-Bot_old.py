@@ -59,14 +59,13 @@ class CalendarMenu(nextcord.ui.View):
       self.tierSelected = "Nations League"
       self.stop()
 
-  @nextcord.ui.button(label="Tier 1", style=nextcord.ButtonStyle.primary, custom_id="F1")
+  @nextcord.ui.button(label="F1", style=nextcord.ButtonStyle.primary, custom_id="F1")
   async def tier1ButtonClicked(self, button, interaction):
     await self.handle_click(button, interaction)
   
   @nextcord.ui.button(label="Nations League", style=nextcord.ButtonStyle.primary, custom_id="Nations_League")
   async def tier2ButtonClicked(self, button, interaction):
     await self.handle_click(button, interaction)
-
 
 class TierMenu(nextcord.ui.View):
   def __init__(self):
@@ -913,6 +912,10 @@ async def sendChangesAnnouncement(ctx):
   e.add_field(name="Suggestions", value="If you have any suggestion on how to make the bot more useful, don't be afraid to DM <@468685270296952842>, and we'll see what I can do.")
   e.add_field(name="Issues", value="If you experience any issues during the use of the bot, please DM <@468685270296952842> or any of the admins!")
   await ctx.send(embed=e)
+
+@bot.command("lineup")
+async def getLineupLink(ctx):
+  await ctx.reply("<https://www.f1abeez.com/line-up>")
 
 ## currently unsused, but saved if needed in the future
 
