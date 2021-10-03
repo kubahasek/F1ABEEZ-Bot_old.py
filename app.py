@@ -752,11 +752,11 @@ async def stewardsDecision(ctx, round):
   roundNO = int(round)
   # f2RoundNO = roundNO - 1
   # f2round = f"R{f2RoundNO}"
-  round = f"R{roundNO}"
-  tier1URL = f"<https://f1abeez.com/race-reports/F1-Tier-1-{round}>"
-  tier2URL = f"<https://f1abeez.com/race-reports/F1-Tier-2-{round}>"
-  tier3URL = f"<https://f1abeez.com/race-reports/F1-Tier-3-{round}>"
-  tier4URL = f"<https://f1abeez.com/race-reports/F1-Tier-M-{round}>"
+  round = f"r{roundNO}"
+  tier1URL = f"<https://f1abeez.com/race-reports/t1/{round}>"
+  tier2URL = f"<https://f1abeez.com/race-reports/t2/{round}>"
+  tier3URL = f"<https://f1abeez.com/race-reports/t3/{round}>"
+  tier4URL = f"<https://f1abeez.com/race-reports/t4/{round}>"
   # if(roundNO - 1 == 0):
   #   f2URL = "F2 did not race"
   # else:
@@ -770,11 +770,11 @@ async def raceResults(ctx, round):
   roundNO = int(round)
   # f2RoundNO = roundNO - 1
   # f2round = f"R{f2RoundNO}"
-  round = f"R{roundNO}"
-  tier1URL = f"<https://f1abeez.com/race-reports/F1-Tier-1-{round}>"
-  tier2URL = f"<https://f1abeez.com/race-reports/F1-Tier-2-{round}>"
-  tier3URL = f"<https://f1abeez.com/race-reports/F1-Tier-3-{round}>"
-  tier4URL = f"<https://f1abeez.com/race-reports/F1-Tier-M-{round}>"
+  round = f"r{roundNO}"
+  tier1URL = f"<https://f1abeez.com/race-reports/t1/{round}>"
+  tier2URL = f"<https://f1abeez.com/race-reports/t2/{round}>"
+  tier3URL = f"<https://f1abeez.com/race-reports/t3/{round}>"
+  tier4URL = f"<https://f1abeez.com/race-reports/t4/{round}>"
   # if(roundNO - 1 == 0):
   #   f2URL = "F2 did not race"
   # else:
