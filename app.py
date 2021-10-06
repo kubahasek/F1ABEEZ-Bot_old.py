@@ -805,7 +805,7 @@ async def suggestionChannel(ctx):
 async def getCalendar(ctx):
   await ctx.message.delete()
   view = CalendarMenu()
-  selectMSG = await ctx.send("For which division do you want to see the calendar?", view=view)
+  selectMSG = await ctx.send("For which tier do you want to see standings?", view=view)
   await view.wait()
   if(view.tierSelected == "F1"):
     msg = await ctx.send("Getting the F1 calendar...")
@@ -815,10 +815,10 @@ async def getCalendar(ctx):
       r = r.json()
       if(r):
         await msg.delete()
-      url = r["images"]["2:138"]
-      e = nextcord.Embed(color=color) 
-      e.set_image(url=url) 
-      await ctx.send(embed=e)
+      img = r["images"]["2:138"]
+      embed1 = nextcord.Embed(color=color) 
+      embed1.set_image(url=img) 
+      await ctx.send(embed=embed1)
     except Exception as e:
       await ctx.send(f"There was an error getting the calendar, please report this issue to the admins.")
       print("calendar:")
@@ -831,10 +831,10 @@ async def getCalendar(ctx):
       r = r.json()
       if(r):
         await msg.delete()
-      url = r["images"]["15:2"]
-      e = nextcord.Embed(color=color) 
-      e.set_image(url=url) 
-      await ctx.send(embed=e)
+      img = r["images"]["15:2"]
+      embed2 = nextcord.Embed(color=color) 
+      embed2.set_image(url=img) 
+      await ctx.send(embed=embed2)
     except Exception as e:
       await ctx.send(f"There was an error getting the calendar, please report this issue to the admins.")
       print("calendar:")
