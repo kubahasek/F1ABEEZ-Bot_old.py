@@ -37,13 +37,13 @@ suggestionLogChannel = 877979327273246772
 leavingChannel = 774605933661257729
 
 tier1Role = 795227294766727169
-reserveTier1Role = 813715392031752223
+reserveTier1Role = 893654550962139176
 tier2Role = 795227317684928546
-reserveTier2Role = 813715709292838942
+reserveTier2Role = 893654646462218240
 tier3Role = 813703851349245965
-reserveTier3Role = 813715758793228319
+reserveTier3Role = 893654551704526859
 tierMRole = 840694396990521364
-reserveTierMRole = 850433806246871102
+reserveTierMRole = 893654640321789983
 academyRole = 774740889557270539
 
 class CalendarMenu(nextcord.ui.View):
@@ -915,7 +915,7 @@ async def sendChangesAnnouncement(ctx):
 
 @bot.command("lineup")
 async def getLineupLink(ctx):
-  await ctx.reply("<https://www.f1abeez.com/line-up>")
+  await ctx.reply("<https://www.f1abeez.com/line-ups>")
 
 ## currently unsused, but saved if needed in the future
 
