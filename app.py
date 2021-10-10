@@ -571,6 +571,37 @@ def submitAnIncident(gamertag, lap, description, tier, evidence, driverInvolved,
         print(r.text)
         return "There was an error submitting your ticket, please reach out to the admin team"
 
+def dotdMessageFun(str):
+  tier = str[0]
+  driver1 = str[1]
+  driver1PosChange = str[2]
+  driver2 = str[3]
+  driver2PosChange = str[4]
+  driver3 = str[5]
+  driver3PosChange = str[6]
+  driver4 = str[7]
+  driver4PosChange = str[8]
+  driver5 = str[9]
+  driver5PosChange = str[10]
+  if(tier == "Tier 1"):
+    return(f"**Tier 1 Driver of The Day poll:**\n\n1️⃣ - {driver1} - {driver1PosChange}\n2️⃣ - {driver2} - {driver2PosChange}\n3️⃣ - {driver3} - {driver3PosChange}\n4️⃣ - {driver4} - {driver4PosChange}\n5️⃣ - {driver5} - {driver5PosChange}")
+  elif(tier == "Tier 2"):
+    return(f"**Tier 2 Driver of The Day poll:**\n\n1️⃣ - {driver1} - {driver1PosChange}\n2️⃣ - {driver2} - {driver2PosChange}\n3️⃣ - {driver3} - {driver3PosChange}\n4️⃣ - {driver4} - {driver4PosChange}\n5️⃣ - {driver5} - {driver5PosChange}")
+  elif(tier == "Tier 3"):
+    return(f"**Tier 3 Driver of The Day poll:**\n\n1️⃣ - {driver1} - {driver1PosChange}\n2️⃣ - {driver2} - {driver2PosChange}\n3️⃣ - {driver3} - {driver3PosChange}\n4️⃣ - {driver4} - {driver4PosChange}\n5️⃣ - {driver5} - {driver5PosChange}")
+  elif(tier == "Tier 4"):
+    return(f"**Tier 4 Driver of The Day poll:**\n\n1️⃣ - {driver1} - {driver1PosChange}\n2️⃣ - {driver2} - {driver2PosChange}\n3️⃣ - {driver3} - {driver3PosChange}\n4️⃣ - {driver4} - {driver4PosChange}\n5️⃣ - {driver5} - {driver5PosChange}")
+  
+def dotdWinnerMsg(tier, driver):
+  if(tier == "Tier 1"):
+    return(f"**Tier 1 Driver of The Day:**\n\n{driver}\n\nCongratulations!")
+  elif(tier == "Tier 2"):
+    return(f"**Tier 2 Driver of The Day:**\n\n{driver}\n\nCongratulations!")
+  elif(tier == "Tier 3"):
+    return(f"**Tier 3 Driver of The Day:**\n\n{driver}\n\nCongratulations!")
+  elif(tier == "Tier 4"):
+    return(f"**Tier 2 Driver of The Day:**\n\n{driver}\n\nCongratulations!")
+
 intents = nextcord.Intents.default()
 intents.reactions = True
 intents.members = True
@@ -916,6 +947,47 @@ async def sendChangesAnnouncement(ctx):
 @bot.command("lineup")
 async def getLineupLink(ctx):
   await ctx.reply("<https://www.f1abeez.com/line-ups>")
+
+@bot.command("dotd")
+async def dotdMessage(ctx, *, args):
+  await ctx.message.delete()
+  try:
+    arguments = str(args)
+    splitStr = arguments.split(",")
+    if(splitStr.__len__() == 11):
+      msg = dotdMessageFun(splitStr)
+      dcMSG = await ctx.send(msg)
+      await dcMSG.add_reaction("1️⃣")
+      await dcMSG.add_reaction("2️⃣")
+      await dcMSG.add_reaction("3️⃣")   
+      await dcMSG.add_reaction("4️⃣")
+      await dcMSG.add_reaction("5️⃣")
+    elif(splitStr.__len__() > 11):
+      await ctx.author.send("Too many arguments provided, please try again")
+    elif(splitStr.__len__() < 11):
+      await ctx.author.send("Too few arguments provided, please try again")
+  except Exception as e:
+    print("dotd")
+    print(e)
+
+@bot.command("dotdwinner")
+async def dotdWinner(ctx, *, args):
+  await ctx.message.delete()
+  try:
+    arguments = str(args)
+    arguments = arguments.split(",")
+    if(arguments.__len__() == 2):
+      tier = arguments[0]
+      driver = arguments[1]
+      msg = dotdWinnerMsg(tier, driver)
+      await ctx.send(msg)
+    elif(arguments.__len__() > 2):
+        await ctx.author.send("Too many arguments provided, please try again")
+    elif(arguments.__len__() < 2):
+      await ctx.author.send("Too few arguments provided, please try again")
+  except Exception as e:
+    print("dotdwinner:")
+    print(e)
 
 ## currently unsused, but saved if needed in the future
 
