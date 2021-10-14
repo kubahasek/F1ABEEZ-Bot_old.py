@@ -430,7 +430,7 @@ async def on_member_join(member):
 @bot.event
 async def on_member_remove(member):
   memberName = member.name
-  channel = bot.get_channel(info.welcomeChannel)
+  channel = bot.get_channel(info.leavingChannel)
   await channel.send(f"**{memberName}** has left the server.")
 
 @bot.command(name="stewardsdecisions")
