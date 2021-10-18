@@ -34,6 +34,9 @@ class TierMenu(nextcord.ui.View):
     elif(str(button.custom_id) == "Tier_M"):
       self.tierSelected = "F1 - Tier Mixed"
       self.stop()
+    elif(str(button.custom_id) == "Nations_League"):
+      self.tierSelected = "Nations League"
+      self.stop()
     elif(str(button.custom_id) == "F2"):
       self.tierSelected = "F2"
       self.stop()
@@ -51,6 +54,10 @@ class TierMenu(nextcord.ui.View):
     await self.handle_click(button, interaction)
 
   @nextcord.ui.button(label="Tier Mixed", style=nextcord.ButtonStyle.primary, custom_id="Tier_M")
+  async def tiermButtonClicked(self, button, interaction):
+    await self.handle_click(button, interaction)
+
+  @nextcord.ui.button(label="Nations League", style=nextcord.ButtonStyle.primary, custom_id="Nations_League")
   async def tiermButtonClicked(self, button, interaction):
     await self.handle_click(button, interaction)
 
@@ -118,6 +125,9 @@ class reportMenu(nextcord.ui.View):
             tierOfIncidentInc = view.tierSelected
             await user.send(f"You selected {tierOfIncidentInc}")
           elif(view.tierSelected == "F1 - Tier Mixed"):
+            tierOfIncidentInc = view.tierSelected
+            await user.send(f"You selected {tierOfIncidentInc}")
+          elif(view.tierSelected == "Nations League"):
             tierOfIncidentInc = view.tierSelected
             await user.send(f"You selected {tierOfIncidentInc}")
           elif(view.tierSelected == "F2"):
@@ -246,6 +256,8 @@ def dotdMessageFun(str):
     return(f"<@&{info.tier3Role}>\n\n**Tier 3 Driver of The Day poll:**\n\n1️⃣ - {driver1} - {driver1PosChange}\n2️⃣ - {driver2} - {driver2PosChange}\n3️⃣ - {driver3} - {driver3PosChange}\n4️⃣ - {driver4} - {driver4PosChange}\n5️⃣ - {driver5} - {driver5PosChange}")
   elif(tier == "Tier 4"):
     return(f"<@&{info.tierMRole}>\n\n**Tier 4 Driver of The Day poll:**\n\n1️⃣ - {driver1} - {driver1PosChange}\n2️⃣ - {driver2} - {driver2PosChange}\n3️⃣ - {driver3} - {driver3PosChange}\n4️⃣ - {driver4} - {driver4PosChange}\n5️⃣ - {driver5} - {driver5PosChange}")
+  elif(tier == "NL"):
+    return(f"<@&{info.nationsLeagueRole}>\n\n**Tier 4 Driver of The Day poll:**\n\n1️⃣ - {driver1} - {driver1PosChange}\n2️⃣ - {driver2} - {driver2PosChange}\n3️⃣ - {driver3} - {driver3PosChange}\n4️⃣ - {driver4} - {driver4PosChange}\n5️⃣ - {driver5} - {driver5PosChange}")
   
 def dotdWinnerMsg(tier, driver):
   if(tier == "Tier 1"):
@@ -256,6 +268,8 @@ def dotdWinnerMsg(tier, driver):
     return(f"<@&{info.tier3Role}>\n\n**Tier 3 Driver of The Day:**\n\n{driver}\n\nCongratulations!")
   elif(tier == "Tier 4"):
     return(f"<@&{info.tierMRole}>\n\n**Tier 2 Driver of The Day:**\n\n{driver}\n\nCongratulations!")
+  elif(tier == "NL"):
+    return(f"<@&{info.nationsLeagueRole}>\n\n**Tier 2 Driver of The Day:**\n\n{driver}\n\nCongratulations!")
 
 
 intents = nextcord.Intents.default()
