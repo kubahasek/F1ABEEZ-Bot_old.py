@@ -54,7 +54,7 @@ class TierMenu(nextcord.ui.View):
     await self.handle_click(button, interaction)
 
   @nextcord.ui.button(label="Tier 4", style=nextcord.ButtonStyle.primary, custom_id="Tier_4")
-  async def tiermButtonClicked(self, button, interaction):
+  async def tier4ButtonClicked(self, button, interaction):
     await self.handle_click(button, interaction)
 
   @nextcord.ui.button(label="Nations League", style=nextcord.ButtonStyle.primary, custom_id="Nations_League")
