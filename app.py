@@ -61,9 +61,9 @@ class TierMenu(nextcord.ui.View):
   async def tiermButtonClicked(self, button, interaction):
     await self.handle_click(button, interaction)
 
-  @nextcord.ui.button(label="F2", style=nextcord.ButtonStyle.primary, custom_id="F2", disabled=True)
-  async def f2ButtonClicked(self, button, interaction):
-    await self.handle_click(button, interaction)
+  # @nextcord.ui.button(label="F2", style=nextcord.ButtonStyle.primary, custom_id="F2", disabled=True)
+  # async def f2ButtonClicked(self, button, interaction):
+  #   await self.handle_click(button, interaction)
 
 class CalendarMenu(nextcord.ui.View):
   def __init__(self):
