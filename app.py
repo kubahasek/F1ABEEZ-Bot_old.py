@@ -311,13 +311,13 @@ async def on_command_error(ctx, error):
 @commands.has_any_role("Admin", "Moderator")
 async def lobbyMSGtier1(ctx):
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tier1Role}> <@&{info.reserveTier1Role}>\n**Lobby is now open!**\nPlease join off <@805472151914283079>\nGamertag is - Playzz769\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+  await ctx.send(f"<@&{info.tier1Role}> <@&{info.reserveTier1Role}>\n**Lobby is now open!**\nPlease join off <@705761570126561341>\nGamertag is - Sammie230408\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
 
 @bot.command(name="lobbytier2")
 @commands.has_any_role("Admin", "Moderator")
 async def lobbyMSGtier2(ctx):
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tier2Role}> <@&{info.reserveTier2Role}>\n**Lobby is now open!**\nPlease join off <@483678704749510677>\nGamertag is - VRA Harveyy\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+  await ctx.send(f"<@&{info.tier2Role}> <@&{info.reserveTier2Role}>\n**Lobby is now open!**\nPlease join off <@483678704749510677>\nGamertag is - thxharvey\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
 
 @bot.command(name="lobbytier3")
 @commands.has_any_role("Admin", "Moderator")
@@ -329,7 +329,7 @@ async def lobbyMSGtier3(ctx):
 @commands.has_any_role("Admin", "Moderator")
 async def lobbyMSGtier4(ctx):
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tierMRole}> <@&{info.reserveTierMRole}>\n**Lobby is now open!**\nPlease join off <@705761570126561341>\nGamertag is - Sammie230408\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+  await ctx.send(f"<@&{info.tierMRole}> <@&{info.reserveTierMRole}>\n**Lobby is now open!**\nPlease join off <@559096129816363010>\nGamertag is - Razznyk\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
 
 @bot.command(name="lobbyf2")
 @commands.has_any_role("Admin", "Moderator")
