@@ -31,8 +31,8 @@ class TierMenu(nextcord.ui.View):
     elif(str(button.custom_id) == "Tier_3"):
       self.tierSelected = "F1 - Tier 3"
       self.stop()
-    elif(str(button.custom_id) == "Tier_M"):
-      self.tierSelected = "F1 - Tier Mixed"
+    elif(str(button.custom_id) == "Tier_4"):
+      self.tierSelected = "F1 - Tier 4"
       self.stop()
     elif(str(button.custom_id) == "Nations_League"):
       self.tierSelected = "Nations League"
@@ -53,7 +53,7 @@ class TierMenu(nextcord.ui.View):
   async def tier3ButtonClicked(self, button, interaction):
     await self.handle_click(button, interaction)
 
-  @nextcord.ui.button(label="Tier Mixed", style=nextcord.ButtonStyle.primary, custom_id="Tier_M")
+  @nextcord.ui.button(label="Tier 4", style=nextcord.ButtonStyle.primary, custom_id="Tier_4")
   async def tiermButtonClicked(self, button, interaction):
     await self.handle_click(button, interaction)
 
@@ -124,7 +124,7 @@ class reportMenu(nextcord.ui.View):
           elif(view.tierSelected == "F1 - Tier 3"):
             tierOfIncidentInc = view.tierSelected
             await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F1 - Tier Mixed"):
+          elif(view.tierSelected == "F1 - Tier 4"):
             tierOfIncidentInc = view.tierSelected
             await user.send(f"You selected {tierOfIncidentInc}")
           elif(view.tierSelected == "Nations League"):
