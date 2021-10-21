@@ -480,7 +480,7 @@ async def raceResults(ctx, round):
   #   f2URL = "F2 did not race"
   # else:
   #   f2URL = f"<https://f1abeez.com/race-reports/F2-{f2round}>"
-  await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier Mixed** - {tier4URL}\n\nThank you,\nKuba")
+  await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier 4** - {tier4URL}\n\nThank you,\nKuba")
 
 @bot.command(name="incidentchannel")
 async def incidentChannel(ctx):
