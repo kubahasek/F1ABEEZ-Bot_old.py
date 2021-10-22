@@ -594,7 +594,7 @@ async def getStandings(ctx):
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
       await ctx.send(embed=e)
-    elif(view.tierSelected == "F2"):
+    elif(view.tierSelected == "Nations League"):
       await ctx.send("F2 standings are currently not available")
   except KeyError:
     await ctx.send("There was an error while getting the standings. Please report this issue to the admins")
