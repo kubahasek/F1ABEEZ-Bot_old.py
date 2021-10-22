@@ -583,7 +583,7 @@ async def getStandings(ctx):
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
       await ctx.send(embed=e)
-    elif(view.tierSelected == "F1 - Tier Mixed"):
+    elif(view.tierSelected == "F1 - Tier 4"):
       await selectMSG.delete()
       msg = await ctx.send("Getting Tier M Standings...")
       r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=4%3A351&format=png", headers={"X-Figma-Token": info.figmaToken})
