@@ -341,25 +341,25 @@ async def lobbyMSGf2(ctx):
 @commands.has_any_role("Admin", "Moderator")
 async def readyMSGtier1(ctx):
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tier1Role}> <@&{info.reserveTier1Role}>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.\nDon't forget to not use wet tyres in qualifying as this will results in a quali ban")
+  await ctx.send(f"<@&{info.tier1Role}> <@&{info.reserveTier1Role}>\n**Ready up**\n\n")
 
 @bot.command(name="readytier2")
 @commands.has_any_role("Admin", "Moderator")
 async def readyMSGtier2(ctx):
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tier2Role}> <@&{info.reserveTier2Role}>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.\nDon't forget to not use wet tyres in qualifying as this will results in a quali ban")
+  await ctx.send(f"<@&{info.tier2Role}> <@&{info.reserveTier2Role}>\n**Ready up**\n\n")
 
 @bot.command(name="readytier3")
 @commands.has_any_role("Admin", "Moderator")
 async def readyMSGtier3(ctx):
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tier3Role}> <@&{info.reserveTier3Role}>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.\nDon't forget to not use wet tyres in qualifying as this will results in a quali ban")
+  await ctx.send(f"<@&{info.tier3Role}> <@&{info.reserveTier3Role}>\n**Ready up**\n\n")
 
 @bot.command(name="readytier4")
 @commands.has_any_role("Admin", "Moderator")
 async def readyMSGtier4(ctx):
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tierMRole}> <@&{info.reserveTierMRole}>\n**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.\nDon't forget to not use wet tyres in qualifying as this will results in a quali ban")
+  await ctx.send(f"<@&{info.tierMRole}> <@&{info.reserveTierMRole}>\n**Ready up**\n\n")
 
 @bot.command(name="readyf2")
 @commands.has_any_role("Admin", "Moderator")
