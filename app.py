@@ -619,7 +619,7 @@ async def sendChangesAnnouncement(ctx):
 
 @bot.command("lineup")
 async def getLineupLink(ctx):
-  await ctx.reply("<https://www.f1abeez.com/line-up>")
+  await ctx.reply("<https://www.f1abeez.com/line-ups>")
 
 @bot.command("dotd")
 async def dotdMessage(ctx, *, args):
