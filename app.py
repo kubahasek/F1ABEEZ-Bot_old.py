@@ -293,6 +293,10 @@ async def HelpCommand(ctx):
 async def GetTickets(ctx, *, arg):
     await ctx.send(embed=nt.queryTickets(arg))
 
+@bot.command(name="getprofile")
+async def GetProfile(ctx, gamertag):
+    await ctx.send(embed=nt.getProfileInfo(gamertag))    
+
 @bot.command(name="getappeals")
 async def GetAppeals(ctx, *, arg):
   await ctx.send(embed = nt.queryAppeals(arg))

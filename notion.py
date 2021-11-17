@@ -1,12 +1,4 @@
 import nextcord
-from nextcord import client
-from nextcord import message
-from nextcord.colour import Color
-from nextcord.ext import tasks, commands
-from nextcord.ext.commands import CommandNotFound
-from nextcord.ext.commands.core import check
-from nextcord.ui import view
-from nextcord.ui.view import View
 import requests
 import json
 import info
@@ -326,3 +318,42 @@ def submitAnIncident(gamertag, lap, description, tier, evidence, driverInvolved,
     else:
         print(r.text)
         return "There was an error submitting your ticket, please reach out to the admin team"
+
+
+def getProfileInfo(gamertag):
+  try:
+    header = {"Authorization": info.token, "Notion-Version": "2021-05-13"}
+    database = requests.post(info.profileDatabaseURL, json={
+      "filter": {
+    "property": "Gamertag",
+    "title": {
+      "equals": gamertag
+    }
+    }
+    }, headers=header).text
+    database = json.loads(database)
+    pageId = database["results"][0]["id"]
+    page = requests.get("https://api.notion.com/v1/pages/" + pageId, headers=header).text
+    page = json.loads(page)
+    F1Points = page["properties"]["Current F1 Points"]["rollup"]["number"]
+    tier = page["properties"]["Current F1 Tier"]["multi_select"][0]["name"]
+    try:
+      team = page["properties"]["RS:Team"]["rollup"]["array"][0]["select"]["name"]
+    except IndexError:
+      team = page["properties"]["FT:Team"]["rollup"]["array"][0]["select"]["name"]
+    penaltyPoints = page["properties"]["Penalty Points"]["rollup"]["number"]
+    try:
+      bansImposed = page["properties"]["Bans Imposed"]["select"]["name"]
+    except KeyError:
+      bansImposed = "None"
+    embed = nextcord.Embed(title=f"{gamertag}'s profile", color=info.color)
+    embed.add_field(name="Tier", value=str(tier), inline=False)
+    embed.add_field(name="Team", value=str(team), inline=False)
+    embed.add_field(name="F1 Points", value=str(F1Points), inline=False)
+    embed.add_field(name="Penalty Points", value=str(penaltyPoints), inline=False)
+    embed.add_field(name="Bans Imposed", value=str(bansImposed), inline=False)
+    embed.set_thumbnail(url=page["icon"]["file"]["url"])
+    return embed
+  except Exception as e:
+    print("getProfileInfo:")
+    print(e)
