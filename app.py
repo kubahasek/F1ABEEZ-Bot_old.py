@@ -53,11 +53,11 @@ class TierMenu(nextcord.ui.View):
   async def tier3ButtonClicked(self, button, interaction):
     await self.handle_click(button, interaction)
 
-  @nextcord.ui.button(label="Tier 4", style=nextcord.ButtonStyle.primary, custom_id="Tier_4")
+  @nextcord.ui.button(label="Tier 4", style=nextcord.ButtonStyle.primary, custom_id="Tier_4", disabled=True)
   async def tier4ButtonClicked(self, button, interaction):
     await self.handle_click(button, interaction)
 
-  @nextcord.ui.button(label="Nations League", style=nextcord.ButtonStyle.primary, custom_id="Nations_League")
+  @nextcord.ui.button(label="Nations League", style=nextcord.ButtonStyle.primary, custom_id="Nations_League", disabled=True)
   async def tiermButtonClicked(self, button, interaction):
     await self.handle_click(button, interaction)
 
@@ -461,13 +461,13 @@ async def stewardsDecision(ctx, round):
   tier1URL = f"<https://f1abeez.com/race-reports/t1/{round}>"
   tier2URL = f"<https://f1abeez.com/race-reports/t2/{round}>"
   tier3URL = f"<https://f1abeez.com/race-reports/t3/{round}>"
-  tier4URL = f"<https://f1abeez.com/race-reports/t4/{round}>"
+  # tier4URL = f"<https://f1abeez.com/race-reports/t4/{round}>"
   # if(roundNO - 1 == 0):
   #   f2URL = "F2 did not race"
   # else:
   #   f2URL = f"<https://f1abeez.com/race-reports/F2-{f2round}>"
   
-  await channel.send(f"🦺 @everyone\n\n**All Stewards decisions are finalised**\nPlease check this week's race-report for all the incidents reported and decisions made.\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier 4** - {tier4URL}\n\nPlease file your appeals with the correct case number **in the next 24 hours**, and standings will be posted after all appeals are finalised \nFollow the instructions in <#864999507238322186> to submit your appeals \n\nThank you,\nStewards of F1ABEEZ")
+  await channel.send(f"🦺 @everyone\n\n**All Stewards decisions are finalised**\nPlease check this week's race-report for all the incidents reported and decisions made.\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n\nPlease file your appeals with the correct case number **in the next 24 hours**, and standings will be posted after all appeals are finalised \nFollow the instructions in <#864999507238322186> to submit your appeals \n\nThank you,\nStewards of F1ABEEZ")
 
 @bot.command(name="racereport")
 async def raceResults(ctx, round):
@@ -479,12 +479,12 @@ async def raceResults(ctx, round):
   tier1URL = f"<https://f1abeez.com/race-reports/t1/{round}>"
   tier2URL = f"<https://f1abeez.com/race-reports/t2/{round}>"
   tier3URL = f"<https://f1abeez.com/race-reports/t3/{round}>"
-  tier4URL = f"<https://f1abeez.com/race-reports/t4/{round}>"
+  # tier4URL = f"<https://f1abeez.com/race-reports/t4/{round}>"
   # if(roundNO - 1 == 0):
   #   f2URL = "F2 did not race"
   # else:
   #   f2URL = f"<https://f1abeez.com/race-reports/F2-{f2round}>"
-  await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier 4** - {tier4URL}\n\nThank you,\nKuba")
+  await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}")
 
 @bot.command(name="incidentchannel")
 async def incidentChannel(ctx):
