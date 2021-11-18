@@ -82,9 +82,9 @@ class CalendarMenu(nextcord.ui.View):
   async def tier1ButtonClicked(self, button, interaction):
     await self.handle_click(button, interaction)
   
-  @nextcord.ui.button(label="Nations League", style=nextcord.ButtonStyle.primary, custom_id="Nations_League")
-  async def tier2ButtonClicked(self, button, interaction):
-    await self.handle_click(button, interaction)
+  # @nextcord.ui.button(label="Nations League", style=nextcord.ButtonStyle.primary, custom_id="Nations_League")
+  # async def tier2ButtonClicked(self, button, interaction):
+  #   await self.handle_click(button, interaction)
 
 class reportMenu(nextcord.ui.View):
   def __init__(self):
