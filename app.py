@@ -31,15 +31,15 @@ class TierMenu(nextcord.ui.View):
     elif(str(button.custom_id) == "Tier_3"):
       self.tierSelected = "F1 - Tier 3"
       self.stop()
-    elif(str(button.custom_id) == "Tier_4"):
-      self.tierSelected = "F1 - Tier 4"
-      self.stop()
-    elif(str(button.custom_id) == "Nations_League"):
-      self.tierSelected = "Nations League"
-      self.stop()
-    elif(str(button.custom_id) == "F2"):
-      self.tierSelected = "F2"
-      self.stop()
+    # elif(str(button.custom_id) == "Tier_4"):
+    #   self.tierSelected = "F1 - Tier 4"
+    #   self.stop()
+    # elif(str(button.custom_id) == "Nations_League"):
+    #   self.tierSelected = "Nations League"
+    #   self.stop()
+    # elif(str(button.custom_id) == "F2"):
+    #   self.tierSelected = "F2"
+    #   self.stop()
 
   @nextcord.ui.button(label="Tier 1", style=nextcord.ButtonStyle.primary, custom_id="Tier_1")
   async def tier1ButtonClicked(self, button, interaction):
@@ -53,15 +53,15 @@ class TierMenu(nextcord.ui.View):
   async def tier3ButtonClicked(self, button, interaction):
     await self.handle_click(button, interaction)
 
-  @nextcord.ui.button(label="Tier 4", style=nextcord.ButtonStyle.primary, custom_id="Tier_4", disabled=True)
-  async def tier4ButtonClicked(self, button, interaction):
-    await self.handle_click(button, interaction)
+  # @nextcord.ui.button(label="Tier 4", style=nextcord.ButtonStyle.primary, custom_id="Tier_4")
+  # async def tier4ButtonClicked(self, button, interaction):
+  #   await self.handle_click(button, interaction)
 
-  @nextcord.ui.button(label="Nations League", style=nextcord.ButtonStyle.primary, custom_id="Nations_League", disabled=True)
-  async def tiermButtonClicked(self, button, interaction):
-    await self.handle_click(button, interaction)
+  # @nextcord.ui.button(label="Nations League", style=nextcord.ButtonStyle.primary, custom_id="Nations_League")
+  # async def tiermButtonClicked(self, button, interaction):
+  #   await self.handle_click(button, interaction)
 
-  # @nextcord.ui.button(label="F2", style=nextcord.ButtonStyle.primary, custom_id="F2", disabled=True)
+  # @nextcord.ui.button(label="F2", style=nextcord.ButtonStyle.primary, custom_id="F2")
   # async def f2ButtonClicked(self, button, interaction):
   #   await self.handle_click(button, interaction)
 
