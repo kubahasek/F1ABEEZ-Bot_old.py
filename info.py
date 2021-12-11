@@ -19,7 +19,7 @@ incidentReportChannel = 871334405359144970
 appealReportChannel = 871334445716766800
 suggestionSubmitChannel = 877977932914651176
 incidentLogChannel = 861939856481189908
-suggestionLogChannel = 877979327273246772
+suggestionLogChannel = 919200817075073055
 leavingChannel = 774605933661257729
 
 tier1Role = 795227294766727169

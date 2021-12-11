@@ -65,6 +65,28 @@ class TierMenu(nextcord.ui.View):
   # async def f2ButtonClicked(self, button, interaction):
   #   await self.handle_click(button, interaction)
 
+class SuggestionMenu(nextcord.ui.View):
+  def __init__(self):
+    super().__init__(timeout=None)
+
+  
+  async def handle_click(self, button, interaction):
+    if(str(button.custom_id) == "Yes"):
+      self.anonymous = True
+      self.stop()
+    elif(str(button.custom_id) == "No"):
+      self.anonymous = False
+      self.stop()
+
+  @nextcord.ui.button(label="Yes", style=nextcord.ButtonStyle.primary, custom_id="Yes")
+  async def tier1ButtonClicked(self, button, interaction):
+    await self.handle_click(button, interaction)
+  
+  @nextcord.ui.button(label="No", style=nextcord.ButtonStyle.primary, custom_id="No")
+  async def tier2ButtonClicked(self, button, interaction):
+    await self.handle_click(button, interaction)
+
+
 class CalendarMenu(nextcord.ui.View):
   def __init__(self):
     super().__init__(timeout=None)
@@ -199,13 +221,15 @@ class reportMenu(nextcord.ui.View):
 
 
     if(interaction.channel.id == info.suggestionSubmitChannel):
-      await interaction.response.send_message(f"Please follow the bot to your DMs to submit your suggestion <@{user.id}>")
       def check(m):
         return m.author == user and m.guild is None 
       try:
         await user.send("Please type your suggestion here, the admins will have a look at it as soon as possible. Thank you, Admins of F1ABEEZ")
         suggestion = await bot.wait_for("message", check=check, timeout=300.0)
         suggestion = suggestion.content
+        view = SuggestionMenu()
+        await user.send("Do you wish to stay anonymous?", view=view)
+        await view.wait()
       except asyncio.TimeoutError:
         await user.send("Unfortunately you took too long. The limit is 5 minutes per message")
       except Exception as e:
@@ -213,7 +237,8 @@ class reportMenu(nextcord.ui.View):
         print(e)
 
       suggestionLogEmbed = nextcord.Embed(title="🚨A new suggestion has been submitted🚨")
-      suggestionLogEmbed.add_field(name="**Submitted by:**", value=user.display_name, inline=False)
+      if(view.anonymous == False):
+        suggestionLogEmbed.add_field(name="**Submitted by:**", value=user.display_name, inline=False)
       suggestionLogEmbed.add_field(name="**Suggestion**", value=suggestion, inline=False)
       channel = bot.get_channel(info.suggestionLogChannel)
       await channel.send(embed = suggestionLogEmbed)
