@@ -164,19 +164,20 @@ class reportMenu(nextcord.ui.View):
           await user.send("What is the gamertag(s) of the driver(s) involved? (For penalties, reply with N/A)")
           gamertagOfInvolevedDriverInc = await bot.wait_for("message", check=check, timeout=180.0)
           gamertagOfInvolevedDriverInc = gamertagOfInvolevedDriverInc.content
+          response = nt.submitAnIncident(gamertagOfUserInc, lapOfIncidentInc, descriptionInc, tierOfIncidentInc, evidenceInc, gamertagOfInvolevedDriverInc, todayInc)
+          logEmbed = nextcord.Embed(title="⚠️New Ticket has been reported!⚠️")
+          logEmbed.add_field(name="Tier", value=tierOfIncidentInc, inline=False)
+          logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUserInc} vs {gamertagOfInvolevedDriverInc}", inline=False)
+          channel = bot.get_channel(info.incidentLogChannel)
+          await channel.send(embed = logEmbed)
+          await user.send(response)
+          await interaction.delete_original_message()
       except asyncio.TimeoutError:
           await user.send("Unfortunately you took too long to reply (Limit is three minutes per message). Please start a new incident if you want to proceed.")
       except Exception as e:
         print("incident report:")
         print(e)
-      response = nt.submitAnIncident(gamertagOfUserInc, lapOfIncidentInc, descriptionInc, tierOfIncidentInc, evidenceInc, gamertagOfInvolevedDriverInc, todayInc)
-      logEmbed = nextcord.Embed(title="⚠️New Ticket has been reported!⚠️")
-      logEmbed.add_field(name="Tier", value=tierOfIncidentInc, inline=False)
-      logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUserInc} vs {gamertagOfInvolevedDriverInc}", inline=False)
-      channel = bot.get_channel(info.incidentLogChannel)
-      await channel.send(embed = logEmbed)
-      await user.send(response)
-      await interaction.delete_original_message()
+      
 
 
     if(interaction.channel.id == info.appealReportChannel):
@@ -205,19 +206,20 @@ class reportMenu(nextcord.ui.View):
           await user.send("What is the gamertag(s) of the driver(s) involved? (For penalties, reply with N/A)")
           gamertagOfInvolevedDriverApp = await bot.wait_for("message", check=check, timeout=180.0)
           gamertagOfInvolevedDriverApp = gamertagOfInvolevedDriverApp.content
+          response = nt.submitAppeal(caseNumberApp, evidenceApp, gamertagOfUserApp, gamertagOfInvolevedDriverApp, reasonApp, additionalInfoApp, todayApp)
+          logEmbed = nextcord.Embed(title="⚠️New Appeal has been submitted!⚠️")
+          logEmbed.add_field(name="Case Number", value=caseNumberApp, inline=False)
+          logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUserApp} vs {gamertagOfInvolevedDriverApp}", inline=False)
+          channel = bot.get_channel(info.incidentLogChannel)
+          await channel.send(embed = logEmbed)
+          await user.send(response)
+          await interaction.delete_original_message()
       except asyncio.TimeoutError:
           await user.send("Unfortunately you took too long to reply (Limit is a three minutes per message). Please start a new incident if you want to proceed.")
       except Exception as e:
         print("Appeal:")
         print(e)
-      response = nt.submitAppeal(caseNumberApp, evidenceApp, gamertagOfUserApp, gamertagOfInvolevedDriverApp, reasonApp, additionalInfoApp, todayApp)
-      logEmbed = nextcord.Embed(title="⚠️New Appeal has been submitted!⚠️")
-      logEmbed.add_field(name="Case Number", value=caseNumberApp, inline=False)
-      logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUserApp} vs {gamertagOfInvolevedDriverApp}", inline=False)
-      channel = bot.get_channel(info.incidentLogChannel)
-      await channel.send(embed = logEmbed)
-      await user.send(response)
-      await interaction.delete_original_message()
+      
 
 
     if(interaction.channel.id == info.suggestionSubmitChannel):
