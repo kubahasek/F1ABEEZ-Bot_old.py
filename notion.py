@@ -335,7 +335,7 @@ def getProfileInfo(gamertag):
     pageId = database["results"][0]["id"]
     page = requests.get("https://api.notion.com/v1/pages/" + pageId, headers=header).text
     page = json.loads(page)
-    F1Points = page["properties"]["Current F1 Points"]["rollup"]["number"]
+    F1Points = page["properties"]["RU:Current F1 Points"]["rollup"]["number"]
     tier = page["properties"]["Current F1 Tier"]["multi_select"][0]["name"]
     try:
       team = page["properties"]["RS:Team"]["rollup"]["array"][0]["select"]["name"]
@@ -355,5 +355,5 @@ def getProfileInfo(gamertag):
     embed.set_thumbnail(url=page["icon"]["file"]["url"])
     return embed
   except Exception as e:
-    print("getProfileInfo:")
+    print("getprofileinfo")
     print(e)
