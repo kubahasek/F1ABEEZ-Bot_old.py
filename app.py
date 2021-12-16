@@ -705,6 +705,7 @@ async def youtube(ctx):
     print(e)
 
 @bot.command("channelname")
+@commands.has_any_role("Admin", "Moderator")
 async def channelName(ctx, name):
   nameDic = {"a": "ᴀ","b": "ʙ", "c": "ᴄ", "d":  "ᴅ", "e": "ᴇ", "f":"ꜰ", "g": "ɢ", "h":"ʜ", "i":"ɪ", "j":"ᴊ", "k":"ᴋ", "l":"ʟ", "m":"ᴍ", "n": "ɴ", "o": "ᴏ", "p":"ᴘ", "q":"Q", "r":"ʀ", "s":"ꜱ", "t":"ᴛ", "u":"ᴜ", "v":"ᴠ", "w":"ᴡ", "x":"x", "y":"ʏ", "z":"ᴢ", "-":"-"}
   returnName = ""
@@ -712,7 +713,7 @@ async def channelName(ctx, name):
     char = name[i].lower()
     returnName += nameDic.get(char)
 
-  await ctx.send("︱" + returnName)
+  await ctx.reply("︱" + returnName)
 
 ## currently unsused, but saved if needed in the future
 
