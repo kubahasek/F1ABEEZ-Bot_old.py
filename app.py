@@ -79,11 +79,11 @@ class SuggestionMenu(nextcord.ui.View):
       self.stop()
 
   @nextcord.ui.button(label="Yes", style=nextcord.ButtonStyle.primary, custom_id="Yes")
-  async def tier1ButtonClicked(self, button, interaction):
+  async def yesClicked(self, button, interaction):
     await self.handle_click(button, interaction)
   
   @nextcord.ui.button(label="No", style=nextcord.ButtonStyle.primary, custom_id="No")
-  async def tier2ButtonClicked(self, button, interaction):
+  async def noClicked(self, button, interaction):
     await self.handle_click(button, interaction)
 
 
@@ -226,6 +226,7 @@ class reportMenu(nextcord.ui.View):
       def check(m):
         return m.author == user and m.guild is None 
       try:
+        await interaction.response.send_message(f"Please follow the bot to your DMs to submit your appeal ||{user.mention}||")
         await user.send("Please type your suggestion here, the admins will have a look at it as soon as possible. Thank you, Admins of F1ABEEZ")
         suggestion = await bot.wait_for("message", check=check, timeout=300.0)
         suggestion = suggestion.content
