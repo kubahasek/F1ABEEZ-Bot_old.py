@@ -225,8 +225,8 @@ class reportMenu(nextcord.ui.View):
     if(interaction.channel.id == info.suggestionSubmitChannel):
       def check(m):
         return m.author == user and m.guild is None 
-      try:
-        await interaction.response.send_message(f"Please follow the bot to your DMs to submit your appeal ||{user.mention}||")
+      try:      
+        await interaction.response.send_message(f"Please follow the bot to your DMs! {user.mention}", ephemeral=True)
         await user.send("Please type your suggestion here, the admins will have a look at it as soon as possible. Thank you, Admins of F1ABEEZ")
         suggestion = await bot.wait_for("message", check=check, timeout=300.0)
         suggestion = suggestion.content
@@ -246,7 +246,6 @@ class reportMenu(nextcord.ui.View):
       channel = bot.get_channel(info.suggestionLogChannel)
       await channel.send(embed = suggestionLogEmbed)
       await user.send("Your suggestion has been submitted to the admins!")
-      await interaction.delete_original_message()
 
   @nextcord.ui.button(label="", emoji="📨", style=nextcord.ButtonStyle.primary, custom_id="id")
   async def reportButtonClicked(self, button, interaction):
