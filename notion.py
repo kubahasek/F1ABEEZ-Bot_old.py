@@ -7,7 +7,7 @@ import info
 
 def queryTickets(gamertag):
     zprava = ""
-    header = {"Authorization": info.token, "Notion-Version": "2021-05-13"}
+    header = {"Authorization": info.token, "Notion-Version": "2021-08-16"}
     r = requests.post(info.incidentDatabaseURL, json = {
       "filter": {
   "or": [
@@ -54,7 +54,7 @@ def queryTickets(gamertag):
     return embed
 
 def TicketDetailQuery(ticketNumber):
-    header = {"Authorization": info.token,  "Notion-Version": "2021-05-13"}
+    header = {"Authorization": info.token,  "Notion-Version": "2021-08-16"}
     req = requests.post(info.incidentDatabaseURL, json = {
         "filter": {
         "property": "Case Number",
@@ -99,7 +99,7 @@ def TicketDetailQuery(ticketNumber):
     return embed    
 
 def queryAppeals(gamertag):
-  header = {"Authorization": info.token, "Notion-Version": "2021-05-13"}
+  header = {"Authorization": info.token, "Notion-Version": "2021-08-16"}
   r = requests.post(info.appealsDatabaseURL, json = {
       "filter": {
   "or": [
@@ -149,7 +149,7 @@ def queryAppeals(gamertag):
 
 def submitAppeal(caseNumber, evidence, gamertag, gamertagInvolved, reason, additionalInfo, date):
   url = "https://api.notion.com/v1/pages/"
-  header = {"Authorization": info.token, "Notion-Version": "2021-05-13"}
+  header = {"Authorization": info.token, "Notion-Version": "2021-08-16"}
   r = requests.post(url, headers=header, json={
   "parent": {
     "database_id": info.appealsDatabaseId
@@ -237,7 +237,7 @@ def submitAppeal(caseNumber, evidence, gamertag, gamertagInvolved, reason, addit
 
 def submitAnIncident(gamertag, lap, description, tier, evidence, driverInvolved, date):
     url = "https://api.notion.com/v1/pages/"
-    header = header = {"Authorization": info.token, "Notion-Version": "2021-05-13"}
+    header = header = {"Authorization": info.token, "Notion-Version": "2021-08-16"}
     r = requests.post(url, headers=header, json={
   "parent": {
     "database_id": info.incidentDatabaseId
@@ -322,7 +322,7 @@ def submitAnIncident(gamertag, lap, description, tier, evidence, driverInvolved,
 
 def getProfileInfo(gamertag):
   try:
-    header = {"Authorization": info.token, "Notion-Version": "2021-05-13"}
+    header = {"Authorization": info.token, "Notion-Version": "2021-08-16"}
     database = requests.post(info.profileDatabaseURL, json={
       "filter": {
     "property": "Gamertag",
