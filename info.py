@@ -15,6 +15,7 @@ warningChannel = 853679513406013460
 welcomeChannel = 838841316519313408
 stewardsAnnoucementChannel = 864564506368933888
 generalAnnoucementChannel = 774696889424805891
+socialMediaAnnouncementChannel = 834548053704572948
 incidentReportChannel = 871334405359144970
 appealReportChannel = 871334445716766800
 suggestionSubmitChannel = 877977932914651176

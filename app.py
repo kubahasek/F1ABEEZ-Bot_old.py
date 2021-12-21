@@ -698,7 +698,8 @@ async def dotdWinner(ctx, *, args):
 async def youtube(ctx):
   await ctx.message.delete()
   try:
-    await info.generalAnnoucementChannel.send("@everyone\n\n**All race replays have now been uploaded to our YouTube Channel!**\n\n Check them out at: <https://www.youtube.com/channel/UCHh_JjzcjQktvEGNVq96_QA>")
+    channel = bot.get_channel(info.socialMediaAnnouncementChannel)
+    await channel.send("@everyone\n\n**All race replays have now been uploaded to our YouTube Channel!**\n\n Check them out at: <https://www.youtube.com/channel/UCHh_JjzcjQktvEGNVq96_QA>")
   except Exception as e:
     print("youtube")
     print(e)
