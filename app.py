@@ -477,6 +477,7 @@ async def on_member_remove(member):
   await channel.send(f"**{memberName}** has left the server.")
 
 @bot.command(name="stewardsdecisions")
+@commands.has_any_role("Admin", "Moderator", "Steward")
 async def stewardsDecision(ctx, round):
   channel = bot.get_channel(info.stewardsAnnoucementChannel)
   roundNO = int(round)
@@ -495,6 +496,7 @@ async def stewardsDecision(ctx, round):
   await channel.send(f"🦺 @everyone\n\n**All Stewards decisions are finalised**\nPlease check this week's race-report for all the incidents reported and decisions made.\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n\nPlease file your appeals with the correct case number **in the next 24 hours**, and standings will be posted after all appeals are finalised \nFollow the instructions in <#864999507238322186> to submit your appeals \n\nThank you,\nStewards of F1ABEEZ")
 
 @bot.command(name="racereport")
+@commands.has_any_role("Admin", "Moderator")
 async def raceResults(ctx, round):
   channel = bot.get_channel(info.generalAnnoucementChannel)
   roundNO = int(round)
@@ -512,6 +514,7 @@ async def raceResults(ctx, round):
   await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}")
 
 @bot.command(name="incidentchannel")
+@commands.has_any_role("Admin", "Moderator")
 async def incidentChannel(ctx):
   await ctx.message.delete()
   embed = nextcord.Embed(title="Report an incident",description="React to this message to report an incident by clicking the 📨 button", color=info.color)
@@ -520,12 +523,14 @@ async def incidentChannel(ctx):
   # await msg.add_reaction("📨")
 
 @bot.command(name="appealchannel")
+@commands.has_any_role("Admin", "Moderator")
 async def appealChannel(ctx):
   await ctx.message.delete()
   embed = nextcord.Embed(title="Submit an appeal",description="React to this message to submit an appeal by clicking the 📨 button", color=info.color)
   await ctx.send(embed=embed, view=reportMenu())
 
 @bot.command(name="suggestionchannel")
+@commands.has_any_role("Admin", "Moderator")
 async def suggestionChannel(ctx):
   await ctx.message.delete()
   embed = nextcord.Embed(title="Submit a suggestion",description="React to this message to submit a suggestion by clicking the 📨 button", color=info.color)
@@ -651,6 +656,7 @@ async def getLineupLink(ctx):
   await ctx.reply("<https://www.f1abeez.com/line-ups>")
 
 @bot.command("dotd")
+@commands.has_any_role("Admin", "Moderator")
 async def dotdMessage(ctx, *, args):
   await ctx.message.delete()
   try:
@@ -673,6 +679,7 @@ async def dotdMessage(ctx, *, args):
     print(e)
 
 @bot.command("dotdwinner")
+@commands.has_any_role("Admin", "Moderator")
 async def dotdWinner(ctx, *, args):
   await ctx.message.delete()
   try:
