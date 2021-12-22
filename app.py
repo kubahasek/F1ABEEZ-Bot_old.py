@@ -187,7 +187,7 @@ class reportMenu(nextcord.ui.View):
         
       await interaction.response.send_message(f"Please follow the bot to your DMs to submit your appeal {user.mention}", ephemeral=True)
       try:
-          await user.send("What is the case number you want to appeal (use ;querytickets in the bot channel in the server if you need to get it)")
+          await user.send("What is the case number you want to appeal (use ;gettickets in the bot channel in the server if you need to get it)")
           caseNumberApp = await bot.wait_for("message", check=check, timeout=180.0)
           caseNumberApp = caseNumberApp.content
           await user.send("What is your gamertag?")
