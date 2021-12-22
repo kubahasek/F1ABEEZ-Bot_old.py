@@ -124,7 +124,7 @@ class reportMenu(nextcord.ui.View):
       def checkRaw(u):
         return u.user_id == user.id and u.guild_id is None
       
-      await interaction.response.send_message(f"Please follow the bot to your DMs to report your incident <@{user.id}>")
+      await interaction.response.send_message(f"Please follow the bot to your DMs to report your incident {user.mention}", ephemeral=True)
 
       try:
           await user.send("What is your gamertag?")
@@ -171,7 +171,6 @@ class reportMenu(nextcord.ui.View):
           channel = bot.get_channel(info.incidentLogChannel)
           await channel.send(embed = logEmbed)
           await user.send(response)
-          await interaction.delete_original_message()
       except asyncio.TimeoutError:
           await user.send("Unfortunately you took too long to reply (Limit is three minutes per message). Please start a new incident if you want to proceed.")
       except Exception as e:
@@ -186,7 +185,7 @@ class reportMenu(nextcord.ui.View):
       def check(m):
         return m.author == user and m.guild is None 
         
-      await interaction.response.send_message(f"Please follow the bot to your DMs to submit your appeal <@{user.id}>")
+      await interaction.response.send_message(f"Please follow the bot to your DMs to submit your appeal {user.mention}", ephemeral=True)
       try:
           await user.send("What is the case number you want to appeal (use ;querytickets in the bot channel in the server if you need to get it)")
           caseNumberApp = await bot.wait_for("message", check=check, timeout=180.0)
@@ -213,7 +212,6 @@ class reportMenu(nextcord.ui.View):
           channel = bot.get_channel(info.incidentLogChannel)
           await channel.send(embed = logEmbed)
           await user.send(response)
-          await interaction.delete_original_message()
       except asyncio.TimeoutError:
           await user.send("Unfortunately you took too long to reply (Limit is a three minutes per message). Please start a new incident if you want to proceed.")
       except Exception as e:
