@@ -11,7 +11,8 @@ mongoDBConnSTR = os.environ.get("mongoDBConnSTR")
 figmaToken = os.environ.get("figma_token")
     
 color = 16236412
-warningChannel = 853679513406013460
+banChannel = 853679513406013460
+warningChannel = 909158996592713758
 welcomeChannel = 838841316519313408
 stewardsAnnoucementChannel = 864564506368933888
 generalAnnoucementChannel = 774696889424805891
