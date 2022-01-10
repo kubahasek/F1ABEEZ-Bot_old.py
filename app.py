@@ -261,6 +261,20 @@ def GetHelpCommand():
     embed.add_field(name=";submitappeal", value="This command allows you to submit an appeal to a decision that has been made by the stewards. Please use ;gettickets before you start submitting it to make sure you know the case number of the incident you want to appeal", inline=False)
     return embed
 
+def getStaffHelpCommand():
+  embed = nextcord.Embed(title="Staff Help", color=info.color)
+  embed.add_field(name=";dotd", value="Sends the DOTD vote message\nusage: ;dotd tier, driver1Name, driver1PosChange, driver2Name, driver2PosChange, driver3Name, driver3PosChange, driver4Name, driver4PosChange, driver5Name, driver5PosChange")
+  embed.add_field(name=";dotdwinner", value="Sends the winner of DOTD\nusage: ;dotdwinner tier, winnerName")
+  embed.add_field(name=";lobbytier<tierNumber>", value="Sends the lobby is open message. Enter the tier number instead of <tierNumber>")
+  embed.add_field(name=";readytier<tierNumber>", value="Sends the ready up instruction. Enter the tier number instead of <tierNumber>")
+  embed.add_field(name=";racetier<tierNumber>", value="Sends the race ready up instruction. Enter the tier number instead of <tierNumber>")
+  embed.add_field(name=";stewardsdecision <roundNumber>", value="Send the links to respective tier race reports. Enter round number instead of <roundNumber>")
+  embed.add_field(name=";academymessage", value="Send the academy info message")
+  embed.add_field(name=";ban", value="(ADMIN ONLY) - allows to ban a user, and automatically sends it into the ban channel.")
+  embed.add_field(name=";racereport <roundNumber>", value="Send the links to respective tier race reports. Enter round number instead of <roundNumber>")
+  embed.add_field(name=";channelname", value="Provide the channel name separated by - (e.g. this-is-a-channel) and the bot will return the name in the special font")
+  return embed
+
 def dotdMessageFun(str):
   tier = str[0]
   driver1 = str[1]
@@ -313,6 +327,12 @@ async def on_ready():
 @bot.command(name="help")
 async def HelpCommand(ctx):
     await ctx.send(embed = GetHelpCommand())
+
+@bot.command(name="staffhelp")
+@commands.has_any_role("Staff")
+async def StaffHelpCommand(ctx):
+  embed = getStaffHelpCommand()
+  await ctx.send(embed=embed)
 
 @bot.command(name="gettickets")
 async def GetTickets(ctx, *, arg):
