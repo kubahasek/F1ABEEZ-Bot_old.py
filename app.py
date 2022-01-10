@@ -263,16 +263,17 @@ def GetHelpCommand():
 
 def getStaffHelpCommand():
   embed = nextcord.Embed(title="Staff Help", color=info.color)
-  embed.add_field(name=";dotd", value="Sends the DOTD vote message\nusage: ;dotd tier, driver1Name, driver1PosChange, driver2Name, driver2PosChange, driver3Name, driver3PosChange, driver4Name, driver4PosChange, driver5Name, driver5PosChange")
-  embed.add_field(name=";dotdwinner", value="Sends the winner of DOTD\nusage: ;dotdwinner tier, winnerName")
-  embed.add_field(name=";lobbytier<tierNumber>", value="Sends the lobby is open message. Enter the tier number instead of <tierNumber>")
-  embed.add_field(name=";readytier<tierNumber>", value="Sends the ready up instruction. Enter the tier number instead of <tierNumber>")
-  embed.add_field(name=";racetier<tierNumber>", value="Sends the race ready up instruction. Enter the tier number instead of <tierNumber>")
-  embed.add_field(name=";stewardsdecision <roundNumber>", value="Send the links to respective tier race reports. Enter round number instead of <roundNumber>")
-  embed.add_field(name=";academymessage", value="Send the academy info message")
-  embed.add_field(name=";ban", value="(ADMIN ONLY) - allows to ban a user, and automatically sends it into the ban channel.")
-  embed.add_field(name=";racereport <roundNumber>", value="Send the links to respective tier race reports. Enter round number instead of <roundNumber>")
-  embed.add_field(name=";channelname", value="Provide the channel name separated by - (e.g. this-is-a-channel) and the bot will return the name in the special font")
+  embed.add_field(name=";dotd", value="Sends the DOTD vote message\nusage: ;dotd tier, driver1Name, driver1PosChange, driver2Name, driver2PosChange, driver3Name, driver3PosChange, driver4Name, driver4PosChange, driver5Name, driver5PosChange", inline=False)
+  embed.add_field(name=";dotdwinner", value="Sends the winner of DOTD\nusage: ;dotdwinner tier, winnerName", inline=False)
+  embed.add_field(name=";lobbytier<tierNumber>", value="Sends the lobby is open message. Enter the tier number instead of <tierNumber>", inline=False)
+  embed.add_field(name=";readytier<tierNumber>", value="Sends the ready up instruction. Enter the tier number instead of <tierNumber>", inline=False)
+  embed.add_field(name=";racetier<tierNumber>", value="Sends the race ready up instruction. Enter the tier number instead of <tierNumber>", inline=False)
+  embed.add_field(name=";stewardsdecision <roundNumber>", value="Send the links to respective tier race reports. Enter round number instead of <roundNumber>", inline=False)
+  embed.add_field(name=";academymessage", value="Send the academy info message", inline=False)
+  embed.add_field(name=";warn", value="(ADMIN ONLY) - allows to warn a user, sending the warning into the proper channel to keep track.")
+  embed.add_field(name=";ban", value="(ADMIN ONLY) - allows to ban a user, and automatically sends it into the ban channel.", inline=False)
+  embed.add_field(name=";racereport <roundNumber>", value="Send the links to respective tier race reports. Enter round number instead of <roundNumber>", inline=False)
+  embed.add_field(name=";channelname", value="Provide the channel name separated by - (e.g. this-is-a-channel) and the bot will return the name in the special font", inline=False)
   return embed
 
 def dotdMessageFun(str):
