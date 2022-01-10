@@ -453,6 +453,36 @@ async def academyMSG(ctx):
   msg =  await ctx.send(f"<@&{info.academyRole}>\n**TRIAL RACE BRIEFING:**\nWelcome to the F1ABEEZ trial race! I would just like to run through what is expected of you from your trial:\n- Please drive clean - we are a clean racing league, show respect to your fellow drivers! dirty driving will not be tolerated\n- Drive fast! It's still a race after all, we would like to see a true reflection of your pace\n- Do not use medium tyres in Qualifying for this trial race, as this lets us compare your quali pace!\n- Have fun! That's what we're all here for\n\nThe format is short qualifying, 25% race\nAfter the race is completed, one of the trialist leaders will DM you individually with their decision\nPlease react with a thumbs up once you have read this, good luck!")
   await msg.add_reaction("👍")
 
+
+@bot.command(name="warn")
+@commands.has_any_role("Admin")
+async def warn(ctx, user=None, *, reason=None):
+  if(user is None):
+    await ctx.send("You didn't mention the user")
+    return
+  if(reason is None):
+    await ctx.send("You didn't provide a reason")
+    return
+  
+  try: 
+    member = ctx.message.mentions[0]
+    membername = ctx.message.mentions[0].name
+  except IndexError:
+    print(user)
+    member = await ctx.guild.fetch_member(int(user))
+    print(member)
+    membername = member.name
+  except Exception as e:
+    print("warn:")
+    print(e)
+
+  embed = nextcord.Embed(title="A Warning has been issued", color=info.color)
+  embed.add_field(name="User", value=membername, inline=False)
+  embed.add_field(name="Reason", value=reason, inline=False)
+  channel = bot.get_channel(info.warningChannel)
+  await channel.send(embed = embed)
+  await ctx.send(embed = embed)   
+
 @bot.command(name="ban")
 @commands.has_any_role("Admin")
 async def ban(ctx, user=None, *, reason=None):
