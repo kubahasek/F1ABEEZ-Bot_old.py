@@ -19,10 +19,10 @@ f2abeezID = os.environ.get("f2abeezID")
 IDList = json.load(open('IDList.json'))
 
 def get_channelID(serverID, channelName):
-    return IDList[str(serverID)][channelName]
+    return IDList[str(serverID)]["channels"][channelName] 
 
 def get_roleID(serverID, roleName):
-    return IDList[str(serverID)][roleName]
+    return IDList[str(serverID)]["roles"][roleName]
 
 color = 16236412
 banChannel = 853679513406013460
