@@ -325,7 +325,7 @@ bot.remove_command("help")
 
 @bot.event
 async def on_ready():
-    print("We have logged in as {0.user}".format(bot))
+    logging.info("We have logged in as {0.user}".format(bot))
     bot.add_view(reportMenu())
     await bot.change_presence(activity=nextcord.Activity(type=nextcord.ActivityType.watching, name="F1ABEEZ Server 🚀"))
 
