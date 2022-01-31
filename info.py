@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+import json
 
 load_dotenv()
 
@@ -14,7 +15,13 @@ mongoDBConnSTR = os.environ.get("mongoDBConnSTR")
 figmaToken = os.environ.get("figma_token")
 f1abeezID = os.environ.get("f1abeezID")
 f2abeezID = os.environ.get("f2abeezID")
-    
+
+channels = json.load(open('channelIDs.json'))
+
+def get_channelID(serverID, channelName):
+    return channels[str(serverID)][channelName]
+
+
 color = 16236412
 banChannel = 853679513406013460
 warningChannel = 909158996592713758
