@@ -58,9 +58,14 @@
       "reserveTier2Role": 937757455260209193,
       "tier3Role": 937757455260209193,
       "reserveTier3Role": 937757455260209193,
+      "tier4Role": 937757455260209193,
+      "reserveTier4Role": 937757455260209193,
+      "tier5Role": 937757455260209193,
+      "reserveTier5Role": 937757455260209193,
       "tierMRole": 937757455260209193,
       "reserveTierMRole": 937757455260209193,
-      "nationsLeagueRole": 937757455260209193,
+      "tierNARole": 937757455260209193,
+      "reserveTierNARole": 937757455260209193,
       "academyRole": 937757455260209193
     }
   }
