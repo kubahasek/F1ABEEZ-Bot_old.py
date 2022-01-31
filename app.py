@@ -385,6 +385,10 @@ async def lobbyMSGtier2(ctx):
 @bot.command(name="lobbytier3")
 @commands.has_any_role("Admin", "Moderator")
 async def lobbyMSGtier3(ctx):
+  tier3ID = info.get_roleID(ctx.guild.id, "tier3Role")
+  reserveTier3ID = info.get_roleID(ctx.guild.id, "reserveTier3Role")
+  if(type(tier3ID) == type(None) or type(reserveTier3ID) == type(None)):
+    logging.error("Could not find tier 3 roles", exc_info=True)
   await ctx.message.delete()
   await ctx.send(f"<@&{info.tier3Role}> <@&{info.reserveTier3Role}>\n**Lobby is now open!**\nPlease join off <@401204069890523137>\nGamertag is - OwningLeMoNz\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
 
