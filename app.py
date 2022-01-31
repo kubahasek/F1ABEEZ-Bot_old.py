@@ -395,8 +395,34 @@ async def lobbyMSGtier3(ctx):
 @bot.command(name="lobbytier4")
 @commands.has_any_role("Admin", "Moderator")
 async def lobbyMSGtier4(ctx):
+  tier4ID = info.get_roleID(ctx.guild.id, "tier4Role")
+  reserveTier4ID = info.get_roleID(ctx.guild.id, "reserveTier4Role")
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tierMRole}> <@&{info.reserveTierMRole}>\n**Lobby is now open!**\nPlease join off <@559096129816363010>\nGamertag is - Razznyk\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+  await ctx.send(f"<@&{tier4ID}> <@&{reserveTier4ID}>\n**Lobby is now open!**\nPlease join off <@559096129816363010>\nGamertag is - Razznyk\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+
+@bot.command(name="lobbytier5")
+@commands.has_any_role("Admin", "Moderator")
+async def lobbyMSGtier4(ctx):
+  tier5ID = info.get_roleID(ctx.guild.id, "tier5Role")
+  reserveTier5ID = info.get_roleID(ctx.guild.id, "reserveTier5Role")
+  await ctx.message.delete()
+  await ctx.send(f"<@&{tier5ID}> <@&{reserveTier5ID}>\n**Lobby is now open!**\nPlease join off <@559096129816363010>\nGamertag is - Razznyk\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+
+@bot.command(name="lobbytierM")
+@commands.has_any_role("Admin", "Moderator")
+async def lobbyMSGtier4(ctx):
+  tierMID = info.get_roleID(ctx.guild.id, "tierMRole")
+  reserveTierMID = info.get_roleID(ctx.guild.id, "reserveTierMRole")
+  await ctx.message.delete()
+  await ctx.send(f"<@&{tierMID}> <@&{reserveTierMID}>\n**Lobby is now open!**\nPlease join off <@559096129816363010>\nGamertag is - Razznyk\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+
+@bot.command(name="lobbytierNA")
+@commands.has_any_role("Admin", "Moderator")
+async def lobbyMSGtier4(ctx):
+  tierNAID = info.get_roleID(ctx.guild.id, "tierNARole")
+  reserveTierNAID = info.get_roleID(ctx.guild.id, "reserveTierNARole")
+  await ctx.message.delete()
+  await ctx.send(f"<@&{tierNAID}> <@&{reserveTierNAID}>\n**Lobby is now open!**\nPlease join off <@559096129816363010>\nGamertag is - Razznyk\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
 
 @bot.command(name="lobbyf2")
 @commands.has_any_role("Admin", "Moderator")
