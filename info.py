@@ -16,11 +16,13 @@ figmaToken = os.environ.get("figma_token")
 f1abeezID = os.environ.get("f1abeezID")
 f2abeezID = os.environ.get("f2abeezID")
 
-channels = json.load(open('IDList.json'))
+IDList = json.load(open('IDList.json'))
 
 def get_channelID(serverID, channelName):
-    return channels[str(serverID)][channelName]
+    return IDList[str(serverID)][channelName]
 
+def get_roleID(serverID, roleName):
+    return IDList[str(serverID)][roleName]
 
 color = 16236412
 banChannel = 853679513406013460
