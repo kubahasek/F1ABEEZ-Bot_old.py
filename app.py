@@ -359,7 +359,7 @@ async def TicketDetail(ctx, ticketNum):
 async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
         await ctx.send("Command not found")
-    print(error)
+    logging.error(error)
 
 @bot.command(name="lobbytier1")
 @commands.has_any_role("Admin", "Moderator")
