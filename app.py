@@ -15,6 +15,7 @@ import datetime
 import pytz
 import notion as nt
 import info
+import logging
 
 class TierMenu(nextcord.ui.View):
   def __init__(self):
