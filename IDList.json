@@ -14,7 +14,18 @@
       "suggestionLogChannel": 919200817075073055,
       "leavingChannel": 774605933661257729
     },
-    "roles": {}
+    "roles": {
+      "tier1Role": 795227294766727169,
+      "reserveTier1Role": 893654550962139176,
+      "tier2Role": 795227317684928546,
+      "reserveTier2Role": 893654646462218240,
+      "tier3Role": 813703851349245965,
+      "reserveTier3Role": 893654551704526859,
+      "tierMRole": 840694396990521364,
+      "reserveTierMRole": 893654640321789983,
+      "nationsLeagueRole": 893765015776161854,
+      "academyRole": 774740889557270539
+    }
   },
   "935253214285135952": {
     "channels": {},
