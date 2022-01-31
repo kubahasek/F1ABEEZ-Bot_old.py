@@ -17,6 +17,9 @@ import notion as nt
 import info
 import logging
 
+
+logging.basicConfig(format='%(asctime)s-%(levelname)s:%(message)s')
+
 class TierMenu(nextcord.ui.View):
   def __init__(self):
     super().__init__(timeout=None)
