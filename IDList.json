@@ -21,9 +21,14 @@
       "reserveTier2Role": 893654646462218240,
       "tier3Role": 813703851349245965,
       "reserveTier3Role": 893654551704526859,
-      "tierMRole": 840694396990521364,
-      "reserveTierMRole": 893654640321789983,
-      "nationsLeagueRole": 893765015776161854,
+      "tier4Role": 937459936206663700,
+      "reserveTier4Role": 937459953281683517,
+      "tier5Role": 937459976253894687,
+      "reserveTier5Role": 937459992322269184,
+      "tierMRole": 937460013675446292,
+      "reserveTierMRole": 937460030251352065,
+      "tierNARole": 937460052799914034,
+      "reserveTierNARole": 937460066330738769,
       "academyRole": 774740889557270539
     }
   },
