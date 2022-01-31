@@ -366,6 +366,8 @@ async def on_command_error(ctx, error):
 async def lobbyMSGtier1(ctx):
   tier1ID = info.get_roleID(ctx.guild.id, "tier1Role")
   reserveTier1ID = info.get_roleID(ctx.guild.id, "reserveTier1Role")
+  if(type(tier1ID) == type(None) or type(reserveTier1ID) == type(None)):
+    logging.error("Could not find tier 1 roles", exc_info=True)
   await ctx.message.delete()
   await ctx.send(f"<@&{tier1ID}> <@&{reserveTier1ID}>\n**Lobby is now open!**\nPlease join off <@705761570126561341>\nGamertag is - Sammie230408\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
 
