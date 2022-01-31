@@ -15,6 +15,17 @@
   },
   "935253214285135952": {},
   "801005100596199444": {
-    "welcomeChannel": 827943552699990046
+    "welcomeChannel": 827943552699990046,
+    "banChannel": 827943552699990046,
+    "warningChannel": 827943552699990046,
+    "stewardsAnnouncementChannel": 827943552699990046,
+    "generalAnnoucementChannel": 827943552699990046,
+    "socialMediaAnnouncementChannel": 827943552699990046,
+    "incidentReportChannel": 827943552699990046,
+    "appealReportChannel": 827943552699990046,
+    "suggestionSubmitChannel": 827943552699990046,
+    "incidentLogChannel": 827943552699990046,
+    "suggestionLogChannel": 827943552699990046,
+    "leavingChannel": 827943552699990046
   }
 }
