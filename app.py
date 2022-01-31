@@ -520,10 +520,14 @@ async def ban(ctx, user=None, *, reason=None):
     
 @bot.event
 async def on_member_join(member):
+  serverID = member.guild.id
   role = nextcord.utils.get(member.guild.roles, name="Academy Driver")
   await member.add_roles(role)
-  channel = bot.get_channel(info.welcomeChannel)
-  await channel.send(f"**Welcome <@{member.id}>**\n\nPlease use this chat if you have any questions and someone will be on hand.\n\nAll the information you need is on <#865379267977412618>")
+  channel = bot.get_channel(info.get_channelID(serverID, "welcomeChannel"))
+  if(type(channel) != type(None)):
+    await channel.send(f"**Welcome <@{member.id}>**\n\nPlease use this chat if you have any questions and someone will be on hand.\n\nAll the information you need is on <#865379267977412618>")
+  else:
+    logging.error("welcomeChannel not found")
 
 @bot.event
 async def on_member_remove(member):
