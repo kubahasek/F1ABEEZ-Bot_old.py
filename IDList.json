@@ -46,6 +46,17 @@
       "suggestionLogChannel": 827943552699990046,
       "leavingChannel": 827943552699990046
     },
-    "roles": {}
+    "roles": {
+      "tier1Role": 937757455260209193,
+      "reserveTier1Role": 937757455260209193,
+      "tier2Role": 937757455260209193,
+      "reserveTier2Role": 937757455260209193,
+      "tier3Role": 937757455260209193,
+      "reserveTier3Role": 937757455260209193,
+      "tierMRole": 937757455260209193,
+      "reserveTierMRole": 937757455260209193,
+      "nationsLeagueRole": 937757455260209193,
+      "academyRole": 937757455260209193
+    }
   }
 }
