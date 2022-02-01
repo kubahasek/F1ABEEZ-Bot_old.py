@@ -612,11 +612,25 @@ async def raceMSGtierNA(ctx):
   await ctx.message.delete()
   await ctx.send(f"<@&{tierNAID}> <@&{reserveTierNAID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
 
-@bot.command(name="racef2")
+@bot.command(name="racef2tier1")
 @commands.has_any_role("Admin", "Moderator")
-async def raceMSGf2(ctx):
+async def raceMSGf2tier1(ctx):
+  f2tier1ID = info.get_roleID(ctx.guild.id, "f2Tier1Role")
+  f2reserveTier1ID = info.get_roleID(ctx.guild.id, "reserveF2Tier1Role")
+  if(type(f2tier1ID) == type(None) or type(f2reserveTier1ID) == type(None)):
+    logging.error("Could not find tier 1 F2 roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send("Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+  await ctx.send(f"<@&{f2tier1ID}> <@&{f2reserveTier1ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+
+@bot.command(name="racef2tier2")
+@commands.has_any_role("Admin", "Moderator")
+async def raceMSGf2tier2(ctx):
+  f2tier2ID = info.get_roleID(ctx.guild.id, "f2Tier2Role")
+  f2reserveTier2ID = info.get_roleID(ctx.guild.id, "reserveF2Tier2Role")
+  if(type(f2tier2ID) == type(None) or type(f2reserveTier2ID) == type(None)):
+    logging.error("Could not find tier 1 F2 roles", exc_info=True)
+  await ctx.message.delete()
+  await ctx.send(f"<@&{f2tier2ID}> <@&{f2reserveTier2ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
 
 @bot.command(name="academymessage")
 @commands.has_any_role("Admin", "Moderator", "Trialist Manager")
