@@ -10,8 +10,6 @@ from nextcord.ext.commands.core import check
 from nextcord.ui import view
 from nextcord.ui.view import View
 import requests
-import json
-import os
 import datetime
 import pytz
 import notion as nt
@@ -24,7 +22,6 @@ logging.basicConfig(format='%(asctime)s-%(levelname)s:%(message)s')
 
 class TierDropdown(nextcord.ui.Select):
   def __init__(self):
-    tierSelected = ""
     options = [
       nextcord.SelectOption(label="Tier 1",description="F1 - Tier 1" ,value="F1 - Tier 1"),
       nextcord.SelectOption(label="Tier 2",description="F1 - Tier 2" ,value="F1 - Tier 2"),
@@ -45,7 +42,7 @@ class TierDropdown(nextcord.ui.Select):
 class DropdownView(nextcord.ui.View):
   def __init__(self):
       super().__init__()
-      self.add_item(TierDropdown())
+      self.add_item(TierDropdown())   
   
 class TierMenu(nextcord.ui.View):
   def __init__(self):
