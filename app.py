@@ -522,11 +522,25 @@ async def readyMSGtierNA(ctx):
   await ctx.message.delete()
   await ctx.send(f"<@&{tierNAID}> <@&{reserveTierNAID}>\n**Ready up**\n\n")
 
-@bot.command(name="readyf2")
+@bot.command(name="readyf2tier1")
 @commands.has_any_role("Admin", "Moderator")
-async def readyMSGf2(ctx):
+async def readyMSGf2tier1(ctx):
+  f2tier1ID = info.get_roleID(ctx.guild.id, "f2Tier1Role")
+  f2reserveTier1ID = info.get_roleID(ctx.guild.id, "reserveF2Tier1Role")
+  if(type(f2tier1ID) == type(None) or type(f2reserveTier1ID) == type(None)):
+    logging.error("Could not find tier 1 F2 roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send("**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.\nDon't forget to not use wet tyres in qualifying as this will results in a quali ban")
+  await ctx.send(f"<@&{f2tier1ID}> <@&{f2reserveTier1ID}>\n**Ready up**\n\nDon't forget to not use wet tyres in qualifying as this will results in a quali ban")
+
+@bot.command(name="readyf2tier2")
+@commands.has_any_role("Admin", "Moderator")
+async def readyMSGf2tier2(ctx):
+  f2tier2ID = info.get_roleID(ctx.guild.id, "f2Tier2Role")
+  f2reserveTier2ID = info.get_roleID(ctx.guild.id, "reserveF2Tier2Role")
+  if(type(f2tier2ID) == type(None) or type(f2reserveTier2ID) == type(None)):
+    logging.error("Could not find tier 1 F2 roles", exc_info=True)
+  await ctx.message.delete()
+  await ctx.send(f"<@&{f2tier2ID}> <@&{f2reserveTier2ID}>\n**Ready up**\n\nDon't forget to not use wet tyres in qualifying as this will results in a quali ban")
 
 @bot.command(name="racetier1")
 @commands.has_any_role("Admin", "Moderator")
