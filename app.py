@@ -485,8 +485,12 @@ async def readyMSGtier3(ctx):
 @bot.command(name="readytier4")
 @commands.has_any_role("Admin", "Moderator")
 async def readyMSGtier4(ctx):
+  tier4ID = info.get_roleID(ctx.guild.id, "tier4Role")
+  reserveTier4ID = info.get_roleID(ctx.guild.id, "reserveTier4Role")
+  if(type(tier4ID) == type(None) or type(reserveTier4ID) == type(None)):
+    logging.error("Could not find tier 4 roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tierMRole}> <@&{info.reserveTierMRole}>\n**Ready up**\n\n")
+  await ctx.send(f"<@&{tier4ID}> <@&{reserveTier4ID}>\n**Ready up**\n\n")
 
 @bot.command(name="readyf2")
 @commands.has_any_role("Admin", "Moderator")
@@ -527,8 +531,12 @@ async def raceMSGtier3(ctx):
 @bot.command(name="racetier4")
 @commands.has_any_role("Admin", "Moderator")
 async def raceMSGtier4(ctx):
+  tier4ID = info.get_roleID(ctx.guild.id, "tier4Role")
+  reserveTier4ID = info.get_roleID(ctx.guild.id, "reserveTier4Role")
+  if(type(tier4ID) == type(None) or type(reserveTier4ID) == type(None)):
+    logging.error("Could not find tier 4 roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tierMRole}> <@&{info.reserveTierMRole}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+  await ctx.send(f"<@&{tier4ID}> <@&{reserveTier4ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
 
 @bot.command(name="racef2")
 @commands.has_any_role("Admin", "Moderator")
