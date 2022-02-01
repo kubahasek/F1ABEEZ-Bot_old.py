@@ -120,7 +120,7 @@ class reportMenu(nextcord.ui.View):
   async def handle_click(self, button, interaction):
     user = interaction.user
     channel = interaction.channel
-    if(interaction.channel_id == info.incidentReportChannel):
+    if(interaction.channel_id == info.get_channelID(interaction.guild_id, "incidentReportChannel")):
       bst = pytz.timezone("Europe/London")
       todayInc = datetime.datetime.now(tz=bst).isoformat()
       def check(m):
@@ -173,7 +173,7 @@ class reportMenu(nextcord.ui.View):
           logEmbed = nextcord.Embed(title="⚠️New Ticket has been reported!⚠️")
           logEmbed.add_field(name="Tier", value=tierOfIncidentInc, inline=False)
           logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUserInc} vs {gamertagOfInvolevedDriverInc}", inline=False)
-          channel = bot.get_channel(info.incidentLogChannel)
+          channel = bot.get_channel(info.get_channelID(interaction.guild_id, "incidentLogChannel"))
           await channel.send(embed = logEmbed)
           await user.send(response)
       except asyncio.TimeoutError:
@@ -184,7 +184,7 @@ class reportMenu(nextcord.ui.View):
       
 
 
-    if(interaction.channel.id == info.appealReportChannel):
+    if(interaction.channel.id == info.get_channelID(interaction.guild_id, "appealReportChannel")):
       bst = pytz.timezone("Europe/London")
       todayApp = datetime.datetime.now(tz=bst).isoformat()
       def check(m):
@@ -214,7 +214,7 @@ class reportMenu(nextcord.ui.View):
           logEmbed = nextcord.Embed(title="⚠️New Appeal has been submitted!⚠️")
           logEmbed.add_field(name="Case Number", value=caseNumberApp, inline=False)
           logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUserApp} vs {gamertagOfInvolevedDriverApp}", inline=False)
-          channel = bot.get_channel(info.incidentLogChannel)
+          channel = bot.get_channel(info.get_channelID(interaction.guild_id, "incidentLogChannel"))
           await channel.send(embed = logEmbed)
           await user.send(response)
       except asyncio.TimeoutError:
@@ -225,7 +225,7 @@ class reportMenu(nextcord.ui.View):
       
 
 
-    if(interaction.channel.id == info.suggestionSubmitChannel):
+    if(interaction.channel.id == info.get_channelID(interaction.guild_id, "suggestionSubmitChannel")):
       def check(m):
         return m.author == user and m.guild is None 
       try:      
@@ -246,7 +246,7 @@ class reportMenu(nextcord.ui.View):
       if(view.anonymous == False):
         suggestionLogEmbed.add_field(name="**Submitted by:**", value=user.display_name, inline=False)
       suggestionLogEmbed.add_field(name="**Suggestion**", value=suggestion, inline=False)
-      channel = bot.get_channel(info.suggestionLogChannel)
+      channel = bot.get_channel(info.get_channelID(interaction.guild_id, "suggestionLogChannel"))
       await channel.send(embed = suggestionLogEmbed)
       await user.send("Your suggestion has been submitted to the admins!")
 
