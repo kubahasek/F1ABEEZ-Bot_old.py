@@ -39,12 +39,17 @@ class TierDropdown(nextcord.ui.Select):
   async def callback(self, interaction: nextcord.Interaction):
     self.tierSelected = self.values[0]
     await interaction.response.send_message(f"You have selected {self.tierSelected}")
-
-
 class DropdownView(nextcord.ui.View):
   def __init__(self):
     super().__init__()
-    self.add_item(TierDropdown())
+    self.dropdown = TierDropdown()
+    self.add_item(self.dropdown)
+
+  @nextcord.ui.button(label="Confirm", style=nextcord.ButtonStyle.green, row=1)
+  async def confirm(self,button: nextcord.ui.Button, interaction: nextcord.Interaction):
+    await interaction.response.send_message(f"You have selected {self.dropdown.tierSelected}")
+    self.stop()
+    
 class TierMenu(nextcord.ui.View):
   def __init__(self):
     super().__init__(timeout=None)
@@ -993,6 +998,6 @@ async def channelName(ctx, name):
 @bot.command("testview")
 async def testview(ctx):
   view = DropdownView()
-  await ctx.send(view=view)
+  await ctx.send("Select tier", view=view)
 
 bot.run(info.discord_token)
