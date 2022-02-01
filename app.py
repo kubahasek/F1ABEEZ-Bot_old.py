@@ -39,7 +39,7 @@ class TierDropdown(nextcord.ui.Select):
   async def callback(self, interaction: nextcord.Interaction):
     self.tierSelected = self.values[0]
     await interaction.response.send_message(f"You have selected {self.tierSelected}")
-class DropdownView(nextcord.ui.View):
+class DropdownTierView(nextcord.ui.View):
   def __init__(self):
     super().__init__()
     self.dropdown = TierDropdown()
