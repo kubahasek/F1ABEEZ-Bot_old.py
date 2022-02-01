@@ -747,7 +747,7 @@ async def stewardsDecision(ctx, round):
 @bot.command(name="racereport")
 @commands.has_any_role("Admin", "Moderator")
 async def raceResults(ctx, round):
-  channel = bot.get_channel(info.generalAnnoucementChannel)
+  channel = bot.get_channel(info.get_channelID(ctx.guild.id, "generalAnnoucementChannel"))
   roundNO = int(round)
   # f2RoundNO = roundNO - 1
   # f2round = f"R{f2RoundNO}"
@@ -760,7 +760,11 @@ async def raceResults(ctx, round):
   #   f2URL = "F2 did not race"
   # else:
   #   f2URL = f"<https://f1abeez.com/race-reports/F2-{f2round}>"
-  await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}")
+  if(type(channel) != type(None)):
+    await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}")
+  else:
+    logging.error("generalAnnoucementChannel not found")
+    await ctx.reply("ERROR: generalAnnoucementChannel not found, contact KubaH04")
 
 @bot.command(name="incidentchannel")
 @commands.has_any_role("Admin", "Moderator")
