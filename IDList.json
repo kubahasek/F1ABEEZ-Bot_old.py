@@ -33,8 +33,26 @@
     }
   },
   "935253214285135952": {
-    "channels": {},
-    "roles": {}
+    "channels": {
+      "incidentReportChannel": 937639245424767026,
+      "appealReportChannel": 937639296888877097,
+      "generalAnnoucementChannel": 937636752842174474,
+      "socialMediaAnnouncementChannel": 937636815203106856,
+      "suggestionSubmitChannel": 937995031988555806,
+      "suggestionLogChannel": 937995180341092375,
+      "stewardsAnnouncementChannel": 937996079352401920,
+      "incidentLogChannel": 938002517734862888,
+      "welcomeChannel": 937996861816598599,
+      "leavingChannel": 937996861816598599,
+      "warningChannel": 938004577746296832,
+      "banChannel": 938004615486664764
+    },
+    "roles": {
+      "f2tier1Role": 937644492033507349,
+      "reserveF2Tier1Role": 937644510140334100,
+      "f2Tier2Role": 937644537633972234,
+      "reserveF2Tier2Role": 937644555199737926
+    }
   },
   "801005100596199444": {
     "channels": {
