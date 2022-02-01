@@ -829,7 +829,7 @@ async def getCalendar(ctx):
 @bot.command(name="standings")
 async def getStandings(ctx):
   await ctx.message.delete()
-  view = TierMenu()
+  view = DropdownTierView()
   selectMSG = await ctx.send("For which tier do you want to see standings?", view=view)
   await view.wait()
   try:
@@ -873,12 +873,65 @@ async def getStandings(ctx):
       if(r):
         await msg.delete()
       r = r.json()
-      url = r["images"]["4:351"]
+      url = r["images"]["4:351"] ## TODO: Change this to the correct image
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
       await ctx.send(embed=e)
-    elif(view.tierSelected == "Nations League"):
-      await ctx.send("Graphics for Nations League standings are currently not available")
+    elif(view.tierSelected == "F1 - Tier 5"):
+      await selectMSG.delete()
+      msg = await ctx.send("Getting Tier 5 Standings")
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
+      if(r):
+        await msg.delete()
+      r = r.json()
+      url = r["images"]["2:16"] ## TODO: Change this to the correct image
+      e = nextcord.Embed(color=info.color) 
+      e.set_image(url=url) 
+      await ctx.send(embed=e)
+    elif(view.tierSelected == "F1 - Tier M"):
+      await selectMSG.delete()
+      msg = await ctx.send("Getting Tier M Standings")
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
+      if(r):
+        await msg.delete()
+      r = r.json()
+      url = r["images"]["2:16"] ## TODO: Change this to the correct image
+      e = nextcord.Embed(color=info.color) 
+      e.set_image(url=url) 
+      await ctx.send(embed=e)
+    elif(view.tierSelected == "F1 - Tier NA"):
+      await selectMSG.delete()
+      msg = await ctx.send("Getting Tier NA Standings")
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
+      if(r):
+        await msg.delete()
+      r = r.json()
+      url = r["images"]["2:16"] ## TODO: Change this to the correct image
+      e = nextcord.Embed(color=info.color) 
+      e.set_image(url=url) 
+      await ctx.send(embed=e)
+    elif(view.tierSelected == "F2 - Tier 1"):
+      await selectMSG.delete()
+      msg = await ctx.send("Getting F2 - Tier 1 Standings")
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
+      if(r):
+        await msg.delete()
+      r = r.json()
+      url = r["images"]["2:16"] ## TODO: Change this to the correct image
+      e = nextcord.Embed(color=info.color) 
+      e.set_image(url=url) 
+      await ctx.send(embed=e)
+    elif(view.tierSelected == "F2 - Tier 2"):
+      await selectMSG.delete()
+      msg = await ctx.send("Getting F2 - Tier 2 Standings")
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
+      if(r):
+        await msg.delete()
+      r = r.json()
+      url = r["images"]["2:16"] ## TODO: Change this to the correct image
+      e = nextcord.Embed(color=info.color) 
+      e.set_image(url=url) 
+      await ctx.send(embed=e)
   except KeyError:
     await ctx.send("There was an error while getting the standings. Please report this issue to the admins")
     print(KeyError)
