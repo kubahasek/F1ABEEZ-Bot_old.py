@@ -703,10 +703,10 @@ async def ban(ctx, user=None, *, reason=None):
 @bot.event
 async def on_member_join(member):
   serverID = member.guild.id
-  if(member.guild.id == info.f1abeezID):
+  if(member.guild.id == int(info.f1abeezID)):
     role = nextcord.utils.get(member.guild.roles, name="Academy Driver")
     await member.add_roles(role)
-  elif(member.guild.id == info.f2abeezID):
+  elif(member.guild.id == int(info.f2abeezID)):
     role = nextcord.utils.get(member.guild.roles, name="Member")
     await member.add_roles(role)
   channel = bot.get_channel(info.get_channelID(serverID, "welcomeChannel"))
