@@ -582,6 +582,36 @@ async def raceMSGtier4(ctx):
   await ctx.message.delete()
   await ctx.send(f"<@&{tier4ID}> <@&{reserveTier4ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
 
+@bot.command(name="racetier5")
+@commands.has_any_role("Admin", "Moderator")
+async def raceMSGtier5(ctx):
+  tier5ID = info.get_roleID(ctx.guild.id, "tier5Role")
+  reserveTier5ID = info.get_roleID(ctx.guild.id, "reserveTier5Role")
+  if(type(tier5ID) == type(None) or type(reserveTier5ID) == type(None)):
+    logging.error("Could not find tier 5 roles", exc_info=True)
+  await ctx.message.delete()
+  await ctx.send(f"<@&{tier5ID}> <@&{reserveTier5ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+
+@bot.command(name="racetierM")
+@commands.has_any_role("Admin", "Moderator")
+async def raceMSGtierM(ctx):
+  tierMID = info.get_roleID(ctx.guild.id, "tierMRole")
+  reserveTierMID = info.get_roleID(ctx.guild.id, "reserveTierMRole")
+  if(type(tierMID) == type(None) or type(reserveTierMID) == type(None)):
+    logging.error("Could not find tier M roles", exc_info=True)
+  await ctx.message.delete()
+  await ctx.send(f"<@&{tierMID}> <@&{reserveTierMID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+
+@bot.command(name="racetierNA")
+@commands.has_any_role("Admin", "Moderator")
+async def raceMSGtierNA(ctx):
+  tierNAID = info.get_roleID(ctx.guild.id, "tierNARole")
+  reserveTierNAID = info.get_roleID(ctx.guild.id, "reserveTierNARole")
+  if(type(tierNAID) == type(None) or type(reserveTierNAID) == type(None)):
+    logging.error("Could not find tier NA roles", exc_info=True)
+  await ctx.message.delete()
+  await ctx.send(f"<@&{tierNAID}> <@&{reserveTierNAID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+
 @bot.command(name="racef2")
 @commands.has_any_role("Admin", "Moderator")
 async def raceMSGf2(ctx):
