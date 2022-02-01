@@ -1,3 +1,4 @@
+from ast import If
 import asyncio
 import nextcord
 from nextcord import client
@@ -15,6 +16,10 @@ import datetime
 import pytz
 import notion as nt
 import info
+import logging
+
+
+logging.basicConfig(format='%(asctime)s-%(levelname)s:%(message)s')
 
 class TierMenu(nextcord.ui.View):
   def __init__(self):
@@ -115,7 +120,7 @@ class reportMenu(nextcord.ui.View):
   async def handle_click(self, button, interaction):
     user = interaction.user
     channel = interaction.channel
-    if(interaction.channel_id == info.incidentReportChannel):
+    if(interaction.channel_id == info.get_channelID(interaction.guild_id, "incidentReportChannel")):
       bst = pytz.timezone("Europe/London")
       todayInc = datetime.datetime.now(tz=bst).isoformat()
       def check(m):
@@ -168,7 +173,7 @@ class reportMenu(nextcord.ui.View):
           logEmbed = nextcord.Embed(title="⚠️New Ticket has been reported!⚠️")
           logEmbed.add_field(name="Tier", value=tierOfIncidentInc, inline=False)
           logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUserInc} vs {gamertagOfInvolevedDriverInc}", inline=False)
-          channel = bot.get_channel(info.incidentLogChannel)
+          channel = bot.get_channel(info.get_channelID(interaction.guild_id, "incidentLogChannel"))
           await channel.send(embed = logEmbed)
           await user.send(response)
       except asyncio.TimeoutError:
@@ -179,7 +184,7 @@ class reportMenu(nextcord.ui.View):
       
 
 
-    if(interaction.channel.id == info.appealReportChannel):
+    if(interaction.channel.id == info.get_channelID(interaction.guild_id, "appealReportChannel")):
       bst = pytz.timezone("Europe/London")
       todayApp = datetime.datetime.now(tz=bst).isoformat()
       def check(m):
@@ -209,7 +214,7 @@ class reportMenu(nextcord.ui.View):
           logEmbed = nextcord.Embed(title="⚠️New Appeal has been submitted!⚠️")
           logEmbed.add_field(name="Case Number", value=caseNumberApp, inline=False)
           logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUserApp} vs {gamertagOfInvolevedDriverApp}", inline=False)
-          channel = bot.get_channel(info.incidentLogChannel)
+          channel = bot.get_channel(info.get_channelID(interaction.guild_id, "incidentLogChannel"))
           await channel.send(embed = logEmbed)
           await user.send(response)
       except asyncio.TimeoutError:
@@ -220,7 +225,7 @@ class reportMenu(nextcord.ui.View):
       
 
 
-    if(interaction.channel.id == info.suggestionSubmitChannel):
+    if(interaction.channel.id == info.get_channelID(interaction.guild_id, "suggestionSubmitChannel")):
       def check(m):
         return m.author == user and m.guild is None 
       try:      
@@ -241,7 +246,7 @@ class reportMenu(nextcord.ui.View):
       if(view.anonymous == False):
         suggestionLogEmbed.add_field(name="**Submitted by:**", value=user.display_name, inline=False)
       suggestionLogEmbed.add_field(name="**Suggestion**", value=suggestion, inline=False)
-      channel = bot.get_channel(info.suggestionLogChannel)
+      channel = bot.get_channel(info.get_channelID(interaction.guild_id, "suggestionLogChannel"))
       await channel.send(embed = suggestionLogEmbed)
       await user.send("Your suggestion has been submitted to the admins!")
 
@@ -321,7 +326,7 @@ bot.remove_command("help")
 
 @bot.event
 async def on_ready():
-    print("We have logged in as {0.user}".format(bot))
+    logging.info("We have logged in as {0.user}".format(bot))
     bot.add_view(reportMenu())
     await bot.change_presence(activity=nextcord.Activity(type=nextcord.ActivityType.watching, name="F1ABEEZ Server 🚀"))
 
@@ -355,103 +360,284 @@ async def TicketDetail(ctx, ticketNum):
 async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
         await ctx.send("Command not found")
-    print(error)
+    logging.error(error)
 
 @bot.command(name="lobbytier1")
 @commands.has_any_role("Admin", "Moderator")
 async def lobbyMSGtier1(ctx):
+  tier1ID = info.get_roleID(ctx.guild.id, "tier1Role")
+  reserveTier1ID = info.get_roleID(ctx.guild.id, "reserveTier1Role")
+  if(type(tier1ID) == type(None) or type(reserveTier1ID) == type(None)):
+    logging.error("Could not find tier 1 roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tier1Role}> <@&{info.reserveTier1Role}>\n**Lobby is now open!**\nPlease join off <@705761570126561341>\nGamertag is - Sammie230408\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+  await ctx.send(f"<@&{tier1ID}> <@&{reserveTier1ID}>\n**Lobby is now open!**\nPlease join off <@705761570126561341>\nGamertag is - Sammie230408\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
 
 @bot.command(name="lobbytier2")
 @commands.has_any_role("Admin", "Moderator")
 async def lobbyMSGtier2(ctx):
+  tier2ID = info.get_roleID(ctx.guild.id, "tier2Role")
+  reserveTier2ID = info.get_roleID(ctx.guild.id, "reserveTier2Role")
+  if(type(tier2ID) == type(None) or type(reserveTier2ID) == type(None)):
+    logging.error("Could not find tier 2 roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tier2Role}> <@&{info.reserveTier2Role}>\n**Lobby is now open!**\nPlease join off <@483678704749510677>\nGamertag is - thxharvey\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+  await ctx.send(f"<@&{tier2ID}> <@&{reserveTier2ID}>\n**Lobby is now open!**\nPlease join off <@483678704749510677>\nGamertag is - thxharvey\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
 
 @bot.command(name="lobbytier3")
 @commands.has_any_role("Admin", "Moderator")
 async def lobbyMSGtier3(ctx):
+  tier3ID = info.get_roleID(ctx.guild.id, "tier3Role")
+  reserveTier3ID = info.get_roleID(ctx.guild.id, "reserveTier3Role")
+  if(type(tier3ID) == type(None) or type(reserveTier3ID) == type(None)):
+    logging.error("Could not find tier 3 roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tier3Role}> <@&{info.reserveTier3Role}>\n**Lobby is now open!**\nPlease join off <@401204069890523137>\nGamertag is - OwningLeMoNz\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+  await ctx.send(f"<@&{tier3ID}> <@&{reserveTier3ID}>\n**Lobby is now open!**\nPlease join off <@401204069890523137>\nGamertag is - OwningLeMoNz\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
 
 @bot.command(name="lobbytier4")
 @commands.has_any_role("Admin", "Moderator")
 async def lobbyMSGtier4(ctx):
+  tier4ID = info.get_roleID(ctx.guild.id, "tier4Role")
+  reserveTier4ID = info.get_roleID(ctx.guild.id, "reserveTier4Role")
+  if(type(tier4ID) == type(None) or type(reserveTier4ID) == type(None)):
+    logging.error("Could not find tier 4 roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tierMRole}> <@&{info.reserveTierMRole}>\n**Lobby is now open!**\nPlease join off <@559096129816363010>\nGamertag is - Razznyk\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+  await ctx.send(f"<@&{tier4ID}> <@&{reserveTier4ID}>\n**Lobby is now open!**\nPlease join off <@559096129816363010>\nGamertag is - Razznyk\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
 
-@bot.command(name="lobbyf2")
+@bot.command(name="lobbytier5")
 @commands.has_any_role("Admin", "Moderator")
-async def lobbyMSGf2(ctx):
+async def lobbyMSGtier4(ctx):
+  tier5ID = info.get_roleID(ctx.guild.id, "tier5Role")
+  reserveTier5ID = info.get_roleID(ctx.guild.id, "reserveTier5Role")
+  if(type(tier5ID) == type(None) or type(reserveTier5ID) == type(None)):
+    logging.error("Could not find tier 5 roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send("**Lobby is now open!**\nPlease join off <@499568806469959691>\nGamertag is - MrJSmithy\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+  await ctx.send(f"<@&{tier5ID}> <@&{reserveTier5ID}>\n**Lobby is now open!**\nPlease join off <@559096129816363010>\nGamertag is - Razznyk\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+
+@bot.command(name="lobbytierM")
+@commands.has_any_role("Admin", "Moderator")
+async def lobbyMSGtier4(ctx):
+  tierMID = info.get_roleID(ctx.guild.id, "tierMRole")
+  reserveTierMID = info.get_roleID(ctx.guild.id, "reserveTierMRole")
+  if(type(tierMID) == type(None) or type(reserveTierMID) == type(None)):
+    logging.error("Could not find tier M roles", exc_info=True)
+  await ctx.message.delete()
+  await ctx.send(f"<@&{tierMID}> <@&{reserveTierMID}>\n**Lobby is now open!**\nPlease join off <@559096129816363010>\nGamertag is - Razznyk\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+
+@bot.command(name="lobbytierNA")
+@commands.has_any_role("Admin", "Moderator")
+async def lobbyMSGtier4(ctx):
+  tierNAID = info.get_roleID(ctx.guild.id, "tierNARole")
+  reserveTierNAID = info.get_roleID(ctx.guild.id, "reserveTierNARole")
+  if(type(tierNAID) == type(None) or type(reserveTierNAID) == type(None)):
+    logging.error("Could not find tier NA roles", exc_info=True)
+  await ctx.message.delete()
+  await ctx.send(f"<@&{tierNAID}> <@&{reserveTierNAID}>\n**Lobby is now open!**\nPlease join off <@559096129816363010>\nGamertag is - Razznyk\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+
+@bot.command(name="lobbyf2tier1")
+@commands.has_any_role("Admin", "Moderator")
+async def lobbyMSGf2Tier1(ctx):
+  f2tier1ID = info.get_roleID(ctx.guild.id, "f2Tier1Role")
+  f2reserveTier1ID = info.get_roleID(ctx.guild.id, "reserveF2Tier1Role")
+  if(type(f2tier1ID) == type(None) or type(f2reserveTier1ID) == type(None)):
+    logging.error("Could not find tier 1 F2 roles", exc_info=True)
+  await ctx.message.delete()
+  await ctx.send(f"<@&{f2tier1ID}> <@&{f2reserveTier1ID}>\n**Lobby is now open!**\nPlease join off <@499568806469959691>\nGamertag is - MrJSmithy\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+
+@bot.command(name="lobbyf2tier2")
+@commands.has_any_role("Admin", "Moderator")
+async def lobbyMSGf2Tier2(ctx):
+  f2tier2ID = info.get_roleID(ctx.guild.id, "f2Tier2Role")
+  f2reserveTier2ID = info.get_roleID(ctx.guild.id, "reserveF2Tier2Role")
+  if(type(f2tier2ID) == type(None) or type(f2reserveTier2ID) == type(None)):
+    logging.error("Could not find tier 2 F2 roles", exc_info=True)
+  await ctx.message.delete()
+  await ctx.send(f"<@&{f2tier2ID}> <@&{f2reserveTier2ID}>\n**Lobby is now open!**\nPlease join off <@499568806469959691>\nGamertag is - MrJSmithy\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
 
 @bot.command(name="readytier1")
 @commands.has_any_role("Admin", "Moderator")
 async def readyMSGtier1(ctx):
+  tier1ID = info.get_roleID(ctx.guild.id, "tier1Role")
+  reserveTier1ID = info.get_roleID(ctx.guild.id, "reserveTier1Role")
+  if(type(tier1ID) == type(None) or type(reserveTier1ID) == type(None)):
+    logging.error("Could not find tier 1 roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tier1Role}> <@&{info.reserveTier1Role}>\n**Ready up**\n\n")
+  await ctx.send(f"<@&{tier1ID}> <@&{reserveTier1ID}>\n**Ready up**\n\n")
 
 @bot.command(name="readytier2")
 @commands.has_any_role("Admin", "Moderator")
 async def readyMSGtier2(ctx):
+  tier2ID = info.get_roleID(ctx.guild.id, "tier2Role")
+  reserveTier2ID = info.get_roleID(ctx.guild.id, "reserveTier2Role")
+  if(type(tier2ID) == type(None) or type(reserveTier2ID) == type(None)):
+    logging.error("Could not find tier 2 roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tier2Role}> <@&{info.reserveTier2Role}>\n**Ready up**\n\n")
+  await ctx.send(f"<@&{tier2ID}> <@&{reserveTier2ID}>\n**Ready up**\n\n")
 
 @bot.command(name="readytier3")
 @commands.has_any_role("Admin", "Moderator")
 async def readyMSGtier3(ctx):
+  tier3ID = info.get_roleID(ctx.guild.id, "tier3Role")
+  reserveTier3ID = info.get_roleID(ctx.guild.id, "reserveTier3Role")
+  if(type(tier3ID) == type(None) or type(reserveTier3ID) == type(None)):
+    logging.error("Could not find tier 3 roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tier3Role}> <@&{info.reserveTier3Role}>\n**Ready up**\n\n")
+  await ctx.send(f"<@&{tier3ID}> <@&{reserveTier3ID}>\n**Ready up**\n\n")
 
 @bot.command(name="readytier4")
 @commands.has_any_role("Admin", "Moderator")
 async def readyMSGtier4(ctx):
+  tier4ID = info.get_roleID(ctx.guild.id, "tier4Role")
+  reserveTier4ID = info.get_roleID(ctx.guild.id, "reserveTier4Role")
+  if(type(tier4ID) == type(None) or type(reserveTier4ID) == type(None)):
+    logging.error("Could not find tier 4 roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tierMRole}> <@&{info.reserveTierMRole}>\n**Ready up**\n\n")
+  await ctx.send(f"<@&{tier4ID}> <@&{reserveTier4ID}>\n**Ready up**\n\n")
 
-@bot.command(name="readyf2")
+@bot.command(name="readytier5")
 @commands.has_any_role("Admin", "Moderator")
-async def readyMSGf2(ctx):
+async def readyMSGtier5(ctx):
+  tier5ID = info.get_roleID(ctx.guild.id, "tier5Role")
+  reserveTier5ID = info.get_roleID(ctx.guild.id, "reserveTier5Role")
+  if(type(tier5ID) == type(None) or type(reserveTier5ID) == type(None)):
+    logging.error("Could not find tier 5 roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send("**Ready up**\n\nRemember after qualifying do not ready up until you recieve the message in this chat or you will get a post race 3 place grid penalty.\nDon't forget to not use wet tyres in qualifying as this will results in a quali ban")
+  await ctx.send(f"<@&{tier5ID}> <@&{reserveTier5ID}>\n**Ready up**\n\n")
+
+@bot.command(name="readytierM")
+@commands.has_any_role("Admin", "Moderator")
+async def readyMSGtierM(ctx):
+  tierMID = info.get_roleID(ctx.guild.id, "tierMRole")
+  reserveTierMID = info.get_roleID(ctx.guild.id, "reserveTierMRole")
+  if(type(tierMID) == type(None) or type(reserveTierMID) == type(None)):
+    logging.error("Could not find tier M roles", exc_info=True)
+  await ctx.message.delete()
+  await ctx.send(f"<@&{tierMID}> <@&{reserveTierMID}>\n**Ready up**\n\n")
+
+@bot.command(name="readytierNA")
+@commands.has_any_role("Admin", "Moderator")
+async def readyMSGtierNA(ctx):
+  tierNAID = info.get_roleID(ctx.guild.id, "tierNARole")
+  reserveTierNAID = info.get_roleID(ctx.guild.id, "reserveTierNARole")
+  if(type(tierNAID) == type(None) or type(reserveTierNAID) == type(None)):
+    logging.error("Could not find tier NA roles", exc_info=True)
+  await ctx.message.delete()
+  await ctx.send(f"<@&{tierNAID}> <@&{reserveTierNAID}>\n**Ready up**\n\n")
+
+@bot.command(name="readyf2tier1")
+@commands.has_any_role("Admin", "Moderator")
+async def readyMSGf2tier1(ctx):
+  f2tier1ID = info.get_roleID(ctx.guild.id, "f2Tier1Role")
+  f2reserveTier1ID = info.get_roleID(ctx.guild.id, "reserveF2Tier1Role")
+  if(type(f2tier1ID) == type(None) or type(f2reserveTier1ID) == type(None)):
+    logging.error("Could not find tier 1 F2 roles", exc_info=True)
+  await ctx.message.delete()
+  await ctx.send(f"<@&{f2tier1ID}> <@&{f2reserveTier1ID}>\n**Ready up**\n\nDon't forget to not use wet tyres in qualifying as this will results in a quali ban")
+
+@bot.command(name="readyf2tier2")
+@commands.has_any_role("Admin", "Moderator")
+async def readyMSGf2tier2(ctx):
+  f2tier2ID = info.get_roleID(ctx.guild.id, "f2Tier2Role")
+  f2reserveTier2ID = info.get_roleID(ctx.guild.id, "reserveF2Tier2Role")
+  if(type(f2tier2ID) == type(None) or type(f2reserveTier2ID) == type(None)):
+    logging.error("Could not find tier 1 F2 roles", exc_info=True)
+  await ctx.message.delete()
+  await ctx.send(f"<@&{f2tier2ID}> <@&{f2reserveTier2ID}>\n**Ready up**\n\nDon't forget to not use wet tyres in qualifying as this will results in a quali ban")
 
 @bot.command(name="racetier1")
 @commands.has_any_role("Admin", "Moderator")
 async def raceMSGtier1(ctx):
+  tier1ID = info.get_roleID(ctx.guild.id, "tier1Role")
+  reserveTier1ID = info.get_roleID(ctx.guild.id, "reserveTier1Role")
+  if(type(tier1ID) == type(None) or type(reserveTier1ID) == type(None)):
+    logging.error("Could not find tier 1 roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tier1Role}> <@&{info.reserveTier1Role}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+  await ctx.send(f"<@&{tier1ID}> <@&{reserveTier1ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
 
 @bot.command(name="racetier2")
 @commands.has_any_role("Admin", "Moderator")
 async def raceMSGtier2(ctx):
+  tier2ID = info.get_roleID(ctx.guild.id, "tier2Role")
+  reserveTier2ID = info.get_roleID(ctx.guild.id, "reserveTier2Role")
+  if(type(tier2ID) == type(None) or type(reserveTier2ID) == type(None)):
+    logging.error("Could not find tier 2 roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tier2Role}> <@&{info.reserveTier2Role}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+  await ctx.send(f"<@&{tier2ID}> <@&{reserveTier2ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
 
 @bot.command(name="racetier3")
 @commands.has_any_role("Admin", "Moderator")
 async def raceMSGtier3(ctx):
+  tier3ID = info.get_roleID(ctx.guild.id, "tier3Role")
+  reserveTier3ID = info.get_roleID(ctx.guild.id, "reserveTier3Role")
+  if(type(tier3ID) == type(None) or type(reserveTier3ID) == type(None)):
+    logging.error("Could not find tier 3 roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tier3Role}> <@&{info.reserveTier3Role}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+  await ctx.send(f"<@&{tier3ID}> <@&{reserveTier3ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
 
 @bot.command(name="racetier4")
 @commands.has_any_role("Admin", "Moderator")
 async def raceMSGtier4(ctx):
+  tier4ID = info.get_roleID(ctx.guild.id, "tier4Role")
+  reserveTier4ID = info.get_roleID(ctx.guild.id, "reserveTier4Role")
+  if(type(tier4ID) == type(None) or type(reserveTier4ID) == type(None)):
+    logging.error("Could not find tier 4 roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send(f"<@&{info.tierMRole}> <@&{info.reserveTierMRole}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+  await ctx.send(f"<@&{tier4ID}> <@&{reserveTier4ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
 
-@bot.command(name="racef2")
+@bot.command(name="racetier5")
 @commands.has_any_role("Admin", "Moderator")
-async def raceMSGf2(ctx):
+async def raceMSGtier5(ctx):
+  tier5ID = info.get_roleID(ctx.guild.id, "tier5Role")
+  reserveTier5ID = info.get_roleID(ctx.guild.id, "reserveTier5Role")
+  if(type(tier5ID) == type(None) or type(reserveTier5ID) == type(None)):
+    logging.error("Could not find tier 5 roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send("Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+  await ctx.send(f"<@&{tier5ID}> <@&{reserveTier5ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+
+@bot.command(name="racetierM")
+@commands.has_any_role("Admin", "Moderator")
+async def raceMSGtierM(ctx):
+  tierMID = info.get_roleID(ctx.guild.id, "tierMRole")
+  reserveTierMID = info.get_roleID(ctx.guild.id, "reserveTierMRole")
+  if(type(tierMID) == type(None) or type(reserveTierMID) == type(None)):
+    logging.error("Could not find tier M roles", exc_info=True)
+  await ctx.message.delete()
+  await ctx.send(f"<@&{tierMID}> <@&{reserveTierMID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+
+@bot.command(name="racetierNA")
+@commands.has_any_role("Admin", "Moderator")
+async def raceMSGtierNA(ctx):
+  tierNAID = info.get_roleID(ctx.guild.id, "tierNARole")
+  reserveTierNAID = info.get_roleID(ctx.guild.id, "reserveTierNARole")
+  if(type(tierNAID) == type(None) or type(reserveTierNAID) == type(None)):
+    logging.error("Could not find tier NA roles", exc_info=True)
+  await ctx.message.delete()
+  await ctx.send(f"<@&{tierNAID}> <@&{reserveTierNAID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+
+@bot.command(name="racef2tier1")
+@commands.has_any_role("Admin", "Moderator")
+async def raceMSGf2tier1(ctx):
+  f2tier1ID = info.get_roleID(ctx.guild.id, "f2Tier1Role")
+  f2reserveTier1ID = info.get_roleID(ctx.guild.id, "reserveF2Tier1Role")
+  if(type(f2tier1ID) == type(None) or type(f2reserveTier1ID) == type(None)):
+    logging.error("Could not find tier 1 F2 roles", exc_info=True)
+  await ctx.message.delete()
+  await ctx.send(f"<@&{f2tier1ID}> <@&{f2reserveTier1ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+
+@bot.command(name="racef2tier2")
+@commands.has_any_role("Admin", "Moderator")
+async def raceMSGf2tier2(ctx):
+  f2tier2ID = info.get_roleID(ctx.guild.id, "f2Tier2Role")
+  f2reserveTier2ID = info.get_roleID(ctx.guild.id, "reserveF2Tier2Role")
+  if(type(f2tier2ID) == type(None) or type(f2reserveTier2ID) == type(None)):
+    logging.error("Could not find tier 1 F2 roles", exc_info=True)
+  await ctx.message.delete()
+  await ctx.send(f"<@&{f2tier2ID}> <@&{f2reserveTier2ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
 
 @bot.command(name="academymessage")
 @commands.has_any_role("Admin", "Moderator", "Trialist Manager")
 async def academyMSG(ctx):
+  academyID = info.get_roleID(ctx.guild.id, "academyRole")
   await ctx.message.delete()
-  msg =  await ctx.send(f"<@&{info.academyRole}>\n**TRIAL RACE BRIEFING:**\nWelcome to the F1ABEEZ trial race! I would just like to run through what is expected of you from your trial:\n- Please drive clean - we are a clean racing league, show respect to your fellow drivers! dirty driving will not be tolerated\n- Drive fast! It's still a race after all, we would like to see a true reflection of your pace\n- Do not use medium tyres in Qualifying for this trial race, as this lets us compare your quali pace!\n- Have fun! That's what we're all here for\n\nThe format is short qualifying, 25% race\nAfter the race is completed, one of the trialist leaders will DM you individually with their decision\nPlease react with a thumbs up once you have read this, good luck!")
+  msg =  await ctx.send(f"<@&{academyID}>\n**TRIAL RACE BRIEFING:**\nWelcome to the F1ABEEZ trial race! I would just like to run through what is expected of you from your trial:\n- Please drive clean - we are a clean racing league, show respect to your fellow drivers! dirty driving will not be tolerated\n- Drive fast! It's still a race after all, we would like to see a true reflection of your pace\n- Do not use medium tyres in Qualifying for this trial race, as this lets us compare your quali pace!\n- Have fun! That's what we're all here for\n\nThe format is short qualifying, 25% race\nAfter the race is completed, one of the trialist leaders will DM you individually with their decision\nPlease react with a thumbs up once you have read this, good luck!")
   await msg.add_reaction("👍")
 
 
@@ -480,7 +666,7 @@ async def warn(ctx, user=None, *, reason=None):
   embed = nextcord.Embed(title="A Warning has been issued", color=info.color)
   embed.add_field(name="User", value=membername, inline=False)
   embed.add_field(name="Reason", value=reason, inline=False)
-  channel = bot.get_channel(info.warningChannel)
+  channel = bot.get_channel(info.get_channelID(ctx.guild.id, "warningChannel"))
   await channel.send(embed = embed)
   await ctx.send(embed = embed)   
 
@@ -509,28 +695,39 @@ async def ban(ctx, user=None, *, reason=None):
   embed = nextcord.Embed(title="A Ban has been issued", color=info.color)
   embed.add_field(name="User", value=membername, inline=False)
   embed.add_field(name="Reason", value=reason, inline=False)
-  channel = bot.get_channel(info.banChannel)
+  channel = bot.get_channel(info.get_channelID(ctx.guild.id, "banChannel"))
   await channel.send(embed = embed)
   await member.ban(reason = reason)
   await ctx.send(embed = embed)   
     
 @bot.event
 async def on_member_join(member):
-  role = nextcord.utils.get(member.guild.roles, name="Academy Driver")
-  await member.add_roles(role)
-  channel = bot.get_channel(info.welcomeChannel)
-  await channel.send(f"**Welcome <@{member.id}>**\n\nPlease use this chat if you have any questions and someone will be on hand.\n\nAll the information you need is on <#865379267977412618>")
+  serverID = member.guild.id
+  if(member.guild.id == info.f1abeezID):
+    role = nextcord.utils.get(member.guild.roles, name="Academy Driver")
+    await member.add_roles(role)
+  elif(member.guild.id == info.f2abeezID):
+    role = nextcord.utils.get(member.guild.roles, name="Member")
+    await member.add_roles(role)
+  channel = bot.get_channel(info.get_channelID(serverID, "welcomeChannel"))
+  if(type(channel) != type(None)):
+    await channel.send(f"**Welcome <@{member.id}>**\n\nPlease use this chat if you have any questions and someone will be on hand.\n\nAll the information you need is on <#865379267977412618>")
+  else:
+    logging.error("welcomeChannel not found")
 
 @bot.event
 async def on_member_remove(member):
   memberName = member.name
-  channel = bot.get_channel(info.leavingChannel)
-  await channel.send(f"**{memberName}** has left the server.")
+  channel = bot.get_channel(info.get_channelID(member.guild.id, "leavingChannel"))
+  if(type(channel) != type(None)):
+    await channel.send(f"**{memberName}** has left the server.")
+  else:
+    logging.error("leavingChannel not found", exc_info=True)
 
 @bot.command(name="stewardsdecisions")
 @commands.has_any_role("Admin", "Moderator", "Steward")
 async def stewardsDecision(ctx, round):
-  channel = bot.get_channel(info.stewardsAnnoucementChannel)
+  channel = bot.get_channel(info.get_channelID(ctx.guild.id, "stewardsAnnouncementChannel"))
   roundNO = int(round)
   # f2RoundNO = roundNO - 1
   # f2round = f"R{f2RoundNO}"
@@ -544,12 +741,17 @@ async def stewardsDecision(ctx, round):
   # else:
   #   f2URL = f"<https://f1abeez.com/race-reports/F2-{f2round}>"
   
-  await channel.send(f"🦺 @everyone\n\n**All Stewards decisions are finalised**\nPlease check this week's race-report for all the incidents reported and decisions made.\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n\nPlease file your appeals with the correct case number **in the next 24 hours**, and standings will be posted after all appeals are finalised \nFollow the instructions in <#864999507238322186> to submit your appeals \n\nThank you,\nStewards of F1ABEEZ")
+  if(type(channel) != type(None)):
+    await channel.send(f"🦺 @everyone\n\n**All Stewards decisions are finalised**\nPlease check this week's race-report for all the incidents reported and decisions made.\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n\nPlease file your appeals with the correct case number **in the next 24 hours**, and standings will be posted after all appeals are finalised \nFollow the instructions in <#864999507238322186> to submit your appeals \n\nThank you,\nStewards of F1ABEEZ")
+  else:
+    logging.error("stewardsAnnouncementChannel not found")
+    await ctx.reply("ERROR: stewardsAnnouncementChannel not found, contact KubaH04")
+  
 
 @bot.command(name="racereport")
 @commands.has_any_role("Admin", "Moderator")
 async def raceResults(ctx, round):
-  channel = bot.get_channel(info.generalAnnoucementChannel)
+  channel = bot.get_channel(info.get_channelID(ctx.guild.id, "generalAnnoucementChannel"))
   roundNO = int(round)
   # f2RoundNO = roundNO - 1
   # f2round = f"R{f2RoundNO}"
@@ -562,7 +764,11 @@ async def raceResults(ctx, round):
   #   f2URL = "F2 did not race"
   # else:
   #   f2URL = f"<https://f1abeez.com/race-reports/F2-{f2round}>"
-  await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}")
+  if(type(channel) != type(None)):
+    await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}")
+  else:
+    logging.error("generalAnnoucementChannel not found")
+    await ctx.reply("ERROR: generalAnnoucementChannel not found, contact KubaH04")
 
 @bot.command(name="incidentchannel")
 @commands.has_any_role("Admin", "Moderator")
@@ -688,20 +894,6 @@ async def getStandings(ctx):
     print("standings:")
     print(e)
 
-@bot.command(name="changelog")
-async def sendChangesAnnouncement(ctx):
-  await ctx.message.delete()
-  await ctx.send("@everyone")
-  e = nextcord.Embed(title="F1ABEEZ Bot Updates!",description="To add to the tally of new stuff introduced on the stream I have an announcement on some new things our bot can do, **as well as some improvements to those that it already does!**" , color=info.color)
-  e.add_field(name="Ticket commands", value="First things first there is an improvement to the all the commands regarding tickets (;gettickets, ;ticketdetail, ;getappeals) - all these commands now **include a link directly to the website** so you can view them quicker and in full!", inline=False)
-  e.add_field(name="Reporting incidents", value="Secondly there are changes to the way you report incidents and submit appeals, instead of a reaction** there is now a button!** Similar buttons are then used inside reporting the ticket to select the tier for which you want to report the incident.", inline=False)
-  e.add_field(name="New command 1: ;standings", value="This command will get you our brand new standings graphics for every single tier so you can see where you are in the drivers and how your team is doing in the constructors!", inline=False)
-  e.add_field(name="New command 2: ;calendar", value="This command gets you our calendar graphic that you saw on the stream at any given point in the server, shall you forget which race is next!", inline=False)
-  e.add_field(name="Status", value="The bot now has a brand new status! (peep the sidebar)", inline=False)
-  e.add_field(name="Suggestions", value="If you have any suggestion on how to make the bot more useful, don't be afraid to DM <@468685270296952842>, and we'll see what I can do.")
-  e.add_field(name="Issues", value="If you experience any issues during the use of the bot, please DM <@468685270296952842> or any of the admins!")
-  await ctx.send(embed=e)
-
 @bot.command("lineup")
 async def getLineupLink(ctx):
   await ctx.reply("<https://www.f1abeez.com/line-ups>")
@@ -754,7 +946,7 @@ async def dotdWinner(ctx, *, args):
 async def youtube(ctx):
   await ctx.message.delete()
   try:
-    channel = bot.get_channel(info.socialMediaAnnouncementChannel)
+    channel = bot.get_channel(info.get_channelID(ctx.guild.id, "socialMediaAnnouncementChannel"))
     await channel.send("@everyone\n\n**All race replays have now been uploaded to our YouTube Channel!**\n\n Check them out at: <https://www.youtube.com/channel/UCHh_JjzcjQktvEGNVq96_QA>")
   except Exception as e:
     print("youtube")
@@ -770,125 +962,5 @@ async def channelName(ctx, name):
     returnName += nameDic.get(char)
 
   await ctx.reply("︱" + returnName)
-
-## currently unsused, but saved if needed in the future
-
-# @bot.event
-# async def on_raw_reaction_add(payload):
-#   emoji, user, member, channel = payload.emoji.name, await bot.fetch_user(payload.user_id), payload.member, bot.get_channel(payload.channel_id)
-#   message = await channel.fetch_message(payload.message_id)
-#   if (emoji == "📨" and user.id != bot.user.id and (channel.id == info.incidentReportChannel or channel.id == info.appealReportChannel or channel.id == suggestionSubmitChannel)):
-#     await message.remove_reaction(emoji, member)
-#     if(channel.id == info.incidentReportChannel):
-#       bst = pytz.timezone("Europe/London")
-#       todayInc = datetime.datetime.now(tz=bst).isoformat()
-#       def check(m):
-#         return m.author == user and m.guild is None 
-
-#       def checkRaw(u):
-#         return u.user_id == user.id and u.guild_id is None
-      
-#       await channel.send(f"Please follow the bot to your DMs to report your incident <@{user.id}>", delete_after=60)
-
-#       try:
-#           await user.send("What is your gamertag?")
-#           gamertagOfUserInc = await bot.wait_for("message", check=check, timeout=180.0)
-#           gamertagOfUserInc = gamertagOfUserInc.content
-#           await user.send("Please describe your incident.")
-#           descriptionInc = await bot.wait_for("message", check=check, timeout=180.0)
-#           descriptionInc = descriptionInc.content
-#           tierOfIncidentMSG =  await user.send("What is the tier or division this incident/penalty occured in? \n1️⃣ = F1 - Tier 1\n2️⃣ = F1 - Tier 2\n3️⃣ = F1 - Tier 3\n4️⃣ = F1 - Tier Mixed\n5️⃣ = F2\nPlease react with the corresponding tier")
-#           await tierOfIncidentMSG.add_reaction("1️⃣")
-#           await tierOfIncidentMSG.add_reaction("2️⃣")
-#           await tierOfIncidentMSG.add_reaction("3️⃣")
-#           await tierOfIncidentMSG.add_reaction("4️⃣")
-#           await tierOfIncidentMSG.add_reaction("5️⃣")
-#           tierOfIncidentReaction = await bot.wait_for("raw_reaction_add", check=checkRaw, timeout=180.0)
-#           if(str(tierOfIncidentReaction.emoji) == "1️⃣"):
-#             tierOfIncidentInc = "F1 - Tier 1"
-#             await user.send("You chose "+tierOfIncidentInc)
-#           elif(str(tierOfIncidentReaction.emoji) == "2️⃣"):
-#             tierOfIncidentInc = "F1 - Tier 2"
-#             await user.send("You chose "+tierOfIncidentInc)
-#           elif(str(tierOfIncidentReaction.emoji) == "3️⃣"):
-#             tierOfIncidentInc = "F1 - Tier 3"
-#             await user.send("You chose "+tierOfIncidentInc)
-#           elif(str(tierOfIncidentReaction.emoji) == "4️⃣"):
-#             tierOfIncidentInc = "F1 - Tier Mixed"
-#             await user.send("You chose "+tierOfIncidentInc)
-#           elif(str(tierOfIncidentReaction.emoji) == "5️⃣"):
-#             tierOfIncidentInc = "F2"
-#             await user.send("You chose "+tierOfIncidentInc)
-#           await user.send("Please provide video evidence (Only reply with links to gamerdvr or other services)")
-#           evidenceInc = await bot.wait_for("message", check=check, timeout=180.0)
-#           evidenceInc = evidenceInc.content
-#           await user.send("What lap did this incident/penalty occur on?")
-#           lapOfIncidentInc = await bot.wait_for("message", check=check, timeout=180.0)
-#           lapOfIncidentInc = lapOfIncidentInc.content
-#           await user.send("What is the gamertag(s) of the driver(s) involved? (For penalties, reply with N/A)")
-#           gamertagOfInvolevedDriverInc = await bot.wait_for("message", check=check, timeout=180.0)
-#           gamertagOfInvolevedDriverInc = gamertagOfInvolevedDriverInc.content
-#       except asyncio.TimeoutError:
-#           await user.send("Unfortunately you took too long to reply (Limit is three minutes per message). Please start a new incident if you want to proceed.")
-#       response = submitAnIncident(gamertagOfUserInc, lapOfIncidentInc, descriptionInc, tierOfIncidentInc, evidenceInc, gamertagOfInvolevedDriverInc, todayInc)
-#       logEmbed = nextcord.Embed(title="⚠️New Ticket has been reported!⚠️")
-#       logEmbed.add_field(name="Tier", value=tierOfIncidentInc, inline=False)
-#       logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUserInc} vs {gamertagOfInvolevedDriverInc}", inline=False)
-#       channel = bot.get_channel(info.incidentLogChannel)
-#       await channel.send(embed = logEmbed)
-#       await user.send(response)
-    
-#     if(channel.id == info.appealReportChannel):
-#       bst = pytz.timezone("Europe/London")
-#       todayApp = datetime.datetime.now(tz=bst).isoformat()
-#       def check(m):
-#         return m.author == user and m.guild is None 
-        
-#       await channel.send(f"Please follow the bot to your DMs to submit your appeal <@{user.id}>", delete_after=60)
-#       try:
-#           await user.send("What is the case number you want to appeal (use ;querytickets in the bot channel in the server if you need to get it)")
-#           caseNumberApp = await bot.wait_for("message", check=check, timeout=180.0)
-#           caseNumberApp = caseNumberApp.content
-#           await user.send("What is your gamertag?")
-#           gamertagOfUserApp = await bot.wait_for("message", check=check, timeout=180.0)
-#           gamertagOfUserApp = gamertagOfUserApp.content
-#           await user.send("Please state the reason for you appeal.")
-#           reasonApp = await bot.wait_for("message", check=check, timeout=180.0)
-#           reasonApp = reasonApp.content
-#           await user.send("State any additional information to support your appeal (if you don't have any, reply with N/A)")
-#           additionalInfoApp = await bot.wait_for("message", check=check, timeout=180.0)
-#           additionalInfoApp = additionalInfoApp.content
-#           await user.send("Please provide addition video evidence to support your appeal (Only reply with links to gamerdvr or other services)")
-#           evidenceApp = await bot.wait_for("message", check=check, timeout=180.0)
-#           evidenceApp = evidenceApp.content
-#           await user.send("What is the gamertag(s) of the driver(s) involved? (For penalties, reply with N/A)")
-#           gamertagOfInvolevedDriverApp = await bot.wait_for("message", check=check, timeout=180.0)
-#           gamertagOfInvolevedDriverApp = gamertagOfInvolevedDriverApp.content
-#       except asyncio.TimeoutError:
-#           await user.send("Unfortunately you took too long to reply (Limit is a three minutes per message). Please start a new incident if you want to proceed.")
-#       response = submitAppeal(caseNumberApp, evidenceApp, gamertagOfUserApp, gamertagOfInvolevedDriverApp, reasonApp, additionalInfoApp, todayApp)
-#       logEmbed = nextcord.Embed(title="⚠️New Appeal has been submitted!⚠️")
-#       logEmbed.add_field(name="Case Number", value=caseNumberApp, inline=False)
-#       logEmbed.add_field(name="Drivers involved", value=f"{gamertagOfUserApp} vs {gamertagOfInvolevedDriverApp}", inline=False)
-#       channel = bot.get_channel(info.incidentLogChannel)
-#       await channel.send(embed = logEmbed)
-#       await user.send(response)
-#     if(channel.id == suggestionSubmitChannel):
-#       await channel.send(f"Please follow the bot to your DMs to submit your suggestion <@{user.id}>", delete_after=60)
-#       def check(m):
-#         return m.author == user and m.guild is None 
-#       try:
-#         await user.send("Please type your suggestion here, the admins will have a look at it as soon as possible. Thank you, Admins of F1ABEEZ")
-#         suggestion = await bot.wait_for("message", check=check, timeout=300.0)
-#         suggestion = suggestion.content
-#       except asyncio.TimeoutError:
-#         await user.send("Unfortunately you took too long. The limit is 5 minutes per message")
-
-#       suggestionLogEmbed = nextcord.Embed(title="🚨A new suggestion has been submitted🚨")
-#       suggestionLogEmbed.add_field(name="**Submitted by:**", value=user.display_name, inline=False)
-#       suggestionLogEmbed.add_field(name="**Suggestion**", value=suggestion, inline=False)
-#       channel = bot.get_channel(suggestionLogChannel)
-#       await channel.send(embed = suggestionLogEmbed)
-#       await user.send("Your suggestion has been submitted to the admins!")
 
 bot.run(info.discord_token)
