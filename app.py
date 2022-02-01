@@ -49,55 +49,6 @@ class DropdownView(nextcord.ui.View):
   async def confirm(self,button: nextcord.ui.Button, interaction: nextcord.Interaction):
     await interaction.response.send_message(f"You have selected {self.dropdown.tierSelected}")
     self.stop()
-    
-class TierMenu(nextcord.ui.View):
-  def __init__(self):
-    super().__init__(timeout=None)
-
-  
-  async def handle_click(self, button, interaction):
-    if(str(button.custom_id) == "Tier_1"):
-      self.tierSelected = "F1 - Tier 1"
-      self.stop()
-    elif(str(button.custom_id) == "Tier_2"):
-      self.tierSelected = "F1 - Tier 2"
-      self.stop()
-    elif(str(button.custom_id) == "Tier_3"):
-      self.tierSelected = "F1 - Tier 3"
-      self.stop()
-    # elif(str(button.custom_id) == "Tier_4"):
-    #   self.tierSelected = "F1 - Tier 4"
-    #   self.stop()
-    # elif(str(button.custom_id) == "Nations_League"):
-    #   self.tierSelected = "Nations League"
-    #   self.stop()
-    # elif(str(button.custom_id) == "F2"):
-    #   self.tierSelected = "F2"
-    #   self.stop()
-
-  @nextcord.ui.button(label="Tier 1", style=nextcord.ButtonStyle.primary, custom_id="Tier_1")
-  async def tier1ButtonClicked(self, button, interaction):
-    await self.handle_click(button, interaction)
-  
-  @nextcord.ui.button(label="Tier 2", style=nextcord.ButtonStyle.primary, custom_id="Tier_2")
-  async def tier2ButtonClicked(self, button, interaction):
-    await self.handle_click(button, interaction)
-
-  @nextcord.ui.button(label="Tier 3", style=nextcord.ButtonStyle.primary, custom_id="Tier_3")
-  async def tier3ButtonClicked(self, button, interaction):
-    await self.handle_click(button, interaction)
-
-  # @nextcord.ui.button(label="Tier 4", style=nextcord.ButtonStyle.primary, custom_id="Tier_4")
-  # async def tier4ButtonClicked(self, button, interaction):
-  #   await self.handle_click(button, interaction)
-
-  # @nextcord.ui.button(label="Nations League", style=nextcord.ButtonStyle.primary, custom_id="Nations_League")
-  # async def tiermButtonClicked(self, button, interaction):
-  #   await self.handle_click(button, interaction)
-
-  # @nextcord.ui.button(label="F2", style=nextcord.ButtonStyle.primary, custom_id="F2")
-  # async def f2ButtonClicked(self, button, interaction):
-  #   await self.handle_click(button, interaction)
 
 class SuggestionMenu(nextcord.ui.View):
   def __init__(self):
