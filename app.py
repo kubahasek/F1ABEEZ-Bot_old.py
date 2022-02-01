@@ -946,9 +946,4 @@ async def channelName(ctx, name):
 
   await ctx.reply("︱" + returnName)
 
-@bot.command("testview")
-async def testview(ctx):
-  view = DropdownView()
-  await ctx.send("Select tier", view=view)
-
 bot.run(info.discord_token)
