@@ -890,20 +890,6 @@ async def getStandings(ctx):
     print("standings:")
     print(e)
 
-@bot.command(name="changelog")
-async def sendChangesAnnouncement(ctx):
-  await ctx.message.delete()
-  await ctx.send("@everyone")
-  e = nextcord.Embed(title="F1ABEEZ Bot Updates!",description="To add to the tally of new stuff introduced on the stream I have an announcement on some new things our bot can do, **as well as some improvements to those that it already does!**" , color=info.color)
-  e.add_field(name="Ticket commands", value="First things first there is an improvement to the all the commands regarding tickets (;gettickets, ;ticketdetail, ;getappeals) - all these commands now **include a link directly to the website** so you can view them quicker and in full!", inline=False)
-  e.add_field(name="Reporting incidents", value="Secondly there are changes to the way you report incidents and submit appeals, instead of a reaction** there is now a button!** Similar buttons are then used inside reporting the ticket to select the tier for which you want to report the incident.", inline=False)
-  e.add_field(name="New command 1: ;standings", value="This command will get you our brand new standings graphics for every single tier so you can see where you are in the drivers and how your team is doing in the constructors!", inline=False)
-  e.add_field(name="New command 2: ;calendar", value="This command gets you our calendar graphic that you saw on the stream at any given point in the server, shall you forget which race is next!", inline=False)
-  e.add_field(name="Status", value="The bot now has a brand new status! (peep the sidebar)", inline=False)
-  e.add_field(name="Suggestions", value="If you have any suggestion on how to make the bot more useful, don't be afraid to DM <@468685270296952842>, and we'll see what I can do.")
-  e.add_field(name="Issues", value="If you experience any issues during the use of the bot, please DM <@468685270296952842> or any of the admins!")
-  await ctx.send(embed=e)
-
 @bot.command("lineup")
 async def getLineupLink(ctx):
   await ctx.reply("<https://www.f1abeez.com/line-ups>")
