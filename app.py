@@ -492,6 +492,36 @@ async def readyMSGtier4(ctx):
   await ctx.message.delete()
   await ctx.send(f"<@&{tier4ID}> <@&{reserveTier4ID}>\n**Ready up**\n\n")
 
+@bot.command(name="readytier5")
+@commands.has_any_role("Admin", "Moderator")
+async def readyMSGtier5(ctx):
+  tier5ID = info.get_roleID(ctx.guild.id, "tier5Role")
+  reserveTier5ID = info.get_roleID(ctx.guild.id, "reserveTier5Role")
+  if(type(tier5ID) == type(None) or type(reserveTier5ID) == type(None)):
+    logging.error("Could not find tier 5 roles", exc_info=True)
+  await ctx.message.delete()
+  await ctx.send(f"<@&{tier5ID}> <@&{reserveTier5ID}>\n**Ready up**\n\n")
+
+@bot.command(name="readytierM")
+@commands.has_any_role("Admin", "Moderator")
+async def readyMSGtierM(ctx):
+  tierMID = info.get_roleID(ctx.guild.id, "tierMRole")
+  reserveTierMID = info.get_roleID(ctx.guild.id, "reserveTierMRole")
+  if(type(tierMID) == type(None) or type(reserveTierMID) == type(None)):
+    logging.error("Could not find tier M roles", exc_info=True)
+  await ctx.message.delete()
+  await ctx.send(f"<@&{tierMID}> <@&{reserveTierMID}>\n**Ready up**\n\n")
+
+@bot.command(name="readytierNA")
+@commands.has_any_role("Admin", "Moderator")
+async def readyMSGtierNA(ctx):
+  tierNAID = info.get_roleID(ctx.guild.id, "tierNARole")
+  reserveTierNAID = info.get_roleID(ctx.guild.id, "reserveTierNARole")
+  if(type(tierNAID) == type(None) or type(reserveTierNAID) == type(None)):
+    logging.error("Could not find tier NA roles", exc_info=True)
+  await ctx.message.delete()
+  await ctx.send(f"<@&{tierNAID}> <@&{reserveTierNAID}>\n**Ready up**\n\n")
+
 @bot.command(name="readyf2")
 @commands.has_any_role("Admin", "Moderator")
 async def readyMSGf2(ctx):
