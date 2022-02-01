@@ -712,9 +712,9 @@ async def on_member_join(member):
   channel = bot.get_channel(info.get_channelID(serverID, "welcomeChannel"))
   if(type(channel) != type(None)):
     if(member.guild.id == int(info.f1abeezID)):
-      await channel.send(f"**Welcome <@{member.id}>**\n\nPlease use this chat if you have any questions and someone will be on hand.\n\nAll the information you need is on <#865379267977412618>")
+      await channel.send(f"**Welcome {member.mention}**\n\nPlease use this chat if you have any questions and someone will be on hand.\n\nAll the information you need is on <#865379267977412618>")
     elif(member.guild.id == int(info.f2abeezID)):
-      await channel.send(f"Welcome to F2ABEEZ!\n\nYour dedicated F2 racing discord community. Please read <#937998062842957824> to get equated with our brand and information then, head over to <#937997355737833482> to get a seat in the next race that suits your pace!")
+      await channel.send(f"Welcome to F2ABEEZ!{member.mention}\n\nYour dedicated F2 racing discord community. Please read <#937998062842957824> to get equated with our brand and information then, head over to <#937997355737833482> to get a seat in the next race that suits your pace!")
   else:
     logging.error("welcomeChannel not found")
 
