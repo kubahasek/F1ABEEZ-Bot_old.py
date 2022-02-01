@@ -635,8 +635,9 @@ async def raceMSGf2tier2(ctx):
 @bot.command(name="academymessage")
 @commands.has_any_role("Admin", "Moderator", "Trialist Manager")
 async def academyMSG(ctx):
+  academyID = info.get_roleID(ctx.guild.id, "academyRole")
   await ctx.message.delete()
-  msg =  await ctx.send(f"<@&{info.academyRole}>\n**TRIAL RACE BRIEFING:**\nWelcome to the F1ABEEZ trial race! I would just like to run through what is expected of you from your trial:\n- Please drive clean - we are a clean racing league, show respect to your fellow drivers! dirty driving will not be tolerated\n- Drive fast! It's still a race after all, we would like to see a true reflection of your pace\n- Do not use medium tyres in Qualifying for this trial race, as this lets us compare your quali pace!\n- Have fun! That's what we're all here for\n\nThe format is short qualifying, 25% race\nAfter the race is completed, one of the trialist leaders will DM you individually with their decision\nPlease react with a thumbs up once you have read this, good luck!")
+  msg =  await ctx.send(f"<@&{academyID}>\n**TRIAL RACE BRIEFING:**\nWelcome to the F1ABEEZ trial race! I would just like to run through what is expected of you from your trial:\n- Please drive clean - we are a clean racing league, show respect to your fellow drivers! dirty driving will not be tolerated\n- Drive fast! It's still a race after all, we would like to see a true reflection of your pace\n- Do not use medium tyres in Qualifying for this trial race, as this lets us compare your quali pace!\n- Have fun! That's what we're all here for\n\nThe format is short qualifying, 25% race\nAfter the race is completed, one of the trialist leaders will DM you individually with their decision\nPlease react with a thumbs up once you have read this, good luck!")
   await msg.add_reaction("👍")
 
 
@@ -665,7 +666,7 @@ async def warn(ctx, user=None, *, reason=None):
   embed = nextcord.Embed(title="A Warning has been issued", color=info.color)
   embed.add_field(name="User", value=membername, inline=False)
   embed.add_field(name="Reason", value=reason, inline=False)
-  channel = bot.get_channel(info.warningChannel)
+  channel = bot.get_channel(info.get_channelID(ctx.guild.id, "warningChannel"))
   await channel.send(embed = embed)
   await ctx.send(embed = embed)   
 
@@ -694,7 +695,7 @@ async def ban(ctx, user=None, *, reason=None):
   embed = nextcord.Embed(title="A Ban has been issued", color=info.color)
   embed.add_field(name="User", value=membername, inline=False)
   embed.add_field(name="Reason", value=reason, inline=False)
-  channel = bot.get_channel(info.banChannel)
+  channel = bot.get_channel(info.get_channelID(ctx.guild.id, "banChannel"))
   await channel.send(embed = embed)
   await member.ban(reason = reason)
   await ctx.send(embed = embed)   
