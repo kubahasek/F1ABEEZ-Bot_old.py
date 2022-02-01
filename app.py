@@ -715,12 +715,15 @@ async def on_member_join(member):
 async def on_member_remove(member):
   memberName = member.name
   channel = bot.get_channel(info.get_channelID(member.guild.id, "leavingChannel"))
-  await channel.send(f"**{memberName}** has left the server.")
+  if(type(channel) != type(None)):
+    await channel.send(f"**{memberName}** has left the server.")
+  else:
+    logging.error("leavingChannel not found", exc_info=True)
 
 @bot.command(name="stewardsdecisions")
 @commands.has_any_role("Admin", "Moderator", "Steward")
 async def stewardsDecision(ctx, round):
-  channel = bot.get_channel(info.stewardsAnnoucementChannel)
+  channel = bot.get_channel(info.get_channelID(ctx.guild.id, "stewardsAnnouncementChannel"))
   roundNO = int(round)
   # f2RoundNO = roundNO - 1
   # f2round = f"R{f2RoundNO}"
