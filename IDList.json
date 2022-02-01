@@ -62,11 +62,11 @@
       "stewardsAnnouncementChannel": 827943552699990046,
       "generalAnnoucementChannel": 827943552699990046,
       "socialMediaAnnouncementChannel": 827943552699990046,
-      "incidentReportChannel": 827943552699990046,
-      "appealReportChannel": 827943552699990046,
-      "suggestionSubmitChannel": 827943552699990046,
-      "incidentLogChannel": 827943552699990046,
-      "suggestionLogChannel": 827943552699990046,
+      "incidentReportChannel": 890983033715441704,
+      "appealReportChannel": 891234712427855902,
+      "suggestionSubmitChannel": 891234691577954365,
+      "incidentLogChannel": 890983091122864169,
+      "suggestionLogChannel": 890983091122864169,
       "leavingChannel": 827943552699990046
     },
     "roles": {
