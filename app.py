@@ -21,6 +21,22 @@ import logging
 
 logging.basicConfig(format='%(asctime)s-%(levelname)s:%(message)s')
 
+
+class TierDropdown(nextcord.ui.Select):
+  def __init__(self):
+    options = [
+      nextcord.SelectOption(label="Tier 1",description="F1 - Tier 1" ,value="F1_Tier_1"),
+      nextcord.SelectOption(label="Tier 2",description="F1 - Tier 2" ,value="F1_Tier_2"),
+      nextcord.SelectOption(label="Tier 3",description="F1 - Tier 3" ,value="F1_Tier_3"),
+      nextcord.SelectOption(label="Tier 4",description="F1 - Tier 4" ,value="F1_Tier_4"),
+      nextcord.SelectOption(label="Tier 5",description="F1 - Tier 5" ,value="F1_Tier_5"),
+      nextcord.SelectOption(label="Tier M",description="F1 - Tier M" ,value="F1_Tier_M"),
+      nextcord.SelectOption(label="Tier NA",description="F1 - Tier NA" ,value="F1_Tier_NA"),
+      nextcord.SelectOption(label="F2 - Tier 1",description="F2 - Tier 1" ,value="F2_Tier_1"),
+      nextcord.SelectOption(label="F2 - Tier 2",description="F2 - Tier 2" ,value="F2_Tier_2"),
+    ]
+    super().__init__(placeholder="Select your tier", min_values=1, max_values=1, options=options, timeout=None)
+    
 class TierMenu(nextcord.ui.View):
   def __init__(self):
     super().__init__(timeout=None)
