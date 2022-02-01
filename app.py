@@ -1,5 +1,6 @@
 from ast import If
 import asyncio
+from itertools import dropwhile
 import nextcord
 from nextcord import client
 from nextcord import message
@@ -33,17 +34,17 @@ class TierDropdown(nextcord.ui.Select):
       nextcord.SelectOption(label="F2 - Tier 1",description="F2 - Tier 1" ,value="F2 - Tier 1"),
       nextcord.SelectOption(label="F2 - Tier 2",description="F2 - Tier 2" ,value="F2 - Tier 2"),
     ]
-    super().__init__(placeholder="Select your tier", min_values=1, max_values=1, options=options)
+    super().__init__(placeholder="Select your tier...", min_values=1, max_values=1, options=options)
 
   async def callback(self, interaction: nextcord.Interaction):
     self.tierSelected = self.values[0]
     await interaction.response.send_message(f"You have selected {self.tierSelected}")
-    
+
+
 class DropdownView(nextcord.ui.View):
   def __init__(self):
-      super().__init__()
-      self.add_item(TierDropdown())   
-  
+    super().__init__()
+    self.add_item(TierDropdown())
 class TierMenu(nextcord.ui.View):
   def __init__(self):
     super().__init__(timeout=None)
@@ -988,5 +989,10 @@ async def channelName(ctx, name):
     returnName += nameDic.get(char)
 
   await ctx.reply("︱" + returnName)
+
+@bot.command("testview")
+async def testview(ctx):
+  view = DropdownView()
+  await ctx.send(view=view)
 
 bot.run(info.discord_token)
