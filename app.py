@@ -36,6 +36,9 @@ class TierDropdown(nextcord.ui.Select):
       nextcord.SelectOption(label="F2 - Tier 2",description="F2 - Tier 2" ,value="F2_Tier_2"),
     ]
     super().__init__(placeholder="Select your tier", min_values=1, max_values=1, options=options, timeout=None)
+
+    async def handle_menu(self, interaction: nextcord.Interaction):
+      await interaction.response.send_message(f"You selected {self.value}")
     
 class TierMenu(nextcord.ui.View):
   def __init__(self):
