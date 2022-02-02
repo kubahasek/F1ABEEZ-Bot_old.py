@@ -752,11 +752,10 @@ async def raceResults(ctx, round):
   tier1URL = f"<https://f1abeez.com/race-reports/t1/{round}>"
   tier2URL = f"<https://f1abeez.com/race-reports/t2/{round}>"
   tier3URL = f"<https://f1abeez.com/race-reports/t3/{round}>"
-  # tier4URL = f"<https://f1abeez.com/race-reports/t4/{round}>"
-  # if(roundNO - 1 == 0):
-  #   f2URL = "F2 did not race"
-  # else:
-  #   f2URL = f"<https://f1abeez.com/race-reports/F2-{f2round}>"
+  tier4URL = f"<https://f1abeez.com/race-reports/t4/{round}>"
+  tier5URL = f"<https://f1abeez.com/race-reports/t5/{round}>"
+  tierMURL = f"<https://f1abeez.com/race-reports/tm/{round}>"
+  tierNAURL = f"<https://f1abeez.com/race-reports/tna/{round}>"
   if(type(channel) != type(None)):
     await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}")
   else:
