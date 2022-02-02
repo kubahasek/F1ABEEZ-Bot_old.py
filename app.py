@@ -1,5 +1,6 @@
 from ast import If
 import asyncio
+from itertools import dropwhile
 import nextcord
 from nextcord import client
 from nextcord import message
@@ -10,8 +11,6 @@ from nextcord.ext.commands.core import check
 from nextcord.ui import view
 from nextcord.ui.view import View
 import requests
-import json
-import os
 import datetime
 import pytz
 import notion as nt
@@ -21,54 +20,34 @@ import logging
 
 logging.basicConfig(format='%(asctime)s-%(levelname)s:%(message)s')
 
-class TierMenu(nextcord.ui.View):
+
+class TierDropdown(nextcord.ui.Select):
   def __init__(self):
-    super().__init__(timeout=None)
+    options = [
+      nextcord.SelectOption(label="Tier 1",description="F1 - Tier 1" ,value="F1 - Tier 1"),
+      nextcord.SelectOption(label="Tier 2",description="F1 - Tier 2" ,value="F1 - Tier 2"),
+      nextcord.SelectOption(label="Tier 3",description="F1 - Tier 3" ,value="F1 - Tier 3"),
+      # nextcord.SelectOption(label="Tier 4",description="F1 - Tier 4" ,value="F1 - Tier 4"),
+      # nextcord.SelectOption(label="Tier 5",description="F1 - Tier 5" ,value="F1 - Tier 5"),
+      # nextcord.SelectOption(label="Tier M",description="F1 - Tier M" ,value="F1 - Tier M"),
+      # nextcord.SelectOption(label="Tier NA",description="F1 - Tier NA" ,value="F1 - Tier NA"),
+      # nextcord.SelectOption(label="F2 - Tier 1",description="F2 - Tier 1" ,value="F2 - Tier 1"),
+      # nextcord.SelectOption(label="F2 - Tier 2",description="F2 - Tier 2" ,value="F2 - Tier 2"),
+    ]
+    super().__init__(placeholder="Select your tier...", min_values=1, max_values=1, options=options)
 
-  
-  async def handle_click(self, button, interaction):
-    if(str(button.custom_id) == "Tier_1"):
-      self.tierSelected = "F1 - Tier 1"
-      self.stop()
-    elif(str(button.custom_id) == "Tier_2"):
-      self.tierSelected = "F1 - Tier 2"
-      self.stop()
-    elif(str(button.custom_id) == "Tier_3"):
-      self.tierSelected = "F1 - Tier 3"
-      self.stop()
-    # elif(str(button.custom_id) == "Tier_4"):
-    #   self.tierSelected = "F1 - Tier 4"
-    #   self.stop()
-    # elif(str(button.custom_id) == "Nations_League"):
-    #   self.tierSelected = "Nations League"
-    #   self.stop()
-    # elif(str(button.custom_id) == "F2"):
-    #   self.tierSelected = "F2"
-    #   self.stop()
+  async def callback(self, interaction: nextcord.Interaction):
+    self.tierSelected = self.values[0]
+class DropdownTierView(nextcord.ui.View):
+  def __init__(self):
+    super().__init__()
+    self.dropdown = TierDropdown()
+    self.add_item(self.dropdown)
 
-  @nextcord.ui.button(label="Tier 1", style=nextcord.ButtonStyle.primary, custom_id="Tier_1")
-  async def tier1ButtonClicked(self, button, interaction):
-    await self.handle_click(button, interaction)
-  
-  @nextcord.ui.button(label="Tier 2", style=nextcord.ButtonStyle.primary, custom_id="Tier_2")
-  async def tier2ButtonClicked(self, button, interaction):
-    await self.handle_click(button, interaction)
-
-  @nextcord.ui.button(label="Tier 3", style=nextcord.ButtonStyle.primary, custom_id="Tier_3")
-  async def tier3ButtonClicked(self, button, interaction):
-    await self.handle_click(button, interaction)
-
-  # @nextcord.ui.button(label="Tier 4", style=nextcord.ButtonStyle.primary, custom_id="Tier_4")
-  # async def tier4ButtonClicked(self, button, interaction):
-  #   await self.handle_click(button, interaction)
-
-  # @nextcord.ui.button(label="Nations League", style=nextcord.ButtonStyle.primary, custom_id="Nations_League")
-  # async def tiermButtonClicked(self, button, interaction):
-  #   await self.handle_click(button, interaction)
-
-  # @nextcord.ui.button(label="F2", style=nextcord.ButtonStyle.primary, custom_id="F2")
-  # async def f2ButtonClicked(self, button, interaction):
-  #   await self.handle_click(button, interaction)
+  @nextcord.ui.button(label="Confirm", style=nextcord.ButtonStyle.green, row=1)
+  async def confirm(self,button: nextcord.ui.Button, interaction: nextcord.Interaction):
+    self.tierSelected = self.dropdown.tierSelected
+    self.stop()
 
 class SuggestionMenu(nextcord.ui.View):
   def __init__(self):
@@ -139,7 +118,7 @@ class reportMenu(nextcord.ui.View):
           descriptionInc = await bot.wait_for("message", check=check, timeout=180.0)
           descriptionInc = descriptionInc.content
 
-          view = TierMenu()
+          view = DropdownTierView()
           await user.send("Select in which tier did the incident occur", view=view)
           await view.wait()
           if(view.tierSelected == "F1 - Tier 1"):
@@ -154,12 +133,22 @@ class reportMenu(nextcord.ui.View):
           elif(view.tierSelected == "F1 - Tier 4"):
             tierOfIncidentInc = view.tierSelected
             await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "Nations League"):
+          elif(view.tierSelected == "F1 - Tier 5"):
             tierOfIncidentInc = view.tierSelected
             await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F2"):
+          elif(view.tierSelected == "F1 - Tier M"):
             tierOfIncidentInc = view.tierSelected
             await user.send(f"You selected {tierOfIncidentInc}")
+          elif(view.tierSelected == "F1 - Tier NA"):
+            tierOfIncidentInc = view.tierSelected
+            await user.send(f"You selected {tierOfIncidentInc}")
+          elif(view.tierSelected == "F2 - Tier 1"):
+            tierOfIncidentInc = view.tierSelected
+            await user.send(f"You selected {tierOfIncidentInc}")
+          elif(view.tierSelected == "F2 - Tier 2"):
+            tierOfIncidentInc = view.tierSelected
+            await user.send(f"You selected {tierOfIncidentInc}")
+          
           await user.send("Please provide video evidence (Only reply with links to gamerdvr or other services)")
           evidenceInc = await bot.wait_for("message", check=check, timeout=180.0)
           evidenceInc = evidenceInc.content
@@ -840,7 +829,7 @@ async def getCalendar(ctx):
 @bot.command(name="standings")
 async def getStandings(ctx):
   await ctx.message.delete()
-  view = TierMenu()
+  view = DropdownTierView()
   selectMSG = await ctx.send("For which tier do you want to see standings?", view=view)
   await view.wait()
   try:
@@ -884,12 +873,65 @@ async def getStandings(ctx):
       if(r):
         await msg.delete()
       r = r.json()
-      url = r["images"]["4:351"]
+      url = r["images"]["4:351"] ## TODO: Change this to the correct image
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
       await ctx.send(embed=e)
-    elif(view.tierSelected == "Nations League"):
-      await ctx.send("Graphics for Nations League standings are currently not available")
+    elif(view.tierSelected == "F1 - Tier 5"):
+      await selectMSG.delete()
+      msg = await ctx.send("Getting Tier 5 Standings")
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
+      if(r):
+        await msg.delete()
+      r = r.json()
+      url = r["images"]["2:16"] ## TODO: Change this to the correct image
+      e = nextcord.Embed(color=info.color) 
+      e.set_image(url=url) 
+      await ctx.send(embed=e)
+    elif(view.tierSelected == "F1 - Tier M"):
+      await selectMSG.delete()
+      msg = await ctx.send("Getting Tier M Standings")
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
+      if(r):
+        await msg.delete()
+      r = r.json()
+      url = r["images"]["2:16"] ## TODO: Change this to the correct image
+      e = nextcord.Embed(color=info.color) 
+      e.set_image(url=url) 
+      await ctx.send(embed=e)
+    elif(view.tierSelected == "F1 - Tier NA"):
+      await selectMSG.delete()
+      msg = await ctx.send("Getting Tier NA Standings")
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
+      if(r):
+        await msg.delete()
+      r = r.json()
+      url = r["images"]["2:16"] ## TODO: Change this to the correct image
+      e = nextcord.Embed(color=info.color) 
+      e.set_image(url=url) 
+      await ctx.send(embed=e)
+    elif(view.tierSelected == "F2 - Tier 1"):
+      await selectMSG.delete()
+      msg = await ctx.send("Getting F2 - Tier 1 Standings")
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
+      if(r):
+        await msg.delete()
+      r = r.json()
+      url = r["images"]["2:16"] ## TODO: Change this to the correct image
+      e = nextcord.Embed(color=info.color) 
+      e.set_image(url=url) 
+      await ctx.send(embed=e)
+    elif(view.tierSelected == "F2 - Tier 2"):
+      await selectMSG.delete()
+      msg = await ctx.send("Getting F2 - Tier 2 Standings")
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
+      if(r):
+        await msg.delete()
+      r = r.json()
+      url = r["images"]["2:16"] ## TODO: Change this to the correct image
+      e = nextcord.Embed(color=info.color) 
+      e.set_image(url=url) 
+      await ctx.send(embed=e)
   except KeyError:
     await ctx.send("There was an error while getting the standings. Please report this issue to the admins")
     print(KeyError)
