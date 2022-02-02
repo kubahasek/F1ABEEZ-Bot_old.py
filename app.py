@@ -389,7 +389,7 @@ async def lobbyMSGtier4(ctx):
   if(type(tier4ID) == type(None) or type(reserveTier4ID) == type(None)):
     logging.error("Could not find tier 4 roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send(f"<@&{tier4ID}> <@&{reserveTier4ID}>\n**Lobby is now open!**\nPlease join off <@559096129816363010>\nGamertag is - Razznyk\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+  await ctx.send(f"<@&{tier4ID}> <@&{reserveTier4ID}>\n**Lobby is now open!**\nPlease join off <@436205062231031808>\nGamertag is - FlameTornado929\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
 
 @bot.command(name="lobbytier5")
 @commands.has_any_role("Admin", "Moderator")
