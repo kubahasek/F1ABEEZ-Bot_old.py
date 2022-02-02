@@ -756,8 +756,13 @@ async def raceResults(ctx, round):
   tier5URL = f"<https://f1abeez.com/race-reports/t5/{round}>"
   tierMURL = f"<https://f1abeez.com/race-reports/tm/{round}>"
   tierNAURL = f"<https://f1abeez.com/race-reports/tna/{round}>"
+  f2Tier1URL = f"" ## TODO: add URL
+  f2Tier2URL = f"" ## TODO: add URL
   if(type(channel) != type(None)):
-    await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier 4** - {tier4URL}\n**F1 - Tier 5** - {tier5URL}\n**F1 - Tier M** - {tierMURL}\n**F1 - Tier NA** - {tierNAURL}\n\nThank you,\nStewards of F1ABEEZ")
+    if(ctx.guild.id == info.f1abeezID):
+      await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier 4** - {tier4URL}\n**F1 - Tier 5** - {tier5URL}\n**F1 - Tier M** - {tierMURL}\n**F1 - Tier NA** - {tierNAURL}\n\nThank you,\nStewards of F1ABEEZ")
+    elif(ctx.guild.id == info.f2abeezID):
+      await channel.send(f"@everyone\n\n**F2 - Tier 1** - {f2Tier1URL}\n**F2 - Tier 2** - {f2Tier2URL}\n\nThank you,\nStewards of F2ABEEZ")
   else:
     logging.error("generalAnnoucementChannel not found")
     await ctx.reply("ERROR: generalAnnoucementChannel not found, contact KubaH04")
