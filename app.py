@@ -419,7 +419,7 @@ async def lobbyMSGtier4(ctx):
   if(type(tierNAID) == type(None) or type(reserveTierNAID) == type(None)):
     logging.error("Could not find tier NA roles", exc_info=True)
   await ctx.message.delete()
-  await ctx.send(f"<@&{tierNAID}> <@&{reserveTierNAID}>\n**Lobby is now open!**\nPlease join off <@559096129816363010>\nGamertag is - Razznyk\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+  await ctx.send(f"<@&{tierNAID}> <@&{reserveTierNAID}>\n**Lobby is now open!**\nPlease join off <@885760237913669652>\nGamertag is - Supremecream781\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
 
 @bot.command(name="lobbyf2tier1")
 @commands.has_any_role("Admin", "Moderator")
