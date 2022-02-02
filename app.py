@@ -792,7 +792,7 @@ async def getCalendar(ctx):
   view = CalendarMenu()
   selectMSG = await ctx.send("For which tier do you want to see standings?", view=view)
   await view.wait()
-  if(view.tierSelected == "F1"):
+  if(info.f1abeezID == ctx.guild.id):
     msg = await ctx.send("Getting the F1 calendar...")
     try:
       await selectMSG.delete()
@@ -808,15 +808,15 @@ async def getCalendar(ctx):
       await ctx.send(f"There was an error getting the calendar, please report this issue to the admins.")
       print("calendar:")
       print(e)
-  elif(view.tierSelected == "Nations League"):
-    msg = await ctx.send("Getting the Nations League calendar...")
+  elif(info.f2abeezID == ctx.guild.id):
+    msg = await ctx.send("Getting the F2 calendar...")
     try:
       await selectMSG.delete()
       r = requests.get("https://api.figma.com/v1/images/8mL0mwOKyIUcoLG3goL7wk/?ids=15%3A2&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
       if(r):
         await msg.delete()
-      img = r["images"]["15:2"]
+      img = r["images"]["15:2"] ## TODO: change this to F2 calendar
       print(img)
       embed2 = nextcord.Embed(color=info.color) 
       embed2.set_image(url=img) 
