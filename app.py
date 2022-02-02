@@ -757,7 +757,7 @@ async def raceResults(ctx, round):
   tierMURL = f"<https://f1abeez.com/race-reports/tm/{round}>"
   tierNAURL = f"<https://f1abeez.com/race-reports/tna/{round}>"
   if(type(channel) != type(None)):
-    await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}")
+    await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier 4** - {tier4URL}\n**F1 - Tier 5** - {tier5URL}\n**F1 - Tier M** - {tierMURL}\n**F1 - Tier NA** - {tierNAURL}\n\nThank you,\nStewards of F1ABEEZ")
   else:
     logging.error("generalAnnoucementChannel not found")
     await ctx.reply("ERROR: generalAnnoucementChannel not found, contact KubaH04")
