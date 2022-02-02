@@ -257,8 +257,6 @@ def GetHelpCommand():
 
 def getStaffHelpCommand():
   embed = nextcord.Embed(title="Staff Help", color=info.color)
-  embed.add_field(name=";dotd", value="Sends the DOTD vote message\nusage: ;dotd tier, driver1Name, driver1PosChange, driver2Name, driver2PosChange, driver3Name, driver3PosChange, driver4Name, driver4PosChange, driver5Name, driver5PosChange", inline=False)
-  embed.add_field(name=";dotdwinner", value="Sends the winner of DOTD\nusage: ;dotdwinner tier, winnerName", inline=False)
   embed.add_field(name=";lobbytier<tierNumber>", value="Sends the lobby is open message. Enter the tier number instead of <tierNumber>", inline=False)
   embed.add_field(name=";readytier<tierNumber>", value="Sends the ready up instruction. Enter the tier number instead of <tierNumber>", inline=False)
   embed.add_field(name=";racetier<tierNumber>", value="Sends the race ready up instruction. Enter the tier number instead of <tierNumber>", inline=False)
