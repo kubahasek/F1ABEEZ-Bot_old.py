@@ -185,5 +185,21 @@ class Lobby(commands.Cog):
                     logging.error("Could not find tier NA roles", exc_info=True)
                 await interaction.send(f"<@&{tierNAID}> <@&{reserveTierNAID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
 
+    @nextcord.slash_command(name="racef2", description="Race ready up command", guild_ids=[int(info.f2abeezID), int(info.testServerID)])
+    async def readyf2(self, interaction: Interaction, tierf2: str = SlashOption(name="tier", description="Select your Tier", choices={"Tier 1": "1", "Tier 2": "2"})):
+        match tierf2:
+            case "1":
+                f2tier1ID = info.get_roleID(interaction.guild.id, "f2Tier1Role")
+                f2reserveTier1ID = info.get_roleID(interaction.guild.id, "reserveF2Tier1Role")
+                if(type(f2tier1ID) == type(None) or type(f2reserveTier1ID) == type(None)):
+                    logging.error("Could not find tier 1 F2 roles", exc_info=True)
+                await interaction.send(f"<@&{f2tier1ID}> <@&{f2reserveTier1ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+            case "2":
+                f2tier2ID = info.get_roleID(interaction.guild.id, "f2Tier2Role")
+                f2reserveTier2ID = info.get_roleID(interaction.guild.id, "reserveF2Tier2Role")
+                if(type(f2tier2ID) == type(None) or type(f2reserveTier2ID) == type(None)):
+                    logging.error("Could not find tier 1 F2 roles", exc_info=True)
+                await interaction.send(f"<@&{f2tier2ID}> <@&{f2reserveTier2ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
+
 def setup(bot):
     bot.add_cog(Lobby(bot))
