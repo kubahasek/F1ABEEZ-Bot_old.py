@@ -14,7 +14,22 @@ class Lobby(commands.Cog):
 
     @nextcord.slash_command(name="lobby",guild_ids=[int(info.testServerID)])
     async def lobby(self, interaction: Interaction, tier: str = SlashOption(name="tier", description="Select your Tier", choices={"Tier 1": "1", "Tier 2": "2", "Tier 3": "3", "Tier 4": "4", "Tier 5": "5", "Tier M": "M", "Tier NA": "NA"})):
-        pass
+        match tier:
+            case "1":
+                pass
+            case "2":
+                pass
+            case "3":
+                pass
+            case "4":
+                pass
+            case "5":
+                pass
+            case "M":
+                pass
+            case "NA":
+                pass
+                    
 
 def setup(bot):
     bot.add_cog(Lobby(bot))
