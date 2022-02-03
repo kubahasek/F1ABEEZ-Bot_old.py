@@ -13,9 +13,14 @@ from nextcord.ui.view import View
 import requests
 import datetime
 import pytz
-import notion as nt
-import info
+import sys, os, inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+import utils.notion as nt
+import utils.info as info
 import logging
+from cogs import lobby
 
 
 logging.basicConfig(format='%(asctime)s-%(levelname)s:%(message)s')
@@ -1014,3 +1019,4 @@ async def channelName(ctx, name):
   await ctx.reply("︱" + returnName)
 
 bot.run(info.discord_token)
+bot.add_cog(lobby(bot))
