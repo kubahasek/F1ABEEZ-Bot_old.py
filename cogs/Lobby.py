@@ -1,4 +1,3 @@
-from unicodedata import name
 from discord import SelectOption
 from nextcord import Interaction, SlashOption, ChannelType
 from nextcord.abc import GuildChannel
