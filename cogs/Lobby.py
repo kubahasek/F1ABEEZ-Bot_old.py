@@ -12,9 +12,9 @@ class Lobby(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @nextcord.slash_command(naemguild_ids=[int(info.testServerID)])
-    async def lobby(self, interaction: Interaction):
-        await interaction.response.send_message("This is the lobby")
+    @nextcord.slash_command(name="lobby",guild_ids=[int(info.testServerID)])
+    async def lobby(self, interaction: Interaction, tier: str = SlashOption(name="tier", description="Select your Tier", choices={"Tier 1": "1", "Tier 2": "2", "Tier 3": "3", "Tier 4": "4", "Tier 5": "5", "Tier M": "M", "Tier NA": "NA"})):
+        pass
 
 def setup(bot):
     bot.add_cog(Lobby(bot))
