@@ -1,6 +1,4 @@
-from ast import If
 import asyncio
-from itertools import dropwhile
 import nextcord
 from nextcord import client
 from nextcord import message
