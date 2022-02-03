@@ -1,0 +1,94 @@
+{
+  "774604623247573022": {
+    "channels": {
+      "welcomeChannel": 838841316519313408,
+      "banChannel": 853679513406013460,
+      "warningChannel": 909158996592713758,
+      "stewardsAnnouncementChannel": 864564506368933888,
+      "generalAnnoucementChannel": 774696889424805891,
+      "socialMediaAnnouncementChannel": 834548053704572948,
+      "incidentReportChannel": 871334405359144970,
+      "appealReportChannel": 871334445716766800,
+      "suggestionSubmitChannel": 877977932914651176,
+      "incidentLogChannel": 861939856481189908,
+      "suggestionLogChannel": 919200817075073055,
+      "leavingChannel": 774605933661257729
+    },
+    "roles": {
+      "tier1Role": 795227294766727169,
+      "reserveTier1Role": 893654550962139176,
+      "tier2Role": 795227317684928546,
+      "reserveTier2Role": 893654646462218240,
+      "tier3Role": 813703851349245965,
+      "reserveTier3Role": 893654551704526859,
+      "tier4Role": 937459936206663700,
+      "reserveTier4Role": 937459953281683517,
+      "tier5Role": 937459976253894687,
+      "reserveTier5Role": 937459992322269184,
+      "tierMRole": 937460013675446292,
+      "reserveTierMRole": 937460030251352065,
+      "tierNARole": 937460052799914034,
+      "reserveTierNARole": 937460066330738769,
+      "academyRole": 774740889557270539
+    }
+  },
+  "935253214285135952": {
+    "channels": {
+      "incidentReportChannel": 937639245424767026,
+      "appealReportChannel": 937639296888877097,
+      "generalAnnoucementChannel": 937636752842174474,
+      "socialMediaAnnouncementChannel": 937636815203106856,
+      "suggestionSubmitChannel": 937995031988555806,
+      "suggestionLogChannel": 937995180341092375,
+      "stewardsAnnouncementChannel": 937996079352401920,
+      "incidentLogChannel": 938002517734862888,
+      "welcomeChannel": 937996861816598599,
+      "leavingChannel": 937996861816598599,
+      "warningChannel": 938004577746296832,
+      "banChannel": 938004615486664764
+    },
+    "roles": {
+      "f2Tier1Role": 937644492033507349,
+      "reserveF2Tier1Role": 937644510140334100,
+      "f2Tier2Role": 937644537633972234,
+      "reserveF2Tier2Role": 937644555199737926
+    }
+  },
+  "801005100596199444": {
+    "channels": {
+      "welcomeChannel": 827943552699990046,
+      "banChannel": 827943552699990046,
+      "warningChannel": 827943552699990046,
+      "stewardsAnnouncementChannel": 827943552699990046,
+      "generalAnnoucementChannel": 827943552699990046,
+      "socialMediaAnnouncementChannel": 827943552699990046,
+      "incidentReportChannel": 890983033715441704,
+      "appealReportChannel": 891234712427855902,
+      "suggestionSubmitChannel": 891234691577954365,
+      "incidentLogChannel": 890983091122864169,
+      "suggestionLogChannel": 890983091122864169,
+      "leavingChannel": 827943552699990046
+    },
+    "roles": {
+      "tier1Role": 937757455260209193,
+      "reserveTier1Role": 937757455260209193,
+      "tier2Role": 937757455260209193,
+      "reserveTier2Role": 937757455260209193,
+      "tier3Role": 937757455260209193,
+      "reserveTier3Role": 937757455260209193,
+      "tier4Role": 937757455260209193,
+      "reserveTier4Role": 937757455260209193,
+      "tier5Role": 937757455260209193,
+      "reserveTier5Role": 937757455260209193,
+      "tierMRole": 937757455260209193,
+      "reserveTierMRole": 937757455260209193,
+      "tierNARole": 937757455260209193,
+      "reserveTierNARole": 937757455260209193,
+      "f2Tier1Role": 937757455260209193,
+      "reserveF2Tier1Role": 937757455260209193,
+      "f2Tier2Role": 937757455260209193,
+      "reserveF2Tier2Role": 937757455260209193,
+      "academyRole": 937757455260209193
+    }
+  }
+}
