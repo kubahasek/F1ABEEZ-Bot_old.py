@@ -104,16 +104,20 @@ class Announcements(commands.Cog):
     @nextcord.slash_command(name="youtube", description="Sends the youtube message.", guild_ids=[int(info.f1abeezID), int(info.f2abeezID), int(info.testServerID)])
     async def youtube(self, interaction: Interaction):
         await interaction.response.send_message(f"Working on it...")
-        try:
+        if(utils.check_roles(interaction.user.roles, ["Admin", "Moderator"])):
+            try:
+                await interaction.delete_original_message()
+                channel = self.bot.get_channel(info.get_channelID(interaction.guild.id, "socialMediaAnnouncementChannel"))
+                await channel.send("@everyone\n\n**All race replays have now been uploaded to our YouTube Channel!**\n\n Check them out at: <https://www.youtube.com/channel/UCHh_JjzcjQktvEGNVq96_QA>")
+                await interaction.send("Message sent")
+            except Exception as e:
+                await interaction.delete_original_message()
+                print("youtube")
+                print(e)
+                await interaction.send("ERROR: please contact KubaH04")
+        else:
             await interaction.delete_original_message()
-            channel = self.bot.get_channel(info.get_channelID(ctx.guild.id, "socialMediaAnnouncementChannel"))
-            await channel.send("@everyone\n\n**All race replays have now been uploaded to our YouTube Channel!**\n\n Check them out at: <https://www.youtube.com/channel/UCHh_JjzcjQktvEGNVq96_QA>")
-            await interaction.send("Message sent")
-        except Exception as e:
-            await interaction.delete_original_message()
-            print("youtube")
-            print(e)
-            await interaction.send("ERROR: please contact KubaH04")
+            await interaction.send("You do not have permission to use this command!")
 
 
 def setup(bot):
