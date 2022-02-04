@@ -340,7 +340,6 @@ def getProfileInfo(gamertag):
     pageId = database["results"][0]["id"]
     page = requests.get("https://api.notion.com/v1/pages/" + pageId, headers=header).text
     page = json.loads(page)
-    logging.info(type(page))
     F1Points = page["properties"]["RU:Current F1 Points"]["rollup"]["number"]
     tier = page["properties"]["Current F1 Tier"]["multi_select"][0]["name"]
     try:
