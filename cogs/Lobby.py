@@ -16,9 +16,8 @@ class Lobby(commands.Cog):
 
     @nextcord.slash_command(name="lobby",description="Lobby open command" , guild_ids=[int(info.testServerID), int(info.f1abeezID)])
     async def lobbyF1(self, interaction: Interaction, tier: str = SlashOption(name="tier", description="Select your Tier", choices={"Tier 1": "1", "Tier 2": "2", "Tier 3": "3", "Tier 4": "4", "Tier 5": "5", "Tier M": "M", "Tier NA": "NA"})):
-        await interaction.response.send_message("Working on it...")
+        await interaction.response.defer()
         if(utils.check_roles(interaction.user.roles, ["Admin", "Moderator", "Tier Lead"])):
-            await interaction.delete_original_message()
             match tier:
                 case "1":
                     tier1ID = info.get_roleID(interaction.guild.id, "tier1Role")
@@ -63,16 +62,14 @@ class Lobby(commands.Cog):
                         logging.error("Could not find tier NA roles", exc_info=True)
                     await interaction.send(f"<@&{tierNAID}> <@&{reserveTierNAID}>\n**Lobby is now open!**\nPlease join off <@885760237913669652>\nGamertag is - Supremecream781\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
         else:
-            await interaction.delete_original_message()
             await interaction.send("You do not have permission to use this command!")
             return
             
 
     @nextcord.slash_command(name="lobbyf2", description="Lobby is open command", guild_ids=[int(info.f2abeezID), int(info.testServerID)])
     async def lobbyf2(self, interaction: Interaction, tierf2: str = SlashOption(name="tier", description="Select your Tier", choices={"Tier 1": "1", "Tier 2": "2"})):
-        await interaction.response.send_message("Working on it...")
+        await interaction.response.defer()
         if(utils.check_roles(interaction.user.roles, ["Admin", "Moderator", "Tier Lead"])):
-            await interaction.delete_original_message()
             match tierf2:
                 case "1":
                     f2tier1ID = info.get_roleID(interaction.guild.id, "f2Tier1Role")
@@ -87,15 +84,13 @@ class Lobby(commands.Cog):
                         logging.error("Could not find tier 2 F2 roles", exc_info=True)
                     await interaction.send(f"<@&{f2tier2ID}> <@&{f2reserveTier2ID}>\n**Lobby is now open!**\nPlease join off <@499568806469959691>\nGamertag is - MrJSmithy\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
         else:
-            await interaction.delete_original_message()
             await interaction.send("You do not have permission to use this command!")
             return
 
     @nextcord.slash_command(name="ready", description="Ready up command", guild_ids=[int(info.f1abeezID), int(info.testServerID)])
     async def readyf1(self, interaction: Interaction, tier: str = SlashOption(name="tier", description="Select your Tier", choices={"Tier 1": "1", "Tier 2": "2", "Tier 3": "3", "Tier 4": "4", "Tier 5": "5", "Tier M": "M", "Tier NA": "NA"})):
-        await interaction.response.send_message("Working on it...")
+        await interaction.response.defer()
         if(utils.check_roles(interaction.user.roles, ["Admin", "Moderator", "Tier Lead"])):
-            await interaction.delete_original_message()
             match tier:
                 case "1":
                     tier1ID = info.get_roleID(interaction.guild.id, "tier1Role")
@@ -140,15 +135,13 @@ class Lobby(commands.Cog):
                         logging.error("Could not find tier NA roles", exc_info=True)
                     await interaction.send(f"<@&{tierNAID}> <@&{reserveTierNAID}>\n**Ready up**\n\n")
         else:
-            await interaction.delete_original_message()
             await interaction.send("You do not have permission to use this command!")
             return
 
     @nextcord.slash_command(name="readyf2", description="Ready up command", guild_ids=[int(info.f2abeezID), int(info.testServerID)])
     async def readyf2(self, interaction: Interaction, tierf2: str = SlashOption(name="tier", description="Select your Tier", choices={"Tier 1": "1", "Tier 2": "2"})):
-        await interaction.response.send_message("Working on it...")
+        await interaction.response.defer()
         if(utils.check_roles(interaction.user.roles, ["Admin", "Moderator", "Tier Lead"])):
-            await interaction.delete_original_message()
             match tierf2:
                 case "1":
                     f2tier1ID = info.get_roleID(interaction.guild.id, "f2Tier1Role")
@@ -163,15 +156,13 @@ class Lobby(commands.Cog):
                         logging.error("Could not find tier 1 F2 roles", exc_info=True)
                     await interaction.send(f"<@&{f2tier2ID}> <@&{f2reserveTier2ID}>\n**Ready up**\n\nDon't forget to not use wet tyres in qualifying as this will results in a quali ban")
         else:
-            await interaction.delete_original_message()
             await interaction.send("You do not have permission to use this command!")
             return
 
     @nextcord.slash_command(name="race", description="Sends the race ready up", guild_ids=[int(info.f1abeezID), int(info.testServerID)])
     async def racef1(self, interaction: Interaction, tier: str = SlashOption(name="tier", description="Select your Tier", choices={"Tier 1": "1", "Tier 2": "2", "Tier 3": "3", "Tier 4": "4", "Tier 5": "5", "Tier M": "M", "Tier NA": "NA"})):
-        await interaction.response.send_message("Working on it...")
+        await interaction.response.defer()
         if(utils.check_roles(interaction.user.roles, ["Admin", "Moderator", "Tier Lead"])):
-            await interaction.delete_original_message()
             match tier:
                 case "1":
                     tier1ID = info.get_roleID(interaction.guild.id, "tier1Role")
@@ -216,15 +207,13 @@ class Lobby(commands.Cog):
                         logging.error("Could not find tier NA roles", exc_info=True)
                     await interaction.send(f"<@&{tierNAID}> <@&{reserveTierNAID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
         else:
-            await interaction.delete_original_message()
             await interaction.send("You do not have permission to use this command!")
             return
 
     @nextcord.slash_command(name="racef2", description="Race ready up command", guild_ids=[int(info.f2abeezID), int(info.testServerID)])
     async def racef2(self, interaction: Interaction, tierf2: str = SlashOption(name="tier", description="Select your Tier", choices={"Tier 1": "1", "Tier 2": "2"})):
-        await interaction.response.send_message("Working on it...")
+        await interaction.response.defer()
         if(utils.check_roles(interaction.user.roles, ["Admin", "Moderator", "Tier Lead"])):
-            await interaction.delete_original_message()
             match tierf2:
                 case "1":
                     f2tier1ID = info.get_roleID(interaction.guild.id, "f2Tier1Role")
@@ -239,7 +228,6 @@ class Lobby(commands.Cog):
                         logging.error("Could not find tier 1 F2 roles", exc_info=True)
                     await interaction.send(f"<@&{f2tier2ID}> <@&{f2reserveTier2ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
         else:
-            await interaction.delete_original_message()
             await interaction.send("You do not have permission to use this command!")
             return
 
