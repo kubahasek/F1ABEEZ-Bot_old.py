@@ -1,4 +1,5 @@
 import asyncio
+from discord import SlashOption
 import nextcord
 from nextcord import client
 from nextcord import message
@@ -336,9 +337,10 @@ async def StaffHelpCommand(interaction: Interaction):
   else:
     await interaction.send("You do not have permission to use this command!")
 
-@bot.command(name="gettickets")
-async def GetTickets(ctx, *, arg):
-    await ctx.send(embed=nt.queryTickets(arg))
+@bot.slash_command(name="gettickets", description="Gets the tickets for the gamertag", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
+async def GetTickets(interaction: Interaction, gamertag: str = SlashOption(name="gamertag", description="The gamertag to get the tickets for", required=True)):
+    await interaction.response.defer()
+    await interaction.send(embed=nt.queryTickets(gamertag))
 
 @bot.command(name="getprofile")
 async def GetProfile(ctx, *, arg):
