@@ -130,7 +130,7 @@ def queryAppeals(gamertag):
 
   b = json.loads(r)
   if (len(b["results"]) == 0):
-      embed.add_field(name="Error", value="Gamertag is incorrect, please try again.")
+      embed.add_field(name="None", value="\u200b")
       return embed
 
   for i in range(len(b["results"])):
