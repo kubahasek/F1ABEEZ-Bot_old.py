@@ -552,49 +552,6 @@ async def getStandings(interaction: Interaction, tier: str = SlashOption(name="t
 async def getLineupLink(interaction: Interaction):
   await interaction.response.send_message("<https://www.f1abeez.com/line-ups>")
 
-@bot.command("dotd")
-@commands.has_any_role("Admin", "Moderator")
-async def dotdMessage(ctx, *, args):
-  await ctx.message.delete()
-  try:
-    arguments = str(args)
-    splitStr = arguments.split(",")
-    if(splitStr.__len__() == 11):
-      msg = dotdMessageFun(splitStr)
-      dcMSG = await ctx.send(msg)
-      await dcMSG.add_reaction("1️⃣")
-      await dcMSG.add_reaction("2️⃣")
-      await dcMSG.add_reaction("3️⃣")   
-      await dcMSG.add_reaction("4️⃣")
-      await dcMSG.add_reaction("5️⃣")
-    elif(splitStr.__len__() > 11):
-      await ctx.author.send("Too many arguments provided, please try again")
-    elif(splitStr.__len__() < 11):
-      await ctx.author.send("Too few arguments provided, please try again")
-  except Exception as e:
-    print("dotd")
-    print(e)
-
-@bot.command("dotdwinner")
-@commands.has_any_role("Admin", "Moderator")
-async def dotdWinner(ctx, *, args):
-  await ctx.message.delete()
-  try:
-    arguments = str(args)
-    arguments = arguments.split(",")
-    if(arguments.__len__() == 2):
-      tier = arguments[0]
-      driver = arguments[1]
-      msg = dotdWinnerMsg(tier, driver)
-      await ctx.send(msg)
-    elif(arguments.__len__() > 2):
-        await ctx.author.send("Too many arguments provided, please try again")
-    elif(arguments.__len__() < 2):
-      await ctx.author.send("Too few arguments provided, please try again")
-  except Exception as e:
-    print("dotdwinner:")
-    print(e)
-
 @bot.command("channelname")
 @commands.has_any_role("Admin", "Moderator")
 async def channelName(ctx, name):
