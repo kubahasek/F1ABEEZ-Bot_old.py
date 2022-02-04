@@ -126,34 +126,8 @@ class reportMenu(nextcord.ui.View):
           view = DropdownTierView()
           await user.send("Select in which tier did the incident occur", view=view)
           await view.wait()
-          if(view.tierSelected == "F1 - Tier 1"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F1 - Tier 2"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F1 - Tier 3"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F1 - Tier 4"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F1 - Tier 5"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F1 - Tier M"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F1 - Tier NA"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F2 - Tier 1"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F2 - Tier 2"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          
+          tierOfIncidentInc = view.tierSelected
+          await user.send(f"You selected {tierOfIncidentInc}")
           await user.send("Please provide video evidence (Only reply with links to gamerdvr or other services)")
           evidenceInc = await bot.wait_for("message", check=check, timeout=180.0)
           evidenceInc = evidenceInc.content
