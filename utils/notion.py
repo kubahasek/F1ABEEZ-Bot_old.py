@@ -6,6 +6,7 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 import utils.info as info
+import logging
 
 
 
@@ -339,6 +340,7 @@ def getProfileInfo(gamertag):
     pageId = database["results"][0]["id"]
     page = requests.get("https://api.notion.com/v1/pages/" + pageId, headers=header).text
     page = json.loads(page)
+    logging.info(type(page))
     F1Points = page["properties"]["RU:Current F1 Points"]["rollup"]["number"]
     tier = page["properties"]["Current F1 Tier"]["multi_select"][0]["name"]
     try:
@@ -350,6 +352,8 @@ def getProfileInfo(gamertag):
       bansImposed = page["properties"]["Bans Imposed"]["select"]["name"]
     except KeyError:
       bansImposed = "None"
+    except TypeError:
+      bansImposed = "None" 
     embed = nextcord.Embed(title=f"{gamertag}'s profile", color=info.color)
     embed.add_field(name="Tier", value=str(tier), inline=False)
     embed.add_field(name="Team", value=str(team), inline=False)
