@@ -352,9 +352,10 @@ async def GetAppeals(interaction: Interaction, gamertag: str = SlashOption(name=
   await interaction.response.defer()
   await interaction.send(embed = nt.queryAppeals(gamertag))
 
-@bot.command(name="ticketdetail")
-async def TicketDetail(ctx, ticketNum):
-    await ctx.send(embed = nt.TicketDetailQuery(ticketNum))
+@bot.slash_command(name="ticketdetail", description="Gets the details for the ticket", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
+async def TicketDetail(interaction: Interaction, ticketID: str = SlashOption(name="ticketid", description="The ticket ID to get the details for", required=True)):
+    await interaction.response.defer()
+    await interaction.send(embed = nt.TicketDetailQuery(ticketID))
 
 @bot.event
 async def on_command_error(ctx, error):
