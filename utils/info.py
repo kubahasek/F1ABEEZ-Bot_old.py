@@ -15,6 +15,7 @@ mongoDBConnSTR = os.environ.get("mongoDBConnSTR")
 figmaToken = os.environ.get("figma_token")
 f1abeezID = os.environ.get("f1abeezID")
 f2abeezID = os.environ.get("f2abeezID")
+testServerID = os.environ.get("testServerID")
 
 IDList = json.load(open('IDList.json'))
 
