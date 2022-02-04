@@ -342,9 +342,10 @@ async def GetTickets(interaction: Interaction, gamertag: str = SlashOption(name=
     await interaction.response.defer()
     await interaction.send(embed=nt.queryTickets(gamertag))
 
-@bot.command(name="getprofile")
-async def GetProfile(ctx, *, arg):
-    await ctx.send(embed=nt.getProfileInfo(arg))    
+@bot.slash_command(name="getprofile", description="Gets profile info from the database", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
+async def GetProfile(interaction: Interaction, gamertag: str = SlashOption(name="gamertag", description="The gamertag to get the tickets for", required=True)):
+    await interaction.response.defer()
+    await interaction.send(embed=nt.getProfileInfo(gamertag))    
 
 @bot.command(name="getappeals")
 async def GetAppeals(ctx, *, arg):
