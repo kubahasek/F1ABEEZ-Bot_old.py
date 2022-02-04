@@ -20,7 +20,7 @@ import utils.notion as nt
 import utils.info as info
 import utils.utilities as utils
 import logging
-from nextcord import Interaction
+from nextcord import Interaction, Member
 import cogs.Lobby as Lobby
 
 logging.basicConfig(format='%(asctime)s-%(levelname)s:%(message)s', level=logging.INFO)
@@ -363,34 +363,19 @@ async def on_command_error(ctx, error):
         await ctx.send("Command not found")
     logging.error(error)
 
-@bot.command(name="warn")
+@bot.slash_command(name="warn", description="Warns a user", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
 @commands.has_any_role("Admin")
-async def warn(ctx, user=None, *, reason=None):
-  if(user is None):
-    await ctx.send("You didn't mention the user")
-    return
-  if(reason is None):
-    await ctx.send("You didn't provide a reason")
-    return
-  
-  try: 
-    member = ctx.message.mentions[0]
-    membername = ctx.message.mentions[0].name
-  except IndexError:
-    print(user)
-    member = await ctx.guild.fetch_member(int(user))
-    print(member)
-    membername = member.name
-  except Exception as e:
-    print("warn:")
-    print(e)
+async def warn(interaction: Interaction, user: Member = SlashOption(name="user", description="The user to warn", required=True), reason: str = SlashOption(name="reason", description="The reason for the warning", required=True)):
+
+  await interaction.response.defer()
+  member = await interaction.guild.fetch_member(user.id)
 
   embed = nextcord.Embed(title="A Warning has been issued", color=info.color)
-  embed.add_field(name="User", value=membername, inline=False)
+  embed.add_field(name="User", value=member.name, inline=False)
   embed.add_field(name="Reason", value=reason, inline=False)
-  channel = bot.get_channel(info.get_channelID(ctx.guild.id, "warningChannel"))
+  channel = bot.get_channel(info.get_channelID(interaction.guild.id, "warningChannel"))
   await channel.send(embed = embed)
-  await ctx.send(embed = embed)   
+  await interaction.send(embed = embed)   
 
 @bot.command(name="ban")
 @commands.has_any_role("Admin")
