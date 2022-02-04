@@ -444,43 +444,32 @@ async def suggestionChannel(ctx):
   embed = nextcord.Embed(title="Submit a suggestion",description="React to this message to submit a suggestion by clicking the 📨 button", color=info.color)
   await ctx.send(embed=embed, view=reportMenu())
 
-@bot.command(name="calendar")
-async def getCalendar(ctx):
-  await ctx.message.delete()
-  view = CalendarMenu()
-  selectMSG = await ctx.send("For which tier do you want to see standings?", view=view)
-  await view.wait()
-  if(info.f1abeezID == ctx.guild.id):
-    msg = await ctx.send("Getting the F1 calendar...")
+@bot.slash_command(name="calendar", description="Shows the current calendar", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
+async def getCalendar(interaction):
+  await interaction.response.defer()
+  if(int(info.f1abeezID) == interaction.guild.id):
     try:
-      await selectMSG.delete()
       r = requests.get("https://api.figma.com/v1/images/8mL0mwOKyIUcoLG3goL7wk/?ids=2%3A138&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
-      if(r):
-        await msg.delete()
       img = r["images"]["2:138"]
       embed1 = nextcord.Embed(color=info.color) 
       embed1.set_image(url=img) 
-      await ctx.send(embed=embed1)
+      await interaction.send(embed=embed1)
     except Exception as e:
-      await ctx.send(f"There was an error getting the calendar, please report this issue to the admins.")
+      await interaction.send(f"There was an error getting the calendar, please report this issue to the admins.")
       print("calendar:")
       print(e)
-  elif(info.f2abeezID == ctx.guild.id):
-    msg = await ctx.send("Getting the F2 calendar...")
+  elif(int(info.f2abeezID) == interaction.guild.id):
     try:
-      await selectMSG.delete()
       r = requests.get("https://api.figma.com/v1/images/8mL0mwOKyIUcoLG3goL7wk/?ids=15%3A2&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
-      if(r):
-        await msg.delete()
       img = r["images"]["15:2"] ## TODO: change this to F2 calendar
       print(img)
       embed2 = nextcord.Embed(color=info.color) 
       embed2.set_image(url=img) 
-      await ctx.send(embed=embed2)
+      await interaction.send(embed=embed2)
     except Exception as e:
-      await ctx.send(f"There was an error getting the calendar, please report this issue to the admins.")
+      await interaction.send(f"There was an error getting the calendar, please report this issue to the admins.")
       print("calendar:")
       print(e)
 
