@@ -548,9 +548,9 @@ async def getStandings(interaction: Interaction, tier: str = SlashOption(name="t
     print("standings:")
     print(e)
 
-@bot.command("lineup")
-async def getLineupLink(ctx):
-  await ctx.reply("<https://www.f1abeez.com/line-ups>")
+@bot.slash_command(name="lineup", description="Get the current lineup", guild_ids=[int(info.f1abeezID),  int(info.f2abeezID), int(info.testServerID)])
+async def getLineupLink(interaction: Interaction):
+  await interaction.response.send_message("<https://www.f1abeez.com/line-ups>")
 
 @bot.command("dotd")
 @commands.has_any_role("Admin", "Moderator")
