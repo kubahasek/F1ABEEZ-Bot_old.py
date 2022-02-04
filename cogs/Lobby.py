@@ -93,49 +93,56 @@ class Lobby(commands.Cog):
 
     @nextcord.slash_command(name="ready", description="Ready up command", guild_ids=[int(info.f1abeezID), int(info.testServerID)])
     async def readyf1(self, interaction: Interaction, tier: str = SlashOption(name="tier", description="Select your Tier", choices={"Tier 1": "1", "Tier 2": "2", "Tier 3": "3", "Tier 4": "4", "Tier 5": "5", "Tier M": "M", "Tier NA": "NA"})):
-        match tier:
-            case "1":
-                tier1ID = info.get_roleID(interaction.guild.id, "tier1Role")
-                reserveTier1ID = info.get_roleID(interaction.guild.id, "reserveTier1Role")
-                if(type(tier1ID) == type(None) or type(reserveTier1ID) == type(None)):
-                    logging.error("Could not find tier 1 roles", exc_info=True)
-                await interaction.send(f"<@&{tier1ID}> <@&{reserveTier1ID}>\n**Ready up**\n\n")
-            case "2":
-                tier2ID = info.get_roleID(interaction.guild.id, "tier2Role")
-                reserveTier2ID = info.get_roleID(interaction.guild.id, "reserveTier2Role")
-                if(type(tier2ID) == type(None) or type(reserveTier2ID) == type(None)):
-                    logging.error("Could not find tier 2 roles", exc_info=True)
-                await interaction.send(f"<@&{tier2ID}> <@&{reserveTier2ID}>\n**Ready up**\n\n")
-            case "3":
-                tier3ID = info.get_roleID(interaction.guild.id, "tier3Role")
-                reserveTier3ID = info.get_roleID(interaction.guild.id, "reserveTier3Role")
-                if(type(tier3ID) == type(None) or type(reserveTier3ID) == type(None)):
-                    logging.error("Could not find tier 3 roles", exc_info=True)
-                await interaction.send(f"<@&{tier3ID}> <@&{reserveTier3ID}>\n**Ready up**\n\n")
-            case "4":
-                tier4ID = info.get_roleID(interaction.guild.id, "tier4Role")
-                reserveTier4ID = info.get_roleID(interaction.guild.id, "reserveTier4Role")
-                if(type(tier4ID) == type(None) or type(reserveTier4ID) == type(None)):
-                    logging.error("Could not find tier 4 roles", exc_info=True)
-                await interaction.send(f"<@&{tier4ID}> <@&{reserveTier4ID}>\n**Ready up**\n\n")
-            case "5":
-                tier5ID = info.get_roleID(interaction.guild.id, "tier5Role")
-                reserveTier5ID = info.get_roleID(interaction.guild.id, "reserveTier5Role")
-                if(type(tier5ID) == type(None) or type(reserveTier5ID) == type(None)):
-                    logging.error("Could not find tier 5 roles", exc_info=True)
-                await interaction.send(f"<@&{tier5ID}> <@&{reserveTier5ID}>\n**Ready up**\n\n")
-            case "M":
-                tierMID = info.get_roleID(interaction.guild.id, "tierMRole")
-                reserveTierMID = info.get_roleID(interaction.guild.id, "reserveTierMRole")
-                if(type(tierMID) == type(None) or type(reserveTierMID) == type(None)):
-                    logging.error("Could not find tier M roles", exc_info=True)
-                await interaction.send(f"<@&{tierMID}> <@&{reserveTierMID}>\n**Ready up**\n\n")
-            case "NA":
-                tierNAID = info.get_roleID(interaction.guild.id, "tierNARole")
-                reserveTierNAID = info.get_roleID(interaction.guild.id, "reserveTierNARole")
-                if(type(tierNAID) == type(None) or type(reserveTierNAID) == type(None)):
-                    logging.error("Could not find tier NA roles", exc_info=True)
-                await interaction.send(f"<@&{tierNAID}> <@&{reserveTierNAID}>\n**Ready up**\n\n")
+        await interaction.response.send_message("Working on it...")
+        if(utils.check_roles(interaction.user.roles, ["Admin", "Moderator", "Tier Lead"])):
+            await interaction.delete_original_message()
+            match tier:
+                case "1":
+                    tier1ID = info.get_roleID(interaction.guild.id, "tier1Role")
+                    reserveTier1ID = info.get_roleID(interaction.guild.id, "reserveTier1Role")
+                    if(type(tier1ID) == type(None) or type(reserveTier1ID) == type(None)):
+                        logging.error("Could not find tier 1 roles", exc_info=True)
+                    await interaction.send(f"<@&{tier1ID}> <@&{reserveTier1ID}>\n**Ready up**\n\n")
+                case "2":
+                    tier2ID = info.get_roleID(interaction.guild.id, "tier2Role")
+                    reserveTier2ID = info.get_roleID(interaction.guild.id, "reserveTier2Role")
+                    if(type(tier2ID) == type(None) or type(reserveTier2ID) == type(None)):
+                        logging.error("Could not find tier 2 roles", exc_info=True)
+                    await interaction.send(f"<@&{tier2ID}> <@&{reserveTier2ID}>\n**Ready up**\n\n")
+                case "3":
+                    tier3ID = info.get_roleID(interaction.guild.id, "tier3Role")
+                    reserveTier3ID = info.get_roleID(interaction.guild.id, "reserveTier3Role")
+                    if(type(tier3ID) == type(None) or type(reserveTier3ID) == type(None)):
+                        logging.error("Could not find tier 3 roles", exc_info=True)
+                    await interaction.send(f"<@&{tier3ID}> <@&{reserveTier3ID}>\n**Ready up**\n\n")
+                case "4":
+                    tier4ID = info.get_roleID(interaction.guild.id, "tier4Role")
+                    reserveTier4ID = info.get_roleID(interaction.guild.id, "reserveTier4Role")
+                    if(type(tier4ID) == type(None) or type(reserveTier4ID) == type(None)):
+                        logging.error("Could not find tier 4 roles", exc_info=True)
+                    await interaction.send(f"<@&{tier4ID}> <@&{reserveTier4ID}>\n**Ready up**\n\n")
+                case "5":
+                    tier5ID = info.get_roleID(interaction.guild.id, "tier5Role")
+                    reserveTier5ID = info.get_roleID(interaction.guild.id, "reserveTier5Role")
+                    if(type(tier5ID) == type(None) or type(reserveTier5ID) == type(None)):
+                        logging.error("Could not find tier 5 roles", exc_info=True)
+                    await interaction.send(f"<@&{tier5ID}> <@&{reserveTier5ID}>\n**Ready up**\n\n")
+                case "M":
+                    tierMID = info.get_roleID(interaction.guild.id, "tierMRole")
+                    reserveTierMID = info.get_roleID(interaction.guild.id, "reserveTierMRole")
+                    if(type(tierMID) == type(None) or type(reserveTierMID) == type(None)):
+                        logging.error("Could not find tier M roles", exc_info=True)
+                    await interaction.send(f"<@&{tierMID}> <@&{reserveTierMID}>\n**Ready up**\n\n")
+                case "NA":
+                    tierNAID = info.get_roleID(interaction.guild.id, "tierNARole")
+                    reserveTierNAID = info.get_roleID(interaction.guild.id, "reserveTierNARole")
+                    if(type(tierNAID) == type(None) or type(reserveTierNAID) == type(None)):
+                        logging.error("Could not find tier NA roles", exc_info=True)
+                    await interaction.send(f"<@&{tierNAID}> <@&{reserveTierNAID}>\n**Ready up**\n\n")
+        else:
+            await interaction.delete_original_message()
+            await interaction.send("You do not have permission to use this command!")
+            return
 
     @nextcord.slash_command(name="readyf2", description="Ready up command", guild_ids=[int(info.f2abeezID), int(info.testServerID)])
     async def readyf2(self, interaction: Interaction, tierf2: str = SlashOption(name="tier", description="Select your Tier", choices={"Tier 1": "1", "Tier 2": "2"})):
