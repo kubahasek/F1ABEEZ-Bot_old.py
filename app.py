@@ -29,13 +29,13 @@ logging.basicConfig(format='%(asctime)s-%(levelname)s:%(message)s', level=loggin
 class TierDropdown(nextcord.ui.Select):
   def __init__(self):
     options = [
-      nextcord.SelectOption(label="Tier 1",description="F1 - Tier 1" ,value="F1 - Tier 1"),
-      nextcord.SelectOption(label="Tier 2",description="F1 - Tier 2" ,value="F1 - Tier 2"),
-      nextcord.SelectOption(label="Tier 3",description="F1 - Tier 3" ,value="F1 - Tier 3"),
-      nextcord.SelectOption(label="Tier 4",description="F1 - Tier 4" ,value="F1 - Tier 4"),
-      nextcord.SelectOption(label="Tier 5",description="F1 - Tier 5" ,value="F1 - Tier 5"),
-      nextcord.SelectOption(label="Tier M",description="F1 - Tier M" ,value="F1 - Tier M"),
-      nextcord.SelectOption(label="Tier NA",description="F1 - Tier NA" ,value="F1 - Tier NA"),
+      nextcord.SelectOption(label="Tier 1",description="F1 - Tier 1" ,value="Tier 1"),
+      nextcord.SelectOption(label="Tier 2",description="F1 - Tier 2" ,value="Tier 2"),
+      nextcord.SelectOption(label="Tier 3",description="F1 - Tier 3" ,value="Tier 3"),
+      nextcord.SelectOption(label="Tier 4",description="F1 - Tier 4" ,value="Tier 4"),
+      nextcord.SelectOption(label="Tier 5",description="F1 - Tier 5" ,value="Tier 5"),
+      nextcord.SelectOption(label="Tier M",description="F1 - Tier M" ,value="Tier M"),
+      nextcord.SelectOption(label="Tier NA",description="F1 - Tier NA" ,value="Tier NA"),
       nextcord.SelectOption(label="F2 - Tier 1",description="F2 - Tier 1" ,value="F2 - Tier 1"),
       nextcord.SelectOption(label="F2 - Tier 2",description="F2 - Tier 2" ,value="F2 - Tier 2"),
     ]
