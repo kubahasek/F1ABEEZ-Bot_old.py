@@ -70,19 +70,26 @@ class Lobby(commands.Cog):
 
     @nextcord.slash_command(name="lobbyf2", description="Lobby is open command", guild_ids=[int(info.f2abeezID), int(info.testServerID)])
     async def lobbyf2(self, interaction: Interaction, tierf2: str = SlashOption(name="tier", description="Select your Tier", choices={"Tier 1": "1", "Tier 2": "2"})):
-        match tierf2:
-            case "1":
-                f2tier1ID = info.get_roleID(interaction.guild.id, "f2Tier1Role")
-                f2reserveTier1ID = info.get_roleID(interaction.guild.id, "reserveF2Tier1Role")
-                if(type(f2tier1ID) == type(None) or type(f2reserveTier1ID) == type(None)):
-                    logging.error("Could not find tier 1 F2 roles", exc_info=True)
-                await interaction.send(f"<@&{f2tier1ID}> <@&{f2reserveTier1ID}>\n**Lobby is now open!**\nPlease join off <@499568806469959691>\nGamertag is - MrJSmithy\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
-            case "2":
-                f2tier2ID = info.get_roleID(interaction.guild.id, "f2Tier2Role")
-                f2reserveTier2ID = info.get_roleID(interaction.guild.id, "reserveF2Tier2Role")
-                if(type(f2tier2ID) == type(None) or type(f2reserveTier2ID) == type(None)):
-                    logging.error("Could not find tier 2 F2 roles", exc_info=True)
-                await interaction.send(f"<@&{f2tier2ID}> <@&{f2reserveTier2ID}>\n**Lobby is now open!**\nPlease join off <@499568806469959691>\nGamertag is - MrJSmithy\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+        await interaction.response.send_message("Working on it...")
+        if(utils.check_roles(interaction.user.roles, ["Admin", "Moderator", "Tier Lead"])):
+            await interaction.delete_original_message()
+            match tierf2:
+                case "1":
+                    f2tier1ID = info.get_roleID(interaction.guild.id, "f2Tier1Role")
+                    f2reserveTier1ID = info.get_roleID(interaction.guild.id, "reserveF2Tier1Role")
+                    if(type(f2tier1ID) == type(None) or type(f2reserveTier1ID) == type(None)):
+                        logging.error("Could not find tier 1 F2 roles", exc_info=True)
+                    await interaction.send(f"<@&{f2tier1ID}> <@&{f2reserveTier1ID}>\n**Lobby is now open!**\nPlease join off <@499568806469959691>\nGamertag is - MrJSmithy\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+                case "2":
+                    f2tier2ID = info.get_roleID(interaction.guild.id, "f2Tier2Role")
+                    f2reserveTier2ID = info.get_roleID(interaction.guild.id, "reserveF2Tier2Role")
+                    if(type(f2tier2ID) == type(None) or type(f2reserveTier2ID) == type(None)):
+                        logging.error("Could not find tier 2 F2 roles", exc_info=True)
+                    await interaction.send(f"<@&{f2tier2ID}> <@&{f2reserveTier2ID}>\n**Lobby is now open!**\nPlease join off <@499568806469959691>\nGamertag is - MrJSmithy\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+        else:
+            await interaction.delete_original_message()
+            await interaction.send("You do not have permission to use this command!")
+            return
 
     @nextcord.slash_command(name="ready", description="Ready up command", guild_ids=[int(info.f1abeezID), int(info.testServerID)])
     async def readyf1(self, interaction: Interaction, tier: str = SlashOption(name="tier", description="Select your Tier", choices={"Tier 1": "1", "Tier 2": "2", "Tier 3": "3", "Tier 4": "4", "Tier 5": "5", "Tier M": "M", "Tier NA": "NA"})):
