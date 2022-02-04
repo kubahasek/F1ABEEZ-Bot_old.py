@@ -17,6 +17,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 import utils.notion as nt
 import utils.info as info
+import utils.utilities as utils
 import logging
 from nextcord import Interaction
 import cogs.Lobby as Lobby
@@ -327,11 +328,13 @@ async def on_ready():
 async def HelpCommand(interaction: Interaction):
     await interaction.send(embed = GetHelpCommand())
 
-@bot.command(name="staffhelp")
-@commands.has_any_role("Staff")
-async def StaffHelpCommand(ctx):
-  embed = getStaffHelpCommand()
-  await ctx.send(embed=embed)
+@bot.slash_command(name="staffhelp", description="Shows the staff help menu", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
+async def StaffHelpCommand(interaction: Interaction):
+  await interaction.response.defer()
+  if(utils.check_roles(interaction.user.roles, ["Staff"])):
+    await interaction.send(embed = getStaffHelpCommand())
+  else:
+    await interaction.send("You do not have permission to use this command!")
 
 @bot.command(name="gettickets")
 async def GetTickets(ctx, *, arg):
