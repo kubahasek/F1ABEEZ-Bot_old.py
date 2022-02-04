@@ -366,16 +366,17 @@ async def on_command_error(ctx, error):
 @bot.slash_command(name="warn", description="Warns a user", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
 @commands.has_any_role("Admin")
 async def warn(interaction: Interaction, user: Member = SlashOption(name="user", description="The user to warn", required=True), reason: str = SlashOption(name="reason", description="The reason for the warning", required=True)):
-
   await interaction.response.defer()
-  member = await interaction.guild.fetch_member(user.id)
-
-  embed = nextcord.Embed(title="A Warning has been issued", color=info.color)
-  embed.add_field(name="User", value=member.name, inline=False)
-  embed.add_field(name="Reason", value=reason, inline=False)
-  channel = bot.get_channel(info.get_channelID(interaction.guild.id, "warningChannel"))
-  await channel.send(embed = embed)
-  await interaction.send(embed = embed)   
+  if(utils.check_roles(interaction.user.roles, ["Admin"])):
+    member = await interaction.guild.fetch_member(user.id)
+    embed = nextcord.Embed(title="A Warning has been issued", color=info.color)
+    embed.add_field(name="User", value=member.name, inline=False)
+    embed.add_field(name="Reason", value=reason, inline=False)
+    channel = bot.get_channel(info.get_channelID(interaction.guild.id, "warningChannel"))
+    await channel.send(embed = embed)
+    await interaction.send(embed = embed)   
+  else:
+    await interaction.send("You do not have permission to use this command!")
 
 @bot.command(name="ban")
 @commands.has_any_role("Admin")
