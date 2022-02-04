@@ -441,32 +441,6 @@ async def on_member_remove(member):
   else:
     logging.error("leavingChannel not found", exc_info=True)
 
-@bot.command(name="racereport")
-@commands.has_any_role("Admin", "Moderator")
-async def raceResults(ctx, round):
-  channel = bot.get_channel(info.get_channelID(ctx.guild.id, "generalAnnoucementChannel"))
-  roundNO = int(round)
-  # f2RoundNO = roundNO - 1
-  # f2round = f"R{f2RoundNO}"
-  round = f"r{roundNO}"
-  tier1URL = f"<https://f1abeez.com/race-reports/t1/{round}>"
-  tier2URL = f"<https://f1abeez.com/race-reports/t2/{round}>"
-  tier3URL = f"<https://f1abeez.com/race-reports/t3/{round}>"
-  tier4URL = f"<https://f1abeez.com/race-reports/t4/{round}>"
-  tier5URL = f"<https://f1abeez.com/race-reports/t5/{round}>"
-  tierMURL = f"<https://f1abeez.com/race-reports/tm/{round}>"
-  tierNAURL = f"<https://f1abeez.com/race-reports/tna/{round}>"
-  f2Tier1URL = f"" ## TODO: add URL
-  f2Tier2URL = f"" ## TODO: add URL
-  if(type(channel) != type(None)):
-    if(ctx.guild.id == info.f1abeezID):
-      await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier 4** - {tier4URL}\n**F1 - Tier 5** - {tier5URL}\n**F1 - Tier M** - {tierMURL}\n**F1 - Tier NA** - {tierNAURL}\n\nThank you,\nStewards of F1ABEEZ")
-    elif(ctx.guild.id == info.f2abeezID):
-      await channel.send(f"@everyone\n\n**F2 - Tier 1** - {f2Tier1URL}\n**F2 - Tier 2** - {f2Tier2URL}\n\nThank you,\nStewards of F2ABEEZ")
-  else:
-    logging.error("generalAnnoucementChannel not found")
-    await ctx.reply("ERROR: generalAnnoucementChannel not found, contact KubaH04")
-
 @bot.command(name="incidentchannel")
 @commands.has_any_role("Admin", "Moderator")
 async def incidentChannel(ctx):
