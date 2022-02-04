@@ -57,10 +57,46 @@ class Announcements(commands.Cog):
                 elif(interaction.guild.id == int(info.f2abeezID)):
                     await interaction.delete_original_message()
                     await channel.send(f"🦺 @everyone\n\n**All Stewards decisions are finalised**\nPlease check this week's race-report for all the incidents reported and decisions made.\n\n**F2 - Tier 1** - {f2Tier1URL}\n**F2 - Tier 2** - {f2Tier2URL}\n\nThank You,\nStewards of F2ABEEZ.")
+                    await interaction.send("Sent the message")
             else:
                 await interaction.delete_original_message()
                 logging.error("stewardsAnnouncementChannel not found")
                 await interaction.send("ERROR: stewardsAnnouncementChannel not found, contact KubaH04")
+        else:
+            await interaction.delete_original_message()
+            await interaction.send("You do not have permission to use this command!")
+
+    @nextcord.slash_command(name="racereport", description="Sends the race report message.", guild_ids=[int(info.f1abeezID), int(info.f2abeezID), int(info.testServerID)])
+    async def raceReport(self, interaction: Interaction, round: int = SlashOption(name="round", description="Enter the round number")):
+        await interaction.response.send_message(f"Working on it...")
+        if(utils.check_roles(interaction.user.roles, ["Admin", "Moderator", "Steward"])):
+            channel = self.bot.get_channel(info.get_channelID(interaction.guild.id, "generalAnnoucementChannel"))
+            roundNO = int(round)
+            # f2RoundNO = roundNO - 1
+            # f2round = f"R{f2RoundNO}"
+            round = f"r{roundNO}"
+            tier1URL = f"<https://f1abeez.com/race-reports/t1/{round}>"
+            tier2URL = f"<https://f1abeez.com/race-reports/t2/{round}>"
+            tier3URL = f"<https://f1abeez.com/race-reports/t3/{round}>"
+            tier4URL = f"<https://f1abeez.com/race-reports/t4/{round}>"
+            tier5URL = f"<https://f1abeez.com/race-reports/t5/{round}>"
+            tierMURL = f"<https://f1abeez.com/race-reports/tm/{round}>"
+            tierNAURL = f"<https://f1abeez.com/race-reports/tna/{round}>"
+            f2Tier1URL = f"" ## TODO: add URL
+            f2Tier2URL = f"" ## TODO: add URL
+            if(type(channel) != type(None)):
+                if(interaction.guild.id == int(info.f1abeezID)):
+                    await interaction.delete_original_message()
+                    await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier 4** - {tier4URL}\n**F1 - Tier 5** - {tier5URL}\n**F1 - Tier M** - {tierMURL}\n**F1 - Tier NA** - {tierNAURL}\n\nThank you,\nStewards of F1ABEEZ")
+                    await interaction.send("Sent the message")
+                elif(interaction.guild.id == int(info.f2abeezID)):
+                    await interaction.delete_original_message()
+                    await channel.send(f"@everyone\n\n**F2 - Tier 1** - {f2Tier1URL}\n**F2 - Tier 2** - {f2Tier2URL}\n\nThank you,\nStewards of F2ABEEZ")
+                    await interaction.send("Sent the message")
+            else:
+                await interaction.delete_original_message()
+                logging.error("generalAnnoucementChannel not found", exc_info=True)
+                await interaction.send("ERROR: generalAnnoucementChannel not found, contact KubaH04")
         else:
             await interaction.delete_original_message()
             await interaction.send("You do not have permission to use this command!")
