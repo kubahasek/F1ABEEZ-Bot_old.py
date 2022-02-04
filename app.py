@@ -323,9 +323,9 @@ async def on_ready():
     bot.add_view(reportMenu())
     await bot.change_presence(activity=nextcord.Activity(type=nextcord.ActivityType.watching, name="F1ABEEZ Server 🚀"))
 
-@bot.command(name="help")
-async def HelpCommand(ctx):
-    await ctx.send(embed = GetHelpCommand())
+@bot.slash_command(name="help", description="Shows the help menu", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
+async def HelpCommand(interaction: Interaction):
+    await interaction.send(embed = GetHelpCommand())
 
 @bot.command(name="staffhelp")
 @commands.has_any_role("Staff")
