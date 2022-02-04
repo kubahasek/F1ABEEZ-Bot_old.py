@@ -364,3 +364,69 @@ def getProfileInfo(gamertag):
   except Exception as e:
     print("getprofileinfo")
     print(e)
+
+def submitHighlight(round: str, link: str, timeStamp: str, desc: str, tier: str, submittedAt: str, submittedBy: str) -> str:
+    url = "https://api.notion.com/v1/pages/"
+    header = header = {"Authorization": info.token, "Notion-Version": "2021-08-16"}
+    r = requests.post(url, headers=header, json={
+        "parent": {
+          "database_id": info.highlightsDatabaseId
+        },
+        "properties": {
+          "Division": {
+            "select": 
+              {
+                "name": tier
+              }
+          },
+          "Timestamp/Lap": {
+              "rich_text": [
+                  {
+                      "text": {
+                          "content": timeStamp
+                      }
+                  }
+              ]
+          },
+          "Submitted at": {
+              "date": {
+                  "start": submittedAt
+              }
+          },
+          "Description": {
+              "rich_text":[
+                  {
+                      "text": {
+                          "content": desc
+                      }
+                  }
+              ]
+          },
+          "URL": {
+              "url": link
+          },
+          "Round": {
+              "rich_text": [
+                  {
+                      "text": {
+                          "content": round
+                      }
+                  }
+              ]
+          },
+          "Submitted by": {
+              "title": [
+            {
+              "text": {
+                "content": submittedBy
+              }
+            }
+          ]
+        }
+          }
+        })
+    if(r.status_code == 200):
+      return "Your highlight was successfully submitted!"
+    else:
+      print(r.text)
+      return "There was an error submitting your highlight, please reach out to the admin team"

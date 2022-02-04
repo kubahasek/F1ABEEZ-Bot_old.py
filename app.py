@@ -29,13 +29,13 @@ logging.basicConfig(format='%(asctime)s-%(levelname)s:%(message)s', level=loggin
 class TierDropdown(nextcord.ui.Select):
   def __init__(self):
     options = [
-      nextcord.SelectOption(label="Tier 1",description="F1 - Tier 1" ,value="F1 - Tier 1"),
-      nextcord.SelectOption(label="Tier 2",description="F1 - Tier 2" ,value="F1 - Tier 2"),
-      nextcord.SelectOption(label="Tier 3",description="F1 - Tier 3" ,value="F1 - Tier 3"),
-      nextcord.SelectOption(label="Tier 4",description="F1 - Tier 4" ,value="F1 - Tier 4"),
-      nextcord.SelectOption(label="Tier 5",description="F1 - Tier 5" ,value="F1 - Tier 5"),
-      nextcord.SelectOption(label="Tier M",description="F1 - Tier M" ,value="F1 - Tier M"),
-      nextcord.SelectOption(label="Tier NA",description="F1 - Tier NA" ,value="F1 - Tier NA"),
+      nextcord.SelectOption(label="Tier 1",description="F1 - Tier 1" ,value="Tier 1"),
+      nextcord.SelectOption(label="Tier 2",description="F1 - Tier 2" ,value="Tier 2"),
+      nextcord.SelectOption(label="Tier 3",description="F1 - Tier 3" ,value="Tier 3"),
+      nextcord.SelectOption(label="Tier 4",description="F1 - Tier 4" ,value="Tier 4"),
+      nextcord.SelectOption(label="Tier 5",description="F1 - Tier 5" ,value="Tier 5"),
+      nextcord.SelectOption(label="Tier M",description="F1 - Tier M" ,value="Tier M"),
+      nextcord.SelectOption(label="Tier NA",description="F1 - Tier NA" ,value="Tier NA"),
       nextcord.SelectOption(label="F2 - Tier 1",description="F2 - Tier 1" ,value="F2 - Tier 1"),
       nextcord.SelectOption(label="F2 - Tier 2",description="F2 - Tier 2" ,value="F2 - Tier 2"),
     ]
@@ -97,6 +97,46 @@ class CalendarMenu(nextcord.ui.View):
   # async def tier2ButtonClicked(self, button, interaction):
   #   await self.handle_click(button, interaction)
 
+class highlightMenu(nextcord.ui.View):
+  def __init__(self):
+      super().__init__(timeout=None)
+
+  async def handle_highlight(self, button, interaction):
+    bst = pytz.timezone("Europe/London")
+    todayInc = datetime.datetime.now(tz=bst).isoformat()
+    user = interaction.user
+    await interaction.response.send_message(f"Follow the bot to your DMs! {user.mention}", ephemeral=True)
+    def check(m):
+      return m.author == user and m.guild is None 
+
+    try:
+      await user.send("What round did this highlight occur in?")
+      rnd = await bot.wait_for('message', check=check, timeout=180.0)
+      rnd = rnd.content
+      await user.send("What is the link to your highlight?")
+      link = await bot.wait_for("message", check=check, timeout=180.0)
+      link = link.content
+      await user.send("If this is a clip enter \"Clip\" othervise enter the timestamp or the lap of the highlight")
+      time = await bot.wait_for("message", check=check, timeout=180.0)
+      time = time.content
+      await user.send("Give us a brief description of the highlight")
+      desc = await bot.wait_for("message", check=check, timeout=180.0)
+      desc = desc.content
+      view = DropdownTierView()
+      await user.send("In which tier did this highlight occur?", view=view)
+      await view.wait()
+      tier = view.tierSelected
+      await user.send(f"You selected {tier}")
+      response = nt.submitHighlight(rnd, link, time, desc, tier, todayInc, user.name)
+      await user.send(response)
+    except asyncio.TimeoutError:
+      await user.send("You took too long to respond. Try again.")
+
+  @nextcord.ui.button(label="", emoji="📸", style=nextcord.ButtonStyle.primary, custom_id="highlightButton")
+  async def highlightButtonClicked(self, button, interaction):
+    await self.handle_highlight(button, interaction)
+
+
 class reportMenu(nextcord.ui.View):
   def __init__(self):
     super().__init__(timeout=None)
@@ -126,34 +166,8 @@ class reportMenu(nextcord.ui.View):
           view = DropdownTierView()
           await user.send("Select in which tier did the incident occur", view=view)
           await view.wait()
-          if(view.tierSelected == "F1 - Tier 1"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F1 - Tier 2"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F1 - Tier 3"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F1 - Tier 4"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F1 - Tier 5"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F1 - Tier M"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F1 - Tier NA"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F2 - Tier 1"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F2 - Tier 2"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          
+          tierOfIncidentInc = view.tierSelected
+          await user.send(f"You selected {tierOfIncidentInc}")
           await user.send("Please provide video evidence (Only reply with links to gamerdvr or other services)")
           evidenceInc = await bot.wait_for("message", check=check, timeout=180.0)
           evidenceInc = evidenceInc.content
@@ -323,6 +337,7 @@ bot.remove_command("help")
 async def on_ready():
     logging.info("We have logged in as {0.user}".format(bot))
     bot.add_view(reportMenu())
+    bot.add_view(highlightMenu())
     await bot.change_presence(activity=nextcord.Activity(type=nextcord.ActivityType.watching, name="F1ABEEZ Server 🚀"))
 
 @bot.slash_command(name="help", description="Shows the help menu", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
@@ -443,6 +458,13 @@ async def suggestionChannel(ctx):
   await ctx.message.delete()
   embed = nextcord.Embed(title="Submit a suggestion",description="React to this message to submit a suggestion by clicking the 📨 button", color=info.color)
   await ctx.send(embed=embed, view=reportMenu())
+
+@bot.command(name="highlightchannel")
+@commands.has_any_role("Admin", "Moderator")
+async def highlightChannel(ctx):
+  await ctx.message.delete()
+  embed = nextcord.Embed(title="Submit a highlight",description="React to this message to submit a highlight by clicking the 📸 button", color=info.color)
+  await ctx.send(embed=embed, view=highlightMenu())
 
 @bot.slash_command(name="calendar", description="Shows the current calendar", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
 async def getCalendar(interaction):
