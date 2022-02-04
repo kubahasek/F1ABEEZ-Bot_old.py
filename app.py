@@ -347,9 +347,10 @@ async def GetProfile(interaction: Interaction, gamertag: str = SlashOption(name=
     await interaction.response.defer()
     await interaction.send(embed=nt.getProfileInfo(gamertag))    
 
-@bot.command(name="getappeals")
-async def GetAppeals(ctx, *, arg):
-  await ctx.send(embed = nt.queryAppeals(arg))
+@bot.slash_command(name="getappeals", description="Gets the appeals for the gamertag", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
+async def GetAppeals(interaction: Interaction, gamertag: str = SlashOption(name="gamertag", description="The gamertag to get the tickets for", required=True)):
+  await interaction.response.defer()
+  await interaction.send(embed = nt.queryAppeals(gamertag))
 
 @bot.command(name="ticketdetail")
 async def TicketDetail(ctx, ticketNum):
