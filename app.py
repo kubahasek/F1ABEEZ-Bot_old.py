@@ -378,35 +378,21 @@ async def warn(interaction: Interaction, user: Member = SlashOption(name="user",
   else:
     await interaction.send("You do not have permission to use this command!")
 
-@bot.command(name="ban")
+@bot.slash_command(name="ban", description="Bans a user", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
 @commands.has_any_role("Admin")
-async def ban(ctx, user=None, *, reason=None):
-  if(user is None):
-    await ctx.send("You didn't mention the user")
-    return
-  if(reason is None):
-    await ctx.send("You didn't provide a reason")
-    return
-
-  try: 
-    member = ctx.message.mentions[0]
-    membername = ctx.message.mentions[0].name
-  except IndexError:
-    print(user)
-    member = await ctx.guild.fetch_member(int(user))
-    print(member)
-    membername = member.name
-  except Exception as e:
-    print("ban:")
-    print(e)
-
-  embed = nextcord.Embed(title="A Ban has been issued", color=info.color)
-  embed.add_field(name="User", value=membername, inline=False)
-  embed.add_field(name="Reason", value=reason, inline=False)
-  channel = bot.get_channel(info.get_channelID(ctx.guild.id, "banChannel"))
-  await channel.send(embed = embed)
-  await member.ban(reason = reason)
-  await ctx.send(embed = embed)   
+async def ban(interaction: Interaction, user: Member = SlashOption(name="user", description="The user to ban", required=True), reason: str = SlashOption(name="reason", description="The reason for the ban", required=True)):
+  await interaction.response.defer()
+  if(utils.check_roles(interaction.user.roles, ["Admin"])):
+    member = await interaction.guild.fetch_member(user.id)
+    embed = nextcord.Embed(title="A Ban has been issued", color=info.color)
+    embed.add_field(name="User", value=member.name, inline=False)
+    embed.add_field(name="Reason", value=reason, inline=False)
+    channel = bot.get_channel(info.get_channelID(interaction.guild.id, "banChannel"))
+    await channel.send(embed = embed)
+    await member.ban(reason = reason)
+    await interaction.send(embed = embed)   
+  else:
+    await interaction.send("You do not have permission to use this command!")
     
 @bot.event
 async def on_member_join(member):
