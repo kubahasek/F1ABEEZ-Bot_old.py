@@ -21,7 +21,7 @@ import logging
 from nextcord import Interaction
 import cogs.Lobby as Lobby
 
-logging.basicConfig(format='%(asctime)s-%(levelname)s:%(message)s')
+logging.basicConfig(format='%(asctime)s-%(levelname)s:%(message)s', level=logging.INFO)
 
 
 class TierDropdown(nextcord.ui.Select):
@@ -739,6 +739,7 @@ async def channelName(ctx, name):
 
 for fn in os.listdir("./cogs"):
   if fn.endswith(".py"):
+    logging.info("Loading %s", fn)
     bot.load_extension(f"cogs.{fn[:-3]}")
 
 bot.run(info.discord_token)
