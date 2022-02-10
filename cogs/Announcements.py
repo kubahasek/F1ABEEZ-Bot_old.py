@@ -1,7 +1,4 @@
-from code import InteractiveInterpreter
-from discord import SelectOption
 from nextcord import Interaction, SlashOption, ChannelType
-from nextcord.abc import GuildChannel
 from nextcord.ext import commands
 import nextcord
 import logging

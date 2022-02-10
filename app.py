@@ -1,14 +1,8 @@
 import asyncio
-from discord import SlashOption
 import nextcord
-from nextcord import client
-from nextcord import message
-from nextcord.colour import Color
-from nextcord.ext import tasks, commands
+from nextcord import SlashOption
+from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
-from nextcord.ext.commands.core import check
-from nextcord.ui import view
-from nextcord.ui.view import View
 import requests
 import datetime
 import pytz
@@ -21,7 +15,6 @@ import utils.info as info
 import utils.utilities as utils
 import logging
 from nextcord import Interaction, Member
-import cogs.Lobby as Lobby
 
 logging.basicConfig(format='%(asctime)s-%(levelname)s:%(message)s', level=logging.INFO)
 
