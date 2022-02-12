@@ -466,7 +466,7 @@ async def getCalendar(interaction):
     try:
       r = requests.get("https://api.figma.com/v1/images/8mL0mwOKyIUcoLG3goL7wk/?ids=2%3A138&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
-      img = r["images"]["2:138"]
+      img = r["images"]["2:367"]
       embed1 = nextcord.Embed(color=info.color) 
       embed1.set_image(url=img) 
       await interaction.send(embed=embed1)
@@ -478,7 +478,7 @@ async def getCalendar(interaction):
     try:
       r = requests.get("https://api.figma.com/v1/images/8mL0mwOKyIUcoLG3goL7wk/?ids=15%3A2&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
-      img = r["images"]["15:2"] ## TODO: change this to F2 calendar
+      img = r["images"]["5:2"] ## TODO: change this to F2 calendar
       print(img)
       embed2 = nextcord.Embed(color=info.color) 
       embed2.set_image(url=img) 
