@@ -1,38 +1,36 @@
-from ast import If
 import asyncio
-from itertools import dropwhile
 import nextcord
-from nextcord import client
-from nextcord import message
-from nextcord.colour import Color
-from nextcord.ext import tasks, commands
+from nextcord import SlashOption
+from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
-from nextcord.ext.commands.core import check
-from nextcord.ui import view
-from nextcord.ui.view import View
 import requests
 import datetime
 import pytz
-import notion as nt
-import info
+import sys, os, inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+import utils.notion as nt
+import utils.info as info
+import utils.utilities as utils
 import logging
+from nextcord import Interaction, Member
 
-
-logging.basicConfig(format='%(asctime)s-%(levelname)s:%(message)s')
+logging.basicConfig(format='%(asctime)s-%(levelname)s:%(message)s', level=logging.INFO)
 
 
 class TierDropdown(nextcord.ui.Select):
   def __init__(self):
     options = [
-      nextcord.SelectOption(label="Tier 1",description="F1 - Tier 1" ,value="F1 - Tier 1"),
-      nextcord.SelectOption(label="Tier 2",description="F1 - Tier 2" ,value="F1 - Tier 2"),
-      nextcord.SelectOption(label="Tier 3",description="F1 - Tier 3" ,value="F1 - Tier 3"),
-      # nextcord.SelectOption(label="Tier 4",description="F1 - Tier 4" ,value="F1 - Tier 4"),
-      # nextcord.SelectOption(label="Tier 5",description="F1 - Tier 5" ,value="F1 - Tier 5"),
-      # nextcord.SelectOption(label="Tier M",description="F1 - Tier M" ,value="F1 - Tier M"),
-      # nextcord.SelectOption(label="Tier NA",description="F1 - Tier NA" ,value="F1 - Tier NA"),
-      # nextcord.SelectOption(label="F2 - Tier 1",description="F2 - Tier 1" ,value="F2 - Tier 1"),
-      # nextcord.SelectOption(label="F2 - Tier 2",description="F2 - Tier 2" ,value="F2 - Tier 2"),
+      nextcord.SelectOption(label="Tier 1",description="F1 - Tier 1" ,value="Tier 1"),
+      nextcord.SelectOption(label="Tier 2",description="F1 - Tier 2" ,value="Tier 2"),
+      nextcord.SelectOption(label="Tier 3",description="F1 - Tier 3" ,value="Tier 3"),
+      nextcord.SelectOption(label="Tier 4",description="F1 - Tier 4" ,value="Tier 4"),
+      nextcord.SelectOption(label="Tier 5",description="F1 - Tier 5" ,value="Tier 5"),
+      nextcord.SelectOption(label="Tier M",description="F1 - Tier M" ,value="Tier M"),
+      nextcord.SelectOption(label="Tier NA",description="F1 - Tier NA" ,value="Tier NA"),
+      nextcord.SelectOption(label="F2 - Tier 1",description="F2 - Tier 1" ,value="F2 - Tier 1"),
+      nextcord.SelectOption(label="F2 - Tier 2",description="F2 - Tier 2" ,value="F2 - Tier 2"),
     ]
     super().__init__(placeholder="Select your tier...", min_values=1, max_values=1, options=options)
 
@@ -92,6 +90,46 @@ class CalendarMenu(nextcord.ui.View):
   # async def tier2ButtonClicked(self, button, interaction):
   #   await self.handle_click(button, interaction)
 
+class highlightMenu(nextcord.ui.View):
+  def __init__(self):
+      super().__init__(timeout=None)
+
+  async def handle_highlight(self, button, interaction):
+    bst = pytz.timezone("Europe/London")
+    todayInc = datetime.datetime.now(tz=bst).isoformat()
+    user = interaction.user
+    await interaction.response.send_message(f"Follow the bot to your DMs! {user.mention}", ephemeral=True)
+    def check(m):
+      return m.author == user and m.guild is None 
+
+    try:
+      await user.send("What round did this highlight occur in?")
+      rnd = await bot.wait_for('message', check=check, timeout=180.0)
+      rnd = rnd.content
+      await user.send("What is the link to your highlight?")
+      link = await bot.wait_for("message", check=check, timeout=180.0)
+      link = link.content
+      await user.send("If this is a clip enter \"Clip\" othervise enter the timestamp or the lap of the highlight")
+      time = await bot.wait_for("message", check=check, timeout=180.0)
+      time = time.content
+      await user.send("Give us a brief description of the highlight")
+      desc = await bot.wait_for("message", check=check, timeout=180.0)
+      desc = desc.content
+      view = DropdownTierView()
+      await user.send("In which tier did this highlight occur?", view=view)
+      await view.wait()
+      tier = view.tierSelected
+      await user.send(f"You selected {tier}")
+      response = nt.submitHighlight(rnd, link, time, desc, tier, todayInc, user.name)
+      await user.send(response)
+    except asyncio.TimeoutError:
+      await user.send("You took too long to respond. Try again.")
+
+  @nextcord.ui.button(label="", emoji="📸", style=nextcord.ButtonStyle.primary, custom_id="highlightButton")
+  async def highlightButtonClicked(self, button, interaction):
+    await self.handle_highlight(button, interaction)
+
+
 class reportMenu(nextcord.ui.View):
   def __init__(self):
     super().__init__(timeout=None)
@@ -121,34 +159,8 @@ class reportMenu(nextcord.ui.View):
           view = DropdownTierView()
           await user.send("Select in which tier did the incident occur", view=view)
           await view.wait()
-          if(view.tierSelected == "F1 - Tier 1"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F1 - Tier 2"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F1 - Tier 3"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F1 - Tier 4"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F1 - Tier 5"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F1 - Tier M"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F1 - Tier NA"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F2 - Tier 1"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          elif(view.tierSelected == "F2 - Tier 2"):
-            tierOfIncidentInc = view.tierSelected
-            await user.send(f"You selected {tierOfIncidentInc}")
-          
+          tierOfIncidentInc = view.tierSelected
+          await user.send(f"You selected {tierOfIncidentInc}")
           await user.send("Please provide video evidence (Only reply with links to gamerdvr or other services)")
           evidenceInc = await bot.wait_for("message", check=check, timeout=180.0)
           evidenceInc = evidenceInc.content
@@ -257,11 +269,12 @@ def GetHelpCommand():
 
 def getStaffHelpCommand():
   embed = nextcord.Embed(title="Staff Help", color=info.color)
-  embed.add_field(name=";dotd", value="Sends the DOTD vote message\nusage: ;dotd tier, driver1Name, driver1PosChange, driver2Name, driver2PosChange, driver3Name, driver3PosChange, driver4Name, driver4PosChange, driver5Name, driver5PosChange", inline=False)
-  embed.add_field(name=";dotdwinner", value="Sends the winner of DOTD\nusage: ;dotdwinner tier, winnerName", inline=False)
-  embed.add_field(name=";lobbytier<tierNumber>", value="Sends the lobby is open message. Enter the tier number instead of <tierNumber>", inline=False)
-  embed.add_field(name=";readytier<tierNumber>", value="Sends the ready up instruction. Enter the tier number instead of <tierNumber>", inline=False)
-  embed.add_field(name=";racetier<tierNumber>", value="Sends the race ready up instruction. Enter the tier number instead of <tierNumber>", inline=False)
+  embed.add_field(name=";lobbytier<tierNumber>", value="Sends the lobby is open message. Enter the tier number instead of <tierNumber>. Options: [1,2,3,4,5,M,NA]", inline=False)
+  embed.add_field(name=";readytier<tierNumber>", value="Sends the ready up instruction. Enter the tier number instead of <tierNumber>. Options: [1,2,3,4,5,M,NA]", inline=False)
+  embed.add_field(name=";racetier<tierNumber>", value="Sends the race ready up instruction. Enter the tier number instead of <tierNumber>. Options: [1,2,3,4,5,M,NA]", inline=False)
+  embed.add_field(name=";lobbyf2tier<tierNumber>", value="Sends the lobby is open message. Enter the tier number instead of <tierNumber>. Options: [1,2]")
+  embed.add_field(name=";readyf2tier<tierNumber>", value="Sends the ready up instruction. Enter the tier number instead of <tierNumber>. Options: [1,2]")
+  embed.add_field(name=";racef2tier<tierNumber>", value="Sends the race ready up instruction. Enter the tier number instead of <tierNumber>. Options: [1,2]")
   embed.add_field(name=";stewardsdecision <roundNumber>", value="Send the links to respective tier race reports. Enter round number instead of <roundNumber>", inline=False)
   embed.add_field(name=";academymessage", value="Send the academy info message", inline=False)
   embed.add_field(name=";warn <user> <reason>", value="(ADMIN ONLY) - allows to warn a user, sending the warning into the proper channel to keep track.")
@@ -317,33 +330,40 @@ bot.remove_command("help")
 async def on_ready():
     logging.info("We have logged in as {0.user}".format(bot))
     bot.add_view(reportMenu())
+    bot.add_view(highlightMenu())
     await bot.change_presence(activity=nextcord.Activity(type=nextcord.ActivityType.watching, name="F1ABEEZ Server 🚀"))
 
-@bot.command(name="help")
-async def HelpCommand(ctx):
-    await ctx.send(embed = GetHelpCommand())
+@bot.slash_command(name="help", description="Shows the help menu", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
+async def HelpCommand(interaction: Interaction):
+    await interaction.send(embed = GetHelpCommand())
 
-@bot.command(name="staffhelp")
-@commands.has_any_role("Staff")
-async def StaffHelpCommand(ctx):
-  embed = getStaffHelpCommand()
-  await ctx.send(embed=embed)
+@bot.slash_command(name="staffhelp", description="Shows the staff help menu", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
+async def StaffHelpCommand(interaction: Interaction):
+  await interaction.response.defer()
+  if(utils.check_roles(interaction.user.roles, ["Staff"])):
+    await interaction.send(embed = getStaffHelpCommand())
+  else:
+    await interaction.send("You do not have permission to use this command!")
 
-@bot.command(name="gettickets")
-async def GetTickets(ctx, *, arg):
-    await ctx.send(embed=nt.queryTickets(arg))
+@bot.slash_command(name="gettickets", description="Gets the tickets for the gamertag", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
+async def GetTickets(interaction: Interaction, gamertag: str = SlashOption(name="gamertag", description="The gamertag to get the tickets for", required=True)):
+    await interaction.response.defer()
+    await interaction.send(embed=nt.queryTickets(gamertag))
 
-@bot.command(name="getprofile")
-async def GetProfile(ctx, *, arg):
-    await ctx.send(embed=nt.getProfileInfo(arg))    
+@bot.slash_command(name="getprofile", description="Gets profile info from the database", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
+async def GetProfile(interaction: Interaction, gamertag: str = SlashOption(name="gamertag", description="The gamertag to get the tickets for", required=True)):
+    await interaction.response.defer()
+    await interaction.send(embed=nt.getProfileInfo(gamertag))    
 
-@bot.command(name="getappeals")
-async def GetAppeals(ctx, *, arg):
-  await ctx.send(embed = nt.queryAppeals(arg))
+@bot.slash_command(name="getappeals", description="Gets the appeals for the gamertag", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
+async def GetAppeals(interaction: Interaction, gamertag: str = SlashOption(name="gamertag", description="The gamertag to get the tickets for", required=True)):
+  await interaction.response.defer()
+  await interaction.send(embed = nt.queryAppeals(gamertag))
 
-@bot.command(name="ticketdetail")
-async def TicketDetail(ctx, ticketNum):
-    await ctx.send(embed = nt.TicketDetailQuery(ticketNum))
+@bot.slash_command(name="ticketdetail", description="Gets the details for the ticket", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
+async def TicketDetail(interaction: Interaction, ticketID: str = SlashOption(name="ticketid", description="The ticket ID to get the details for", required=True)):
+    await interaction.response.defer()
+    await interaction.send(embed = nt.TicketDetailQuery(ticketID))
 
 @bot.event
 async def on_command_error(ctx, error):
@@ -351,343 +371,36 @@ async def on_command_error(ctx, error):
         await ctx.send("Command not found")
     logging.error(error)
 
-@bot.command(name="lobbytier1")
-@commands.has_any_role("Admin", "Moderator")
-async def lobbyMSGtier1(ctx):
-  tier1ID = info.get_roleID(ctx.guild.id, "tier1Role")
-  reserveTier1ID = info.get_roleID(ctx.guild.id, "reserveTier1Role")
-  if(type(tier1ID) == type(None) or type(reserveTier1ID) == type(None)):
-    logging.error("Could not find tier 1 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tier1ID}> <@&{reserveTier1ID}>\n**Lobby is now open!**\nPlease join off <@705761570126561341>\nGamertag is - Sammie230408\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
-
-@bot.command(name="lobbytier2")
-@commands.has_any_role("Admin", "Moderator")
-async def lobbyMSGtier2(ctx):
-  tier2ID = info.get_roleID(ctx.guild.id, "tier2Role")
-  reserveTier2ID = info.get_roleID(ctx.guild.id, "reserveTier2Role")
-  if(type(tier2ID) == type(None) or type(reserveTier2ID) == type(None)):
-    logging.error("Could not find tier 2 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tier2ID}> <@&{reserveTier2ID}>\n**Lobby is now open!**\nPlease join off <@483678704749510677>\nGamertag is - thxharvey\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
-
-@bot.command(name="lobbytier3")
-@commands.has_any_role("Admin", "Moderator")
-async def lobbyMSGtier3(ctx):
-  tier3ID = info.get_roleID(ctx.guild.id, "tier3Role")
-  reserveTier3ID = info.get_roleID(ctx.guild.id, "reserveTier3Role")
-  if(type(tier3ID) == type(None) or type(reserveTier3ID) == type(None)):
-    logging.error("Could not find tier 3 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tier3ID}> <@&{reserveTier3ID}>\n**Lobby is now open!**\nPlease join off <@401204069890523137>\nGamertag is - OwningLeMoNz\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
-
-@bot.command(name="lobbytier4")
-@commands.has_any_role("Admin", "Moderator")
-async def lobbyMSGtier4(ctx):
-  tier4ID = info.get_roleID(ctx.guild.id, "tier4Role")
-  reserveTier4ID = info.get_roleID(ctx.guild.id, "reserveTier4Role")
-  if(type(tier4ID) == type(None) or type(reserveTier4ID) == type(None)):
-    logging.error("Could not find tier 4 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tier4ID}> <@&{reserveTier4ID}>\n**Lobby is now open!**\nPlease join off <@559096129816363010>\nGamertag is - Razznyk\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
-
-@bot.command(name="lobbytier5")
-@commands.has_any_role("Admin", "Moderator")
-async def lobbyMSGtier4(ctx):
-  tier5ID = info.get_roleID(ctx.guild.id, "tier5Role")
-  reserveTier5ID = info.get_roleID(ctx.guild.id, "reserveTier5Role")
-  if(type(tier5ID) == type(None) or type(reserveTier5ID) == type(None)):
-    logging.error("Could not find tier 5 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tier5ID}> <@&{reserveTier5ID}>\n**Lobby is now open!**\nPlease join off <@559096129816363010>\nGamertag is - Razznyk\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
-
-@bot.command(name="lobbytierM")
-@commands.has_any_role("Admin", "Moderator")
-async def lobbyMSGtier4(ctx):
-  tierMID = info.get_roleID(ctx.guild.id, "tierMRole")
-  reserveTierMID = info.get_roleID(ctx.guild.id, "reserveTierMRole")
-  if(type(tierMID) == type(None) or type(reserveTierMID) == type(None)):
-    logging.error("Could not find tier M roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tierMID}> <@&{reserveTierMID}>\n**Lobby is now open!**\nPlease join off <@559096129816363010>\nGamertag is - Razznyk\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
-
-@bot.command(name="lobbytierNA")
-@commands.has_any_role("Admin", "Moderator")
-async def lobbyMSGtier4(ctx):
-  tierNAID = info.get_roleID(ctx.guild.id, "tierNARole")
-  reserveTierNAID = info.get_roleID(ctx.guild.id, "reserveTierNARole")
-  if(type(tierNAID) == type(None) or type(reserveTierNAID) == type(None)):
-    logging.error("Could not find tier NA roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tierNAID}> <@&{reserveTierNAID}>\n**Lobby is now open!**\nPlease join off <@559096129816363010>\nGamertag is - Razznyk\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
-
-@bot.command(name="lobbyf2tier1")
-@commands.has_any_role("Admin", "Moderator")
-async def lobbyMSGf2Tier1(ctx):
-  f2tier1ID = info.get_roleID(ctx.guild.id, "f2Tier1Role")
-  f2reserveTier1ID = info.get_roleID(ctx.guild.id, "reserveF2Tier1Role")
-  if(type(f2tier1ID) == type(None) or type(f2reserveTier1ID) == type(None)):
-    logging.error("Could not find tier 1 F2 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{f2tier1ID}> <@&{f2reserveTier1ID}>\n**Lobby is now open!**\nPlease join off <@499568806469959691>\nGamertag is - MrJSmithy\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
-
-@bot.command(name="lobbyf2tier2")
-@commands.has_any_role("Admin", "Moderator")
-async def lobbyMSGf2Tier2(ctx):
-  f2tier2ID = info.get_roleID(ctx.guild.id, "f2Tier2Role")
-  f2reserveTier2ID = info.get_roleID(ctx.guild.id, "reserveF2Tier2Role")
-  if(type(f2tier2ID) == type(None) or type(f2reserveTier2ID) == type(None)):
-    logging.error("Could not find tier 2 F2 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{f2tier2ID}> <@&{f2reserveTier2ID}>\n**Lobby is now open!**\nPlease join off <@499568806469959691>\nGamertag is - MrJSmithy\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
-
-@bot.command(name="readytier1")
-@commands.has_any_role("Admin", "Moderator")
-async def readyMSGtier1(ctx):
-  tier1ID = info.get_roleID(ctx.guild.id, "tier1Role")
-  reserveTier1ID = info.get_roleID(ctx.guild.id, "reserveTier1Role")
-  if(type(tier1ID) == type(None) or type(reserveTier1ID) == type(None)):
-    logging.error("Could not find tier 1 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tier1ID}> <@&{reserveTier1ID}>\n**Ready up**\n\n")
-
-@bot.command(name="readytier2")
-@commands.has_any_role("Admin", "Moderator")
-async def readyMSGtier2(ctx):
-  tier2ID = info.get_roleID(ctx.guild.id, "tier2Role")
-  reserveTier2ID = info.get_roleID(ctx.guild.id, "reserveTier2Role")
-  if(type(tier2ID) == type(None) or type(reserveTier2ID) == type(None)):
-    logging.error("Could not find tier 2 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tier2ID}> <@&{reserveTier2ID}>\n**Ready up**\n\n")
-
-@bot.command(name="readytier3")
-@commands.has_any_role("Admin", "Moderator")
-async def readyMSGtier3(ctx):
-  tier3ID = info.get_roleID(ctx.guild.id, "tier3Role")
-  reserveTier3ID = info.get_roleID(ctx.guild.id, "reserveTier3Role")
-  if(type(tier3ID) == type(None) or type(reserveTier3ID) == type(None)):
-    logging.error("Could not find tier 3 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tier3ID}> <@&{reserveTier3ID}>\n**Ready up**\n\n")
-
-@bot.command(name="readytier4")
-@commands.has_any_role("Admin", "Moderator")
-async def readyMSGtier4(ctx):
-  tier4ID = info.get_roleID(ctx.guild.id, "tier4Role")
-  reserveTier4ID = info.get_roleID(ctx.guild.id, "reserveTier4Role")
-  if(type(tier4ID) == type(None) or type(reserveTier4ID) == type(None)):
-    logging.error("Could not find tier 4 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tier4ID}> <@&{reserveTier4ID}>\n**Ready up**\n\n")
-
-@bot.command(name="readytier5")
-@commands.has_any_role("Admin", "Moderator")
-async def readyMSGtier5(ctx):
-  tier5ID = info.get_roleID(ctx.guild.id, "tier5Role")
-  reserveTier5ID = info.get_roleID(ctx.guild.id, "reserveTier5Role")
-  if(type(tier5ID) == type(None) or type(reserveTier5ID) == type(None)):
-    logging.error("Could not find tier 5 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tier5ID}> <@&{reserveTier5ID}>\n**Ready up**\n\n")
-
-@bot.command(name="readytierM")
-@commands.has_any_role("Admin", "Moderator")
-async def readyMSGtierM(ctx):
-  tierMID = info.get_roleID(ctx.guild.id, "tierMRole")
-  reserveTierMID = info.get_roleID(ctx.guild.id, "reserveTierMRole")
-  if(type(tierMID) == type(None) or type(reserveTierMID) == type(None)):
-    logging.error("Could not find tier M roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tierMID}> <@&{reserveTierMID}>\n**Ready up**\n\n")
-
-@bot.command(name="readytierNA")
-@commands.has_any_role("Admin", "Moderator")
-async def readyMSGtierNA(ctx):
-  tierNAID = info.get_roleID(ctx.guild.id, "tierNARole")
-  reserveTierNAID = info.get_roleID(ctx.guild.id, "reserveTierNARole")
-  if(type(tierNAID) == type(None) or type(reserveTierNAID) == type(None)):
-    logging.error("Could not find tier NA roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tierNAID}> <@&{reserveTierNAID}>\n**Ready up**\n\n")
-
-@bot.command(name="readyf2tier1")
-@commands.has_any_role("Admin", "Moderator")
-async def readyMSGf2tier1(ctx):
-  f2tier1ID = info.get_roleID(ctx.guild.id, "f2Tier1Role")
-  f2reserveTier1ID = info.get_roleID(ctx.guild.id, "reserveF2Tier1Role")
-  if(type(f2tier1ID) == type(None) or type(f2reserveTier1ID) == type(None)):
-    logging.error("Could not find tier 1 F2 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{f2tier1ID}> <@&{f2reserveTier1ID}>\n**Ready up**\n\nDon't forget to not use wet tyres in qualifying as this will results in a quali ban")
-
-@bot.command(name="readyf2tier2")
-@commands.has_any_role("Admin", "Moderator")
-async def readyMSGf2tier2(ctx):
-  f2tier2ID = info.get_roleID(ctx.guild.id, "f2Tier2Role")
-  f2reserveTier2ID = info.get_roleID(ctx.guild.id, "reserveF2Tier2Role")
-  if(type(f2tier2ID) == type(None) or type(f2reserveTier2ID) == type(None)):
-    logging.error("Could not find tier 1 F2 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{f2tier2ID}> <@&{f2reserveTier2ID}>\n**Ready up**\n\nDon't forget to not use wet tyres in qualifying as this will results in a quali ban")
-
-@bot.command(name="racetier1")
-@commands.has_any_role("Admin", "Moderator")
-async def raceMSGtier1(ctx):
-  tier1ID = info.get_roleID(ctx.guild.id, "tier1Role")
-  reserveTier1ID = info.get_roleID(ctx.guild.id, "reserveTier1Role")
-  if(type(tier1ID) == type(None) or type(reserveTier1ID) == type(None)):
-    logging.error("Could not find tier 1 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tier1ID}> <@&{reserveTier1ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
-
-@bot.command(name="racetier2")
-@commands.has_any_role("Admin", "Moderator")
-async def raceMSGtier2(ctx):
-  tier2ID = info.get_roleID(ctx.guild.id, "tier2Role")
-  reserveTier2ID = info.get_roleID(ctx.guild.id, "reserveTier2Role")
-  if(type(tier2ID) == type(None) or type(reserveTier2ID) == type(None)):
-    logging.error("Could not find tier 2 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tier2ID}> <@&{reserveTier2ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
-
-@bot.command(name="racetier3")
-@commands.has_any_role("Admin", "Moderator")
-async def raceMSGtier3(ctx):
-  tier3ID = info.get_roleID(ctx.guild.id, "tier3Role")
-  reserveTier3ID = info.get_roleID(ctx.guild.id, "reserveTier3Role")
-  if(type(tier3ID) == type(None) or type(reserveTier3ID) == type(None)):
-    logging.error("Could not find tier 3 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tier3ID}> <@&{reserveTier3ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
-
-@bot.command(name="racetier4")
-@commands.has_any_role("Admin", "Moderator")
-async def raceMSGtier4(ctx):
-  tier4ID = info.get_roleID(ctx.guild.id, "tier4Role")
-  reserveTier4ID = info.get_roleID(ctx.guild.id, "reserveTier4Role")
-  if(type(tier4ID) == type(None) or type(reserveTier4ID) == type(None)):
-    logging.error("Could not find tier 4 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tier4ID}> <@&{reserveTier4ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
-
-@bot.command(name="racetier5")
-@commands.has_any_role("Admin", "Moderator")
-async def raceMSGtier5(ctx):
-  tier5ID = info.get_roleID(ctx.guild.id, "tier5Role")
-  reserveTier5ID = info.get_roleID(ctx.guild.id, "reserveTier5Role")
-  if(type(tier5ID) == type(None) or type(reserveTier5ID) == type(None)):
-    logging.error("Could not find tier 5 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tier5ID}> <@&{reserveTier5ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
-
-@bot.command(name="racetierM")
-@commands.has_any_role("Admin", "Moderator")
-async def raceMSGtierM(ctx):
-  tierMID = info.get_roleID(ctx.guild.id, "tierMRole")
-  reserveTierMID = info.get_roleID(ctx.guild.id, "reserveTierMRole")
-  if(type(tierMID) == type(None) or type(reserveTierMID) == type(None)):
-    logging.error("Could not find tier M roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tierMID}> <@&{reserveTierMID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
-
-@bot.command(name="racetierNA")
-@commands.has_any_role("Admin", "Moderator")
-async def raceMSGtierNA(ctx):
-  tierNAID = info.get_roleID(ctx.guild.id, "tierNARole")
-  reserveTierNAID = info.get_roleID(ctx.guild.id, "reserveTierNARole")
-  if(type(tierNAID) == type(None) or type(reserveTierNAID) == type(None)):
-    logging.error("Could not find tier NA roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{tierNAID}> <@&{reserveTierNAID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
-
-@bot.command(name="racef2tier1")
-@commands.has_any_role("Admin", "Moderator")
-async def raceMSGf2tier1(ctx):
-  f2tier1ID = info.get_roleID(ctx.guild.id, "f2Tier1Role")
-  f2reserveTier1ID = info.get_roleID(ctx.guild.id, "reserveF2Tier1Role")
-  if(type(f2tier1ID) == type(None) or type(f2reserveTier1ID) == type(None)):
-    logging.error("Could not find tier 1 F2 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{f2tier1ID}> <@&{f2reserveTier1ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
-
-@bot.command(name="racef2tier2")
-@commands.has_any_role("Admin", "Moderator")
-async def raceMSGf2tier2(ctx):
-  f2tier2ID = info.get_roleID(ctx.guild.id, "f2Tier2Role")
-  f2reserveTier2ID = info.get_roleID(ctx.guild.id, "reserveF2Tier2Role")
-  if(type(f2tier2ID) == type(None) or type(f2reserveTier2ID) == type(None)):
-    logging.error("Could not find tier 1 F2 roles", exc_info=True)
-  await ctx.message.delete()
-  await ctx.send(f"<@&{f2tier2ID}> <@&{f2reserveTier2ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
-
-@bot.command(name="academymessage")
-@commands.has_any_role("Admin", "Moderator", "Trialist Manager")
-async def academyMSG(ctx):
-  academyID = info.get_roleID(ctx.guild.id, "academyRole")
-  await ctx.message.delete()
-  msg =  await ctx.send(f"<@&{academyID}>\n**TRIAL RACE BRIEFING:**\nWelcome to the F1ABEEZ trial race! I would just like to run through what is expected of you from your trial:\n- Please drive clean - we are a clean racing league, show respect to your fellow drivers! dirty driving will not be tolerated\n- Drive fast! It's still a race after all, we would like to see a true reflection of your pace\n- Do not use medium tyres in Qualifying for this trial race, as this lets us compare your quali pace!\n- Have fun! That's what we're all here for\n\nThe format is short qualifying, 25% race\nAfter the race is completed, one of the trialist leaders will DM you individually with their decision\nPlease react with a thumbs up once you have read this, good luck!")
-  await msg.add_reaction("👍")
-
-
-@bot.command(name="warn")
+@bot.slash_command(name="warn", description="Warns a user", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
 @commands.has_any_role("Admin")
-async def warn(ctx, user=None, *, reason=None):
-  if(user is None):
-    await ctx.send("You didn't mention the user")
-    return
-  if(reason is None):
-    await ctx.send("You didn't provide a reason")
-    return
-  
-  try: 
-    member = ctx.message.mentions[0]
-    membername = ctx.message.mentions[0].name
-  except IndexError:
-    print(user)
-    member = await ctx.guild.fetch_member(int(user))
-    print(member)
-    membername = member.name
-  except Exception as e:
-    print("warn:")
-    print(e)
+async def warn(interaction: Interaction, user: Member = SlashOption(name="user", description="The user to warn", required=True), reason: str = SlashOption(name="reason", description="The reason for the warning", required=True)):
+  await interaction.response.defer()
+  if(utils.check_roles(interaction.user.roles, ["Admin"])):
+    member = await interaction.guild.fetch_member(user.id)
+    embed = nextcord.Embed(title="A Warning has been issued", color=info.color)
+    embed.add_field(name="User", value=member.name, inline=False)
+    embed.add_field(name="Reason", value=reason, inline=False)
+    channel = bot.get_channel(info.get_channelID(interaction.guild.id, "warningChannel"))
+    await channel.send(embed = embed)
+    await interaction.send(embed = embed)   
+  else:
+    await interaction.send("You do not have permission to use this command!")
 
-  embed = nextcord.Embed(title="A Warning has been issued", color=info.color)
-  embed.add_field(name="User", value=membername, inline=False)
-  embed.add_field(name="Reason", value=reason, inline=False)
-  channel = bot.get_channel(info.get_channelID(ctx.guild.id, "warningChannel"))
-  await channel.send(embed = embed)
-  await ctx.send(embed = embed)   
-
-@bot.command(name="ban")
+@bot.slash_command(name="ban", description="Bans a user", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
 @commands.has_any_role("Admin")
-async def ban(ctx, user=None, *, reason=None):
-  if(user is None):
-    await ctx.send("You didn't mention the user")
-    return
-  if(reason is None):
-    await ctx.send("You didn't provide a reason")
-    return
-
-  try: 
-    member = ctx.message.mentions[0]
-    membername = ctx.message.mentions[0].name
-  except IndexError:
-    print(user)
-    member = await ctx.guild.fetch_member(int(user))
-    print(member)
-    membername = member.name
-  except Exception as e:
-    print("ban:")
-    print(e)
-
-  embed = nextcord.Embed(title="A Ban has been issued", color=info.color)
-  embed.add_field(name="User", value=membername, inline=False)
-  embed.add_field(name="Reason", value=reason, inline=False)
-  channel = bot.get_channel(info.get_channelID(ctx.guild.id, "banChannel"))
-  await channel.send(embed = embed)
-  await member.ban(reason = reason)
-  await ctx.send(embed = embed)   
+async def ban(interaction: Interaction, user: Member = SlashOption(name="user", description="The user to ban", required=True), reason: str = SlashOption(name="reason", description="The reason for the ban", required=True)):
+  await interaction.response.defer()
+  if(utils.check_roles(interaction.user.roles, ["Admin"])):
+    member = await interaction.guild.fetch_member(user.id)
+    embed = nextcord.Embed(title="A Ban has been issued", color=info.color)
+    embed.add_field(name="User", value=member.name, inline=False)
+    embed.add_field(name="Reason", value=reason, inline=False)
+    channel = bot.get_channel(info.get_channelID(interaction.guild.id, "banChannel"))
+    await channel.send(embed = embed)
+    await member.ban(reason = reason)
+    await interaction.send(embed = embed)   
+  else:
+    await interaction.send("You do not have permission to use this command!")
     
 @bot.event
 async def on_member_join(member):
@@ -716,52 +429,6 @@ async def on_member_remove(member):
   else:
     logging.error("leavingChannel not found", exc_info=True)
 
-@bot.command(name="stewardsdecisions")
-@commands.has_any_role("Admin", "Moderator", "Steward")
-async def stewardsDecision(ctx, round):
-  channel = bot.get_channel(info.get_channelID(ctx.guild.id, "stewardsAnnouncementChannel"))
-  roundNO = int(round)
-  # f2RoundNO = roundNO - 1
-  # f2round = f"R{f2RoundNO}"
-  round = f"r{roundNO}"
-  tier1URL = f"<https://f1abeez.com/race-reports/t1/{round}>"
-  tier2URL = f"<https://f1abeez.com/race-reports/t2/{round}>"
-  tier3URL = f"<https://f1abeez.com/race-reports/t3/{round}>"
-  # tier4URL = f"<https://f1abeez.com/race-reports/t4/{round}>"
-  # if(roundNO - 1 == 0):
-  #   f2URL = "F2 did not race"
-  # else:
-  #   f2URL = f"<https://f1abeez.com/race-reports/F2-{f2round}>"
-  
-  if(type(channel) != type(None)):
-    await channel.send(f"🦺 @everyone\n\n**All Stewards decisions are finalised**\nPlease check this week's race-report for all the incidents reported and decisions made.\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n\nPlease file your appeals with the correct case number **in the next 24 hours**, and standings will be posted after all appeals are finalised \nFollow the instructions in <#864999507238322186> to submit your appeals \n\nThank you,\nStewards of F1ABEEZ")
-  else:
-    logging.error("stewardsAnnouncementChannel not found")
-    await ctx.reply("ERROR: stewardsAnnouncementChannel not found, contact KubaH04")
-  
-
-@bot.command(name="racereport")
-@commands.has_any_role("Admin", "Moderator")
-async def raceResults(ctx, round):
-  channel = bot.get_channel(info.get_channelID(ctx.guild.id, "generalAnnoucementChannel"))
-  roundNO = int(round)
-  # f2RoundNO = roundNO - 1
-  # f2round = f"R{f2RoundNO}"
-  round = f"r{roundNO}"
-  tier1URL = f"<https://f1abeez.com/race-reports/t1/{round}>"
-  tier2URL = f"<https://f1abeez.com/race-reports/t2/{round}>"
-  tier3URL = f"<https://f1abeez.com/race-reports/t3/{round}>"
-  # tier4URL = f"<https://f1abeez.com/race-reports/t4/{round}>"
-  # if(roundNO - 1 == 0):
-  #   f2URL = "F2 did not race"
-  # else:
-  #   f2URL = f"<https://f1abeez.com/race-reports/F2-{f2round}>"
-  if(type(channel) != type(None)):
-    await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}")
-  else:
-    logging.error("generalAnnoucementChannel not found")
-    await ctx.reply("ERROR: generalAnnoucementChannel not found, contact KubaH04")
-
 @bot.command(name="incidentchannel")
 @commands.has_any_role("Admin", "Moderator")
 async def incidentChannel(ctx):
@@ -785,227 +452,137 @@ async def suggestionChannel(ctx):
   embed = nextcord.Embed(title="Submit a suggestion",description="React to this message to submit a suggestion by clicking the 📨 button", color=info.color)
   await ctx.send(embed=embed, view=reportMenu())
 
-@bot.command(name="calendar")
-async def getCalendar(ctx):
+@bot.command(name="highlightchannel")
+@commands.has_any_role("Admin", "Moderator")
+async def highlightChannel(ctx):
   await ctx.message.delete()
-  view = CalendarMenu()
-  selectMSG = await ctx.send("For which tier do you want to see standings?", view=view)
-  await view.wait()
-  if(view.tierSelected == "F1"):
-    msg = await ctx.send("Getting the F1 calendar...")
+  embed = nextcord.Embed(title="Submit a highlight",description="React to this message to submit a highlight by clicking the 📸 button", color=info.color)
+  await ctx.send(embed=embed, view=highlightMenu())
+
+@bot.slash_command(name="calendar", description="Shows the current calendar", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
+async def getCalendar(interaction):
+  await interaction.response.defer()
+  if(int(info.f1abeezID) == interaction.guild.id):
     try:
-      await selectMSG.delete()
       r = requests.get("https://api.figma.com/v1/images/8mL0mwOKyIUcoLG3goL7wk/?ids=2%3A138&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
-      if(r):
-        await msg.delete()
       img = r["images"]["2:138"]
       embed1 = nextcord.Embed(color=info.color) 
       embed1.set_image(url=img) 
-      await ctx.send(embed=embed1)
+      await interaction.send(embed=embed1)
     except Exception as e:
-      await ctx.send(f"There was an error getting the calendar, please report this issue to the admins.")
+      await interaction.send(f"There was an error getting the calendar, please report this issue to the admins.")
       print("calendar:")
       print(e)
-  elif(view.tierSelected == "Nations League"):
-    msg = await ctx.send("Getting the Nations League calendar...")
+  elif(int(info.f2abeezID) == interaction.guild.id):
     try:
-      await selectMSG.delete()
       r = requests.get("https://api.figma.com/v1/images/8mL0mwOKyIUcoLG3goL7wk/?ids=15%3A2&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
-      if(r):
-        await msg.delete()
-      img = r["images"]["15:2"]
+      img = r["images"]["15:2"] ## TODO: change this to F2 calendar
       print(img)
       embed2 = nextcord.Embed(color=info.color) 
       embed2.set_image(url=img) 
-      await ctx.send(embed=embed2)
+      await interaction.send(embed=embed2)
     except Exception as e:
-      await ctx.send(f"There was an error getting the calendar, please report this issue to the admins.")
+      await interaction.send(f"There was an error getting the calendar, please report this issue to the admins.")
       print("calendar:")
       print(e)
 
 
-@bot.command(name="standings")
-async def getStandings(ctx):
-  await ctx.message.delete()
-  view = DropdownTierView()
-  selectMSG = await ctx.send("For which tier do you want to see standings?", view=view)
-  await view.wait()
+@bot.slash_command(name="standings", description="Shows the current standings", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
+async def getStandings(interaction: Interaction, tier: str = SlashOption(name="tier", description="The tier to get the standings for", choices={"Tier 1": "1", "Tier 2": "2", "Tier 3": "3", "Tier 4": "4", "Tier 5": "5", "Tier M": "M", "Tier NA": "NA", "F2 - Tier 1": "f21", "F2 - Tier 2": "f22"})):
+  await interaction.response.defer()
   try:
-    if(view.tierSelected == "F1 - Tier 1"):
-      await selectMSG.delete()
-      msg = await ctx.send("Getting Tier 1 Standings")
+    if(tier == "1"):
       r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
-      if(r):
-        await msg.delete()
       r = r.json()
       url = r["images"]["2:16"]
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
-      await ctx.send(embed=e)
-    elif(view.tierSelected == "F1 - Tier 2"):
-      await selectMSG.delete()
-      msg = await ctx.send("Getting Tier 2 Standings...")
+      await interaction.send(embed=e)
+    elif(tier == "2"):
       r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=4%3A446&format=png", headers={"X-Figma-Token": info.figmaToken})
-      if(r):
-        await msg.delete()
       r = r.json()
       url = r["images"]["4:446"]
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
-      await ctx.send(embed=e)
-    elif(view.tierSelected == "F1 - Tier 3"):
-      await selectMSG.delete()
-      msg = await ctx.send("Getting Tier 3 Standings...")
+      await interaction.send(embed=e)
+    elif(tier == "3"):
       r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=4%3A265&format=png", headers={"X-Figma-Token": info.figmaToken})
-      if(r):
-        await msg.delete()
       r = r.json()
       url = r["images"]["4:265"]
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
-      await ctx.send(embed=e)
-    elif(view.tierSelected == "F1 - Tier 4"):
-      await selectMSG.delete()
-      msg = await ctx.send("Getting Tier 4 Standings...")
+      await interaction.send(embed=e)
+    elif(tier == "4"):
       r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=4%3A351&format=png", headers={"X-Figma-Token": info.figmaToken})
-      if(r):
-        await msg.delete()
       r = r.json()
       url = r["images"]["4:351"] ## TODO: Change this to the correct image
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
-      await ctx.send(embed=e)
-    elif(view.tierSelected == "F1 - Tier 5"):
-      await selectMSG.delete()
-      msg = await ctx.send("Getting Tier 5 Standings")
+      await interaction.send(embed=e)
+    elif(tier == "5"):
       r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
-      if(r):
-        await msg.delete()
       r = r.json()
       url = r["images"]["2:16"] ## TODO: Change this to the correct image
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
-      await ctx.send(embed=e)
-    elif(view.tierSelected == "F1 - Tier M"):
-      await selectMSG.delete()
-      msg = await ctx.send("Getting Tier M Standings")
+      await interaction.send(embed=e)
+    elif(tier == "5"):
       r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
-      if(r):
-        await msg.delete()
       r = r.json()
       url = r["images"]["2:16"] ## TODO: Change this to the correct image
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
-      await ctx.send(embed=e)
-    elif(view.tierSelected == "F1 - Tier NA"):
-      await selectMSG.delete()
-      msg = await ctx.send("Getting Tier NA Standings")
+      await interaction.send(embed=e)
+    elif(tier == "NA"):
       r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
-      if(r):
-        await msg.delete()
       r = r.json()
       url = r["images"]["2:16"] ## TODO: Change this to the correct image
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
-      await ctx.send(embed=e)
-    elif(view.tierSelected == "F2 - Tier 1"):
-      await selectMSG.delete()
-      msg = await ctx.send("Getting F2 - Tier 1 Standings")
+      await interaction.send(embed=e)
+    elif(tier == "f21"):
       r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
-      if(r):
-        await msg.delete()
       r = r.json()
       url = r["images"]["2:16"] ## TODO: Change this to the correct image
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
-      await ctx.send(embed=e)
-    elif(view.tierSelected == "F2 - Tier 2"):
-      await selectMSG.delete()
-      msg = await ctx.send("Getting F2 - Tier 2 Standings")
+      await interaction.send(embed=e)
+    elif(tier == "f22"):
       r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
-      if(r):
-        await msg.delete()
       r = r.json()
       url = r["images"]["2:16"] ## TODO: Change this to the correct image
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
-      await ctx.send(embed=e)
+      await interaction.send(embed=e)
   except KeyError:
-    await ctx.send("There was an error while getting the standings. Please report this issue to the admins")
+    await interaction.send("There was an error while getting the standings. Please report this issue to the admins")
     print(KeyError)
   except Exception as e:
     print("standings:")
     print(e)
 
-@bot.command("lineup")
-async def getLineupLink(ctx):
-  await ctx.reply("<https://www.f1abeez.com/line-ups>")
+@bot.slash_command(name="lineup", description="Get the current lineup", guild_ids=[int(info.f1abeezID),  int(info.f2abeezID), int(info.testServerID)])
+async def getLineupLink(interaction: Interaction):
+  await interaction.response.send_message("<https://www.f1abeez.com/line-ups>")
 
-@bot.command("dotd")
-@commands.has_any_role("Admin", "Moderator")
-async def dotdMessage(ctx, *, args):
-  await ctx.message.delete()
-  try:
-    arguments = str(args)
-    splitStr = arguments.split(",")
-    if(splitStr.__len__() == 11):
-      msg = dotdMessageFun(splitStr)
-      dcMSG = await ctx.send(msg)
-      await dcMSG.add_reaction("1️⃣")
-      await dcMSG.add_reaction("2️⃣")
-      await dcMSG.add_reaction("3️⃣")   
-      await dcMSG.add_reaction("4️⃣")
-      await dcMSG.add_reaction("5️⃣")
-    elif(splitStr.__len__() > 11):
-      await ctx.author.send("Too many arguments provided, please try again")
-    elif(splitStr.__len__() < 11):
-      await ctx.author.send("Too few arguments provided, please try again")
-  except Exception as e:
-    print("dotd")
-    print(e)
+@bot.slash_command(name="channelname", description="Gets the channel name in correct font", guild_ids=[int(info.f1abeezID),  int(info.f2abeezID), int(info.testServerID)])
+async def channelName(interaction: Interaction, channelName: str = SlashOption(name="channelname", description="The channel name", required=True)):
+  await interaction.response.defer()
+  if(utils.check_roles(interaction.user.roles, ["Admin", "Moderator"])):
+    nameDic = {"a": "ᴀ","b": "ʙ", "c": "ᴄ", "d":  "ᴅ", "e": "ᴇ", "f":"ꜰ", "g": "ɢ", "h":"ʜ", "i":"ɪ", "j":"ᴊ", "k":"ᴋ", "l":"ʟ", "m":"ᴍ", "n": "ɴ", "o": "ᴏ", "p":"ᴘ", "q":"Q", "r":"ʀ", "s":"ꜱ", "t":"ᴛ", "u":"ᴜ", "v":"ᴠ", "w":"ᴡ", "x":"x", "y":"ʏ", "z":"ᴢ", "-":"-", "0":"0", "1":"1", "2":"2", "3":"3", "4":"4", "5":"5", "6":"6", "7":"7", "8":"8", "9":"9"}
+    returnName = ""
+    for i in range(len(channelName)):
+      char = channelName[i].lower()
+      returnName += nameDic.get(char)
+    await interaction.send("︱" + returnName)
+  else:
+    await interaction.send("You do not have permission to use this command!")
 
-@bot.command("dotdwinner")
-@commands.has_any_role("Admin", "Moderator")
-async def dotdWinner(ctx, *, args):
-  await ctx.message.delete()
-  try:
-    arguments = str(args)
-    arguments = arguments.split(",")
-    if(arguments.__len__() == 2):
-      tier = arguments[0]
-      driver = arguments[1]
-      msg = dotdWinnerMsg(tier, driver)
-      await ctx.send(msg)
-    elif(arguments.__len__() > 2):
-        await ctx.author.send("Too many arguments provided, please try again")
-    elif(arguments.__len__() < 2):
-      await ctx.author.send("Too few arguments provided, please try again")
-  except Exception as e:
-    print("dotdwinner:")
-    print(e)
-  
-
-@bot.command("youtube")
-async def youtube(ctx):
-  await ctx.message.delete()
-  try:
-    channel = bot.get_channel(info.get_channelID(ctx.guild.id, "socialMediaAnnouncementChannel"))
-    await channel.send("@everyone\n\n**All race replays have now been uploaded to our YouTube Channel!**\n\n Check them out at: <https://www.youtube.com/channel/UCHh_JjzcjQktvEGNVq96_QA>")
-  except Exception as e:
-    print("youtube")
-    print(e)
-
-@bot.command("channelname")
-@commands.has_any_role("Admin", "Moderator")
-async def channelName(ctx, name):
-  nameDic = {"a": "ᴀ","b": "ʙ", "c": "ᴄ", "d":  "ᴅ", "e": "ᴇ", "f":"ꜰ", "g": "ɢ", "h":"ʜ", "i":"ɪ", "j":"ᴊ", "k":"ᴋ", "l":"ʟ", "m":"ᴍ", "n": "ɴ", "o": "ᴏ", "p":"ᴘ", "q":"Q", "r":"ʀ", "s":"ꜱ", "t":"ᴛ", "u":"ᴜ", "v":"ᴠ", "w":"ᴡ", "x":"x", "y":"ʏ", "z":"ᴢ", "-":"-", "0":"0", "1":"1", "2":"2", "3":"3", "4":"4", "5":"5", "6":"6", "7":"7", "8":"8", "9":"9"}
-  returnName = ""
-  for i in range(len(name)):
-    char = name[i].lower()
-    returnName += nameDic.get(char)
-
-  await ctx.reply("︱" + returnName)
+for fn in os.listdir("./cogs"):
+  if fn.endswith(".py"):
+    logging.info("Loading %s", fn)
+    bot.load_extension(f"cogs.{fn[:-3]}")
 
 bot.run(info.discord_token)

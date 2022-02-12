@@ -1,7 +1,11 @@
 import nextcord
 import requests
 import json
-import info
+import sys, os, inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+import utils.info as info
 
 
 
@@ -126,7 +130,7 @@ def queryAppeals(gamertag):
 
   b = json.loads(r)
   if (len(b["results"]) == 0):
-      embed.add_field(name="Error", value="Gamertag is incorrect, please try again.")
+      embed.add_field(name="None", value="\u200b")
       return embed
 
   for i in range(len(b["results"])):
@@ -346,6 +350,8 @@ def getProfileInfo(gamertag):
       bansImposed = page["properties"]["Bans Imposed"]["select"]["name"]
     except KeyError:
       bansImposed = "None"
+    except TypeError:
+      bansImposed = "None" 
     embed = nextcord.Embed(title=f"{gamertag}'s profile", color=info.color)
     embed.add_field(name="Tier", value=str(tier), inline=False)
     embed.add_field(name="Team", value=str(team), inline=False)
@@ -357,3 +363,69 @@ def getProfileInfo(gamertag):
   except Exception as e:
     print("getprofileinfo")
     print(e)
+
+def submitHighlight(round: str, link: str, timeStamp: str, desc: str, tier: str, submittedAt: str, submittedBy: str) -> str:
+    url = "https://api.notion.com/v1/pages/"
+    header = header = {"Authorization": info.token, "Notion-Version": "2021-08-16"}
+    r = requests.post(url, headers=header, json={
+        "parent": {
+          "database_id": info.highlightsDatabaseId
+        },
+        "properties": {
+          "Division": {
+            "select": 
+              {
+                "name": tier
+              }
+          },
+          "Timestamp/Lap": {
+              "rich_text": [
+                  {
+                      "text": {
+                          "content": timeStamp
+                      }
+                  }
+              ]
+          },
+          "Submitted at": {
+              "date": {
+                  "start": submittedAt
+              }
+          },
+          "Description": {
+              "rich_text":[
+                  {
+                      "text": {
+                          "content": desc
+                      }
+                  }
+              ]
+          },
+          "URL": {
+              "url": link
+          },
+          "Round": {
+              "rich_text": [
+                  {
+                      "text": {
+                          "content": round
+                      }
+                  }
+              ]
+          },
+          "Submitted by": {
+              "title": [
+            {
+              "text": {
+                "content": submittedBy
+              }
+            }
+          ]
+        }
+          }
+        })
+    if(r.status_code == 200):
+      return "Your highlight was successfully submitted!"
+    else:
+      print(r.text)
+      return "There was an error submitting your highlight, please reach out to the admin team"
