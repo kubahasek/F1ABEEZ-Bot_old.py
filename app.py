@@ -490,7 +490,7 @@ async def getCalendar(interaction):
 
 
 @bot.slash_command(name="standings", description="Shows the current standings", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
-async def getStandings(interaction: Interaction, tier: str = SlashOption(name="tier", description="The tier to get the standings for", choices={"Tier 1": "1", "Tier 2": "2", "Tier 3": "3", "Tier 4": "4", "Tier 5": "5", "Tier M": "M", "Tier NA": "NA", "F2 - Tier 1": "f21", "F2 - Tier 2": "f22"})):
+async def getStandings(interaction: Interaction, tier: str = SlashOption(name="tier", description="The tier to get the standings for", choices={"Tier 1": "1", "Tier 2": "2", "Tier 3": "3", "Tier 4": "4", "Tier M": "M", "Tier NA": "NA", "F2 - Tier 1": "f21", "F2 - Tier 2": "f22"})):
   await interaction.response.defer()
   try:
     if(tier == "1"):
@@ -501,9 +501,9 @@ async def getStandings(interaction: Interaction, tier: str = SlashOption(name="t
       e.set_image(url=url) 
       await interaction.send(embed=e)
     elif(tier == "2"):
-      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=4%3A446&format=png", headers={"X-Figma-Token": info.figmaToken})
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=406%3A667&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
-      url = r["images"]["4:446"]
+      url = r["images"]["406:667"]
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
       await interaction.send(embed=e)
@@ -515,37 +515,30 @@ async def getStandings(interaction: Interaction, tier: str = SlashOption(name="t
       e.set_image(url=url) 
       await interaction.send(embed=e)
     elif(tier == "4"):
-      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=4%3A351&format=png", headers={"X-Figma-Token": info.figmaToken})
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=406%3A999&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
-      url = r["images"]["4:351"] ## TODO: Change this to the correct image
+      url = r["images"]["406:999"] ## TODO: Change this to the correct image
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
       await interaction.send(embed=e)
-    elif(tier == "5"):
-      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
+    elif(tier == "M"):
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=406%3A1251&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
-      url = r["images"]["2:16"] ## TODO: Change this to the correct image
-      e = nextcord.Embed(color=info.color) 
-      e.set_image(url=url) 
-      await interaction.send(embed=e)
-    elif(tier == "5"):
-      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
-      r = r.json()
-      url = r["images"]["2:16"] ## TODO: Change this to the correct image
+      url = r["images"]["406:1251"] ## TODO: Change this to the correct image
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
       await interaction.send(embed=e)
     elif(tier == "NA"):
-      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=406%3A1125&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
-      url = r["images"]["2:16"] ## TODO: Change this to the correct image
+      url = r["images"]["406:1125"] ## TODO: Change this to the correct image
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
       await interaction.send(embed=e)
     elif(tier == "f21"):
-      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=421%3A168&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
-      url = r["images"]["2:16"] ## TODO: Change this to the correct image
+      url = r["images"]["421:168"] ## TODO: Change this to the correct image
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
       await interaction.send(embed=e)
