@@ -464,9 +464,9 @@ async def getCalendar(interaction):
   await interaction.response.defer()
   if(int(info.f1abeezID) == interaction.guild.id):
     try:
-      r = requests.get("https://api.figma.com/v1/images/8mL0mwOKyIUcoLG3goL7wk/?ids=2%3A138&format=png", headers={"X-Figma-Token": info.figmaToken})
+      r = requests.get("https://api.figma.com/v1/images/8mL0mwOKyIUcoLG3goL7wk/?ids=102%3A367&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
-      img = r["images"]["3:367"]
+      img = r["images"]["102:367"]
       embed1 = nextcord.Embed(color=info.color) 
       embed1.set_image(url=img) 
       await interaction.send(embed=embed1)
@@ -476,9 +476,9 @@ async def getCalendar(interaction):
       print(e)
   elif(int(info.f2abeezID) == interaction.guild.id):
     try:
-      r = requests.get("https://api.figma.com/v1/images/8mL0mwOKyIUcoLG3goL7wk/?ids=15%3A2&format=png", headers={"X-Figma-Token": info.figmaToken})
+      r = requests.get("https://api.figma.com/v1/images/8mL0mwOKyIUcoLG3goL7wk/?ids=125%3A2&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
-      img = r["images"]["3:2"] ## TODO: change this to F2 calendar
+      img = r["images"]["125:2"]
       print(img)
       embed2 = nextcord.Embed(color=info.color) 
       embed2.set_image(url=img) 
