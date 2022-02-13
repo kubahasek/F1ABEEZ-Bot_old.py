@@ -479,7 +479,6 @@ async def getCalendar(interaction):
       r = requests.get("https://api.figma.com/v1/images/8mL0mwOKyIUcoLG3goL7wk/?ids=125%3A2&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
       img = r["images"]["125:2"]
-      print(img)
       embed2 = nextcord.Embed(color=info.color) 
       embed2.set_image(url=img) 
       await interaction.send(embed=embed2)
@@ -517,35 +516,35 @@ async def getStandings(interaction: Interaction, tier: str = SlashOption(name="t
     elif(tier == "4"):
       r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=406%3A999&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
-      url = r["images"]["406:999"] ## TODO: Change this to the correct image
+      url = r["images"]["406:999"]
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
       await interaction.send(embed=e)
     elif(tier == "M"):
       r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=406%3A1251&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
-      url = r["images"]["406:1251"] ## TODO: Change this to the correct image
+      url = r["images"]["406:1251"]
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
       await interaction.send(embed=e)
     elif(tier == "NA"):
       r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=406%3A1125&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
-      url = r["images"]["406:1125"] ## TODO: Change this to the correct image
+      url = r["images"]["406:1125"]
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
       await interaction.send(embed=e)
     elif(tier == "f21"):
       r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=421%3A168&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
-      url = r["images"]["421:168"] ## TODO: Change this to the correct image
+      url = r["images"]["421:168"]
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
       await interaction.send(embed=e)
     elif(tier == "f22"):
       r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=2%3A16&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
-      url = r["images"]["2:16"] ## TODO: Change this to the correct image
+      url = r["images"]["2:16"]
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
       await interaction.send(embed=e)
