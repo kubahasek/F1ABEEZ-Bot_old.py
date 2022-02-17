@@ -13,7 +13,7 @@ class Lobby(commands.Cog):
         self.bot = bot
 
     @nextcord.slash_command(name="lobby",description="Lobby open command" , guild_ids=[int(info.testServerID), int(info.f1abeezID)])
-    async def lobbyF1(self, interaction: Interaction, tier: str = SlashOption(name="tier", description="Select your Tier", choices={"Tier 1": "1", "Tier 2": "2", "Tier 3": "3", "Tier 4": "4", "Tier 5": "5", "Tier M": "M", "Tier NA": "NA"})):
+    async def lobbyF1(self, interaction: Interaction, tier: str = SlashOption(name="tier", description="Select your Tier", choices={"Tier 1": "1", "Tier 2": "2", "Tier 3": "3", "Tier 4": "4", "Tier M": "M", "Tier NA": "NA"})):
         await interaction.response.defer()
         if(utils.check_roles(interaction.user.roles, ["Admin", "Moderator", "Tier Lead"])):
             match tier:
@@ -34,19 +34,13 @@ class Lobby(commands.Cog):
                     reserveTier3ID = info.get_roleID(interaction.guild.id, "reserveTier3Role")
                     if(type(tier3ID) == type(None) or type(reserveTier3ID) == type(None)):
                         logging.error("Could not find tier 3 roles", exc_info=True)
-                    await interaction.send(f"<@&{tier3ID}> <@&{reserveTier3ID}>\n**Lobby is now open!**\nPlease join off <@347469082783645697>\nGamertag is - OkayHaus\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+                    await interaction.send(f"<@&{tier3ID}> <@&{reserveTier3ID}>\n**Lobby is now open!**\nPlease join off <@347469082783645697>\nGamertag is - helios7892\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
                 case "4":
                     tier4ID = info.get_roleID(interaction.guild.id, "tier4Role")
                     reserveTier4ID = info.get_roleID(interaction.guild.id, "reserveTier4Role")
                     if(type(tier4ID) == type(None) or type(reserveTier4ID) == type(None)):
                         logging.error("Could not find tier 4 roles", exc_info=True)
                     await interaction.send(f"<@&{tier4ID}> <@&{reserveTier4ID}>\n**Lobby is now open!**\nPlease join off <@436205062231031808>\nGamertag is - FlameTornado929\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
-                case "5":
-                    tier5ID = info.get_roleID(interaction.guild.id, "tier5Role")
-                    reserveTier5ID = info.get_roleID(interaction.guild.id, "reserveTier5Role")
-                    if(type(tier5ID) == type(None) or type(reserveTier5ID) == type(None)):
-                        logging.error("Could not find tier 5 roles", exc_info=True)
-                    await interaction.send(f"<@&{tier5ID}> <@&{reserveTier5ID}>\n**Lobby is now open!**\nPlease join off <@567093257524346880>\nGamertag is - helios7892\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
                 case "M":
                     tierMID = info.get_roleID(interaction.guild.id, "tierMRole")
                     reserveTierMID = info.get_roleID(interaction.guild.id, "reserveTierMRole")
@@ -86,7 +80,7 @@ class Lobby(commands.Cog):
             return
 
     @nextcord.slash_command(name="ready", description="Ready up command", guild_ids=[int(info.f1abeezID), int(info.testServerID)])
-    async def readyf1(self, interaction: Interaction, tier: str = SlashOption(name="tier", description="Select your Tier", choices={"Tier 1": "1", "Tier 2": "2", "Tier 3": "3", "Tier 4": "4", "Tier 5": "5", "Tier M": "M", "Tier NA": "NA"})):
+    async def readyf1(self, interaction: Interaction, tier: str = SlashOption(name="tier", description="Select your Tier", choices={"Tier 1": "1", "Tier 2": "2", "Tier 3": "3", "Tier 4": "4", "Tier M": "M", "Tier NA": "NA"})):
         await interaction.response.defer()
         if(utils.check_roles(interaction.user.roles, ["Admin", "Moderator", "Tier Lead"])):
             match tier:
@@ -114,12 +108,6 @@ class Lobby(commands.Cog):
                     if(type(tier4ID) == type(None) or type(reserveTier4ID) == type(None)):
                         logging.error("Could not find tier 4 roles", exc_info=True)
                     await interaction.send(f"<@&{tier4ID}> <@&{reserveTier4ID}>\n**Ready up**\n\n")
-                case "5":
-                    tier5ID = info.get_roleID(interaction.guild.id, "tier5Role")
-                    reserveTier5ID = info.get_roleID(interaction.guild.id, "reserveTier5Role")
-                    if(type(tier5ID) == type(None) or type(reserveTier5ID) == type(None)):
-                        logging.error("Could not find tier 5 roles", exc_info=True)
-                    await interaction.send(f"<@&{tier5ID}> <@&{reserveTier5ID}>\n**Ready up**\n\n")
                 case "M":
                     tierMID = info.get_roleID(interaction.guild.id, "tierMRole")
                     reserveTierMID = info.get_roleID(interaction.guild.id, "reserveTierMRole")
@@ -158,7 +146,7 @@ class Lobby(commands.Cog):
             return
 
     @nextcord.slash_command(name="race", description="Sends the race ready up", guild_ids=[int(info.f1abeezID), int(info.testServerID)])
-    async def racef1(self, interaction: Interaction, tier: str = SlashOption(name="tier", description="Select your Tier", choices={"Tier 1": "1", "Tier 2": "2", "Tier 3": "3", "Tier 4": "4", "Tier 5": "5", "Tier M": "M", "Tier NA": "NA"})):
+    async def racef1(self, interaction: Interaction, tier: str = SlashOption(name="tier", description="Select your Tier", choices={"Tier 1": "1", "Tier 2": "2", "Tier 3": "3", "Tier 4": "4", "Tier M": "M", "Tier NA": "NA"})):
         await interaction.response.defer()
         if(utils.check_roles(interaction.user.roles, ["Admin", "Moderator", "Tier Lead"])):
             match tier:
@@ -186,12 +174,6 @@ class Lobby(commands.Cog):
                     if(type(tier4ID) == type(None) or type(reserveTier4ID) == type(None)):
                         logging.error("Could not find tier 4 roles", exc_info=True)
                     await interaction.send(f"<@&{tier4ID}> <@&{reserveTier4ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
-                case "5":
-                    tier5ID = info.get_roleID(interaction.guild.id, "tier5Role")
-                    reserveTier5ID = info.get_roleID(interaction.guild.id, "reserveTier5Role")
-                    if(type(tier5ID) == type(None) or type(reserveTier5ID) == type(None)):
-                        logging.error("Could not find tier 5 roles", exc_info=True)
-                    await interaction.send(f"<@&{tier5ID}> <@&{reserveTier5ID}>\n**Ready up for the race start please!**\n\nGood luck out there everyone, see you after the race")
                 case "M":
                     tierMID = info.get_roleID(interaction.guild.id, "tierMRole")
                     reserveTierMID = info.get_roleID(interaction.guild.id, "reserveTierMRole")
