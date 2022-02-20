@@ -34,7 +34,7 @@ class Lobby(commands.Cog):
                     reserveTier3ID = info.get_roleID(interaction.guild.id, "reserveTier3Role")
                     if(type(tier3ID) == type(None) or type(reserveTier3ID) == type(None)):
                         logging.error("Could not find tier 3 roles", exc_info=True)
-                    await interaction.send(f"<@&{tier3ID}> <@&{reserveTier3ID}>\n**Lobby is now open!**\nPlease join off <@347469082783645697>\nGamertag is - helios7892\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+                    await interaction.send(f"<@&{tier3ID}> <@&{reserveTier3ID}>\n**Lobby is now open!**\nPlease join off <@567093257524346880>\nGamertag is - helios7892\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
                 case "4":
                     tier4ID = info.get_roleID(interaction.guild.id, "tier4Role")
                     reserveTier4ID = info.get_roleID(interaction.guild.id, "reserveTier4Role")
