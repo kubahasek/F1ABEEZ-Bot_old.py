@@ -331,7 +331,7 @@ async def on_ready():
     logging.info("We have logged in as {0.user}".format(bot))
     bot.add_view(reportMenu())
     bot.add_view(highlightMenu())
-    await bot.change_presence(activity=nextcord.Activity(type=nextcord.ActivityType.watching, name="F1ABEEZ Server 🚀"))
+    await bot.change_presence(activity=nextcord.Activity(type=nextcord.ActivityType.watching, name="The F1AB Family 🚀"))
 
 @bot.slash_command(name="help", description="Shows the help menu", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
 async def HelpCommand(interaction: Interaction):
