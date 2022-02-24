@@ -489,7 +489,7 @@ async def getCalendar(interaction):
 
 
 @bot.slash_command(name="standings", description="Shows the current standings", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
-async def getStandings(interaction: Interaction, tier: str = SlashOption(name="tier", description="The tier to get the standings for", choices={"Tier 1": "1", "Tier 2": "2", "Tier 3": "3", "Tier 4": "4", "Tier M": "M", "Tier NA": "NA", "F2 - Tier 1": "f21", "F2 - Tier 2": "f22"})):
+async def getStandings(interaction: Interaction, tier: str = SlashOption(name="tier", description="The tier to get the standings for", choices={"Tier 1": "1", "Tier 2": "2", "Tier 3": "3", "Tier 4": "4", "Tier M": "M", "Tier H": "H", "Team Standings": "team", "F2 - Tier 1": "f21", "F2 - Tier 2": "f22"})):
   await interaction.response.defer()
   try:
     if(tier == "1"):
@@ -527,10 +527,17 @@ async def getStandings(interaction: Interaction, tier: str = SlashOption(name="t
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
       await interaction.send(embed=e)
-    elif(tier == "NA"):
-      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=406%3A1125&format=png", headers={"X-Figma-Token": info.figmaToken})
+    elif(tier == "H"):
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=436%3A2&format=png", headers={"X-Figma-Token": info.figmaToken})
       r = r.json()
-      url = r["images"]["406:1125"]
+      url = r["images"]["436:2"]
+      e = nextcord.Embed(color=info.color) 
+      e.set_image(url=url) 
+      await interaction.send(embed=e)
+    elif(tier == "team"):
+      r = requests.get("https://api.figma.com/v1/images/d4sDj6FfYxdOszlQbdOhqu/?ids=16%3A1142&format=png", headers={"X-Figma-Token": info.figmaToken})
+      r = r.json()
+      url = r["images"]["16:1142"]
       e = nextcord.Embed(color=info.color) 
       e.set_image(url=url) 
       await interaction.send(embed=e)
