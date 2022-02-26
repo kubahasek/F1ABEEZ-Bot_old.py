@@ -323,6 +323,7 @@ intents = nextcord.Intents.default()
 intents.reactions = True
 intents.members = True
 bot = commands.Bot(command_prefix=";", help_command=None, intents=intents)
+bot.allowed_mentions().all()
 bot.remove_command("help")
 
 
