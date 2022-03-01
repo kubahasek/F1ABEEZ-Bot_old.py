@@ -40,7 +40,7 @@ class Announcements(commands.Cog):
             tier4URL = f"<https://f1abeez.com/race-reports/t4/{round}>"
             tierHURL = f"<https://f1abeez.com/race-reports/th/{round}>"
             tierMURL = f"<https://f1abeez.com/race-reports/tm/{round}>"
-            f2Tier1URL = f"" ## TODO: add URL
+            f2Tier1URL = f"https://f1abeez.com/race-reports/f2/t1/{round}>"
             f2Tier2URL = f"" ## TODO: add URL
             
             if(type(channel) != type(None)):
@@ -71,7 +71,7 @@ class Announcements(commands.Cog):
             tier4URL = f"<https://f1abeez.com/race-reports/t4/{round}>"
             tierHURL = f"<https://f1abeez.com/race-reports/th/{round}>"
             tierMURL = f"<https://f1abeez.com/race-reports/tm/{round}>"
-            f2Tier1URL = f"" ## TODO: add URL
+            f2Tier1URL = f"https://f1abeez.com/race-reports/f2/t1/{round}>"
             f2Tier2URL = f"" ## TODO: add URL
             if(type(channel) != type(None)):
                 if(interaction.guild.id == int(info.f1abeezID)):
