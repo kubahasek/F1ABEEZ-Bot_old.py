@@ -567,7 +567,7 @@ async def getStandings(interaction: Interaction, tier: str = SlashOption(name="t
 async def getLineupLink(interaction: Interaction):
   await interaction.response.send_message("<https://www.f1abeez.com/line-ups>")
 
-@bot.slash_command(name="channelname", description="Gets the channel name in correct font", guild_ids=[int(info.f1abeezID),  int(info.f2abeezID), int(info.testServerID)])
+@bot.slash_command(name="channelname", description="Gets the channel name in correct font", guild_ids=[int(info.f1abeezID),  int(info.f2abeezID), int(info.testServerID), int(info.f1abeezEsportsID)])
 async def channelName(interaction: Interaction, channelName: str = SlashOption(name="channelname", description="The channel name", required=True)):
   await interaction.response.defer()
   if(utils.check_roles(interaction.user.roles, ["Admin", "Moderator"])):
@@ -580,7 +580,7 @@ async def channelName(interaction: Interaction, channelName: str = SlashOption(n
   else:
     await interaction.send("You do not have permission to use this command!")
 
-@bot.slash_command(name="clearchannel", description="Clears a channel without the pinned messages", guild_ids=[int(info.f1abeezID),  int(info.f2abeezID), int(info.testServerID)])
+@bot.slash_command(name="clearchannel", description="Clears a channel without the pinned messages", guild_ids=[int(info.f1abeezID),  int(info.f2abeezID), int(info.testServerID), int(info.f1abeezEsportsID)])
 async def clearChannel(interaction: Interaction):
   if(utils.check_roles(interaction.user.roles, ["Admin", "Moderator"])):
     await interaction.response.defer()
