@@ -41,11 +41,12 @@ class Announcements(commands.Cog):
             tierHURL = f"<https://f1abeez.com/race-reports/th/{round}>"
             tierMURL = f"<https://f1abeez.com/race-reports/tm/{round}>"
             f2Tier1URL = f"https://f1abeez.com/race-reports/f2/t1/{round}>"
+            bansURL = f"https://www.f1abeez.com/bans-of-the-week"
             f2Tier2URL = f"" ## TODO: add URL
             
             if(type(channel) != type(None)):
                 if(interaction.guild.id == int(info.f1abeezID)):
-                    await channel.send(f"🦺 @everyone\n\n**All Stewards decisions are finalised**\nPlease check this week's race-report for all the incidents reported and decisions made.\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n\n**F1 - Tier 4** - {tier4URL}\n\n**F1 - Tier H** - {tierHURL}\n\n**F1 - Tier M** - {tierMURL}\n\nPlease file your appeals with the correct case number **in the next 24 hours**, and standings will be posted after all appeals are finalised \nFollow the instructions in <#864999507238322186> to submit your appeals \n\nThank you,\nStewards of F1ABEEZ")
+                    await channel.send(f"🦺 @everyone\n\n**All Stewards decisions are finalised**\nPlease check this week's race-report for all the incidents reported and decisions made.\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier 4** - {tier4URL}\n**F1 - Tier H** - {tierHURL}\n**F1 - Tier M** - {tierMURL}\n**Bans Issued for next round: **{bansURL}\n\nPlease file your appeals with the correct case number **in the next 24 hours**, and standings will be posted after all appeals are finalised \nFollow the instructions in <#864999507238322186> to submit your appeals \n\nThank you,\nStewards of F1ABEEZ")
                     await interaction.send("Sent the message")
                 elif(interaction.guild.id == int(info.f2abeezID)):
                     await channel.send(f"🦺 @everyone\n\n**All Stewards decisions are finalised**\nPlease check this week's race-report for all the incidents reported and decisions made.\n\n**F2 - Tier 1** - {f2Tier1URL}\n**F2 - Tier 2** - {f2Tier2URL}\n\nThank You,\nStewards of F2ABEEZ.")
