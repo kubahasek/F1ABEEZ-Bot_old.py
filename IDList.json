@@ -12,7 +12,8 @@
       "suggestionSubmitChannel": 877977932914651176,
       "incidentLogChannel": 861939856481189908,
       "suggestionLogChannel": 919200817075073055,
-      "leavingChannel": 774605933661257729
+      "leavingChannel": 774605933661257729,
+      "profilesChannel": 945464445948268564
     },
     "roles": {
       "tier1Role": 795227294766727169,
@@ -67,7 +68,8 @@
       "suggestionSubmitChannel": 891234691577954365,
       "incidentLogChannel": 890983091122864169,
       "suggestionLogChannel": 890983091122864169,
-      "leavingChannel": 827943552699990046
+      "leavingChannel": 827943552699990046,
+      "profilesChannel": 957583613136875540
     },
     "roles": {
       "tier1Role": 937757455260209193,
