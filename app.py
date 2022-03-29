@@ -28,7 +28,7 @@ class TierDropdown(nextcord.ui.Select):
       nextcord.SelectOption(label="Tier 4",description="F1 - Tier 4" ,value="Tier 4"),
       nextcord.SelectOption(label="Tier 5",description="F1 - Tier 5" ,value="Tier 5"),
       nextcord.SelectOption(label="Tier M",description="F1 - Tier M" ,value="Tier M"),
-      nextcord.SelectOption(label="Tier NA",description="F1 - Tier NA" ,value="Tier NA"),
+      nextcord.SelectOption(label="Tier H",description="F1 - Tier H" ,value="Tier H"),
       nextcord.SelectOption(label="F2 - Tier 1",description="F2 - Tier 1" ,value="F2 - Tier 1"),
       nextcord.SelectOption(label="F2 - Tier 2",description="F2 - Tier 2" ,value="F2 - Tier 2"),
     ]
