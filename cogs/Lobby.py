@@ -68,13 +68,13 @@ class Lobby(commands.Cog):
                     f2reserveTier1ID = info.get_roleID(interaction.guild.id, "reserveF2Tier1Role")
                     if(type(f2tier1ID) == type(None) or type(f2reserveTier1ID) == type(None)):
                         logging.error("Could not find tier 1 F2 roles", exc_info=True)
-                    await interaction.send(f"<@&{f2tier1ID}> <@&{f2reserveTier1ID}>\n**Lobby is now open!**\nPlease join off <@499568806469959691>\nGamertag is - MrJSmithy\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+                    await interaction.send(f"<@&{f2tier1ID}> <@&{f2reserveTier1ID}>\n**Lobby is now open!**\nPlease join off <@672521807429107768>\nGamertag is - Azzer175NH\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
                 case "2":
                     f2tier2ID = info.get_roleID(interaction.guild.id, "f2Tier2Role")
                     f2reserveTier2ID = info.get_roleID(interaction.guild.id, "reserveF2Tier2Role")
                     if(type(f2tier2ID) == type(None) or type(f2reserveTier2ID) == type(None)):
                         logging.error("Could not find tier 2 F2 roles", exc_info=True)
-                    await interaction.send(f"<@&{f2tier2ID}> <@&{f2reserveTier2ID}>\n**Lobby is now open!**\nPlease join off <@499568806469959691>\nGamertag is - MrJSmithy\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+                    await interaction.send(f"<@&{f2tier2ID}> <@&{f2reserveTier2ID}>\n**Lobby is now open!**\nPlease join off <@672521807429107768>\nGamertag is - Azzer175NH\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
         else:
             await interaction.send("You do not have permission to use this command!")
             return
