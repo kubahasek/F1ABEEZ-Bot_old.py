@@ -434,10 +434,11 @@ async def on_member_remove(member):
     logging.error("leavingChannel not found", exc_info=True)
   if(member.guild.id == int(info.f1abeezID) or member.guild.id == int(info.testServerID)):
     if(type(profilesChannel) != type(None)):
-      for role in memberRole:
-        if(role.name != "@everyone"):
-          profileMsg += f"> {role.name}\n"
-      await profilesChannel.send(profileMsg)
+      if(["Full Time Driver", "Reserve Driver"] in memberRole):
+        for role in memberRole:
+          if(role.name != "@everyone"):
+            profileMsg += f"> {role.name}\n"
+        await profilesChannel.send(profileMsg)
     else:
       logging.error("profilesChannel not found", exc_info=True)
 
