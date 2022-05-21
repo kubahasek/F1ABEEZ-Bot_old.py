@@ -1,4 +1,5 @@
 import asyncio
+from time import sleep
 import nextcord
 from nextcord import SlashOption
 from nextcord.ext import commands
@@ -602,6 +603,23 @@ async def clearChannel(interaction: Interaction):
   else:
     await interaction.send("You do not have permission to use this command!")
 
+@bot.slash_command(name="sendacademydm", description="Sends a DM to the academy", guild_ids=[int(info.f1abeezID),  int(info.f2abeezID), int(info.testServerID), int(info.f1abeezEsportsID)])
+async def sendAcademyDM(interaction: Interaction):
+  if(utils.check_roles(interaction.user.roles, ["Admin", "Moderator"])):
+    await interaction.response.defer()
+    role: nextcord.Role = interaction.guild.get_role(info.get_roleID(interaction.guild_id, "academyRole"))
+    members: list[nextcord.Member] = interaction.guild.members
+    members = [member for member in members if role in member.roles]
+    count: int = 0
+    message: nextcord.Message = await interaction.send("Sending DMs to Academy...")
+    for member in members:
+      count += 1
+      await message.edit(content=f"Sending DMs to Academy... - last message to **{member.name}** - **status: {count}/{len(members)}**")
+      await member.send(f"Hello {member.name},\n\nThis is an automated message we are sending out to all academy drivers as some of you have been here for a long time and haven’t gotten in yet.\n\nWe want to get you in when the next game is out so you can experience all the great stuff we have in store for it and clear out the academy section as well!\n\nIf you’d like to get in please reach out either to F1AB Azzer (Azzer175nh)#8290 or  GeorgeP31#6289 and they’ll get you all sorted!\n\nThank you,\nF1ABEEZ Admin Team.")
+      await asyncio.sleep(240)
+    await message.edit(content="Sending DMs to Academy... - **done!**")
+  else:
+    await interaction.send("You do not have permission to use this command!")
 
 
 for fn in os.listdir("./cogs"):
