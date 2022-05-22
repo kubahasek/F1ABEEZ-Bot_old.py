@@ -617,7 +617,7 @@ async def sendAcademyDM(interaction: Interaction):
       count += 1
       await inboxChannel.send(content=f"Sending DMs to Academy... - last message to **{member.name}** - **status: {count}/{len(members)}**")
       await member.send(f"Hello {member.name},\n\nThis is an automated message we are sending out to all academy drivers as some of you have been here for a long time and haven’t gotten in yet.\n\nWe want to get you in when the next game is out so you can experience all the great stuff we have in store for it and clear out the academy section as well!\n\nIf you’d like to get in please reach out either to F1AB Azzer (Azzer175nh)#8290 or  GeorgeP31#6289 and they’ll get you all sorted!\n\nThank you,\nF1ABEEZ Admin Team.")
-      await asyncio.sleep(240)
+      await asyncio.sleep(300)
     await inboxChannel.send(content="Sending DMs to Academy... - **done!**")
   else:
     await interaction.send("You do not have permission to use this command!")
