@@ -633,4 +633,14 @@ for fn in os.listdir("./cogs"):
     logging.info("Loading %s", fn)
     bot.load_extension(f"cogs.{fn[:-3]}")
 
+for fn in os.listdir("./commands"):
+  if fn.endswith(".py"):
+    logging.info("Loading %s", fn)
+    bot.load_extension(f"commands.{fn[:-3]}")
+
+for fn in os.listdir("./listeners"):
+  if fn.endswith(".py"):
+    logging.info("Loading %s", fn)
+    bot.load_extension(f"listeners.{fn[:-3]}")
+
 bot.run(info.discord_token)
