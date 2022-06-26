@@ -3,7 +3,6 @@ from time import sleep
 import nextcord
 from nextcord import SlashOption
 from nextcord.ext import commands
-from nextcord.ext.commands import CommandNotFound
 import requests
 import datetime
 import pytz
@@ -358,12 +357,6 @@ async def GetAppeals(interaction: Interaction, gamertag: str = SlashOption(name=
 async def TicketDetail(interaction: Interaction, ticketID: str = SlashOption(name="ticketid", description="The ticket ID to get the details for", required=True)):
     await interaction.response.defer()
     await interaction.send(embed = nt.TicketDetailQuery(ticketID))
-
-@bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, CommandNotFound):
-        await ctx.send("Command not found")
-    logging.error(error)
 
 @bot.slash_command(name="warn", description="Warns a user", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
 @commands.has_any_role("Admin")
