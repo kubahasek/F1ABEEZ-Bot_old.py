@@ -7,7 +7,7 @@ class CommandError(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener(name="on_command_error")
-    async def on_command_error(ctx, error):
+    async def on_command_error(self, ctx, error):
         if isinstance(error, CommandNotFound):
             await ctx.send("Command not found")
         logging.error(error)
