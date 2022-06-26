@@ -5,7 +5,6 @@ import logging
 class CommandError(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        __name__ = "Ready"
 
     @commands.Cog.listener(name="on_command_error")
     async def on_command_error(ctx, error):

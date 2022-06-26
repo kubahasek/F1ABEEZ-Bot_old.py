@@ -9,7 +9,6 @@ from app import highlightMenu, reportMenu
 class Ready(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        __name__ = "Ready"
 
     @commands.Cog.listener(name="on_ready")
     async def on_ready(self):
