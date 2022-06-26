@@ -389,27 +389,6 @@ async def ban(interaction: Interaction, user: Member = SlashOption(name="user", 
   else:
     await interaction.send("You do not have permission to use this command!")
 
-@bot.event
-async def on_member_remove(member):
-  memberName = member.name
-  memberRole = member.roles
-  channel = bot.get_channel(info.get_channelID(member.guild.id, "leavingChannel"))
-  profilesChannel = bot.get_channel(info.get_channelID(member.guild.id, "profilesChannel"))
-  profileMsg = f"{memberName} has left the server\n**Roles:** \n"
-  if(type(channel) != type(None)):
-    await channel.send(f"**{memberName}** has left the server.")
-  else:
-    logging.error("leavingChannel not found", exc_info=True)
-  if(member.guild.id == int(info.f1abeezID) or member.guild.id == int(info.testServerID)):
-    if(type(profilesChannel) != type(None)):
-      if(["Full Time Driver", "Reserve Driver"] in memberRole):
-        for role in memberRole:
-          if(role.name != "@everyone"):
-            profileMsg += f"> {role.name}\n"
-        await profilesChannel.send(profileMsg)
-    else:
-      logging.error("profilesChannel not found", exc_info=True)
-
 @bot.command(name="incidentchannel")
 @commands.has_any_role("Admin", "Moderator")
 async def incidentChannel(ctx):
