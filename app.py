@@ -255,18 +255,6 @@ class reportMenu(nextcord.ui.View):
   async def reportButtonClicked(self, button, interaction):
     await self.handle_click(button, interaction)
 
-
-def GetHelpCommand():
-    embed = nextcord.Embed(title="Help", color=info.color)
-    embed.add_field(name=";standings", value="This command gives you a menu to select the tier of which you want to see standings and then it returns them in the channel.", inline=False)
-    embed.add_field(name=";calendar", value="This command gives you a selection of the F1 or Nations League calendar and then sends it in the channel.", inline=False)
-    embed.add_field(name=";gettickets <gamertag>", value="This command is useful when you don’t know the number of your ticket. The command lists all tickets you’ve been involved (whether you reported it or someone else reported you) and gives you the number of the ticket and the direct link to the website.", inline=False)
-    embed.add_field(name=";getappeals <gamertag>", value="This command gets you a list of appeals you've been involeved in (whether you appealed or someone appealed against you) and gives you the number of the appeal, a direct link to the website and the status of the appeal.")
-    embed.add_field(name=";ticketdetail <number of ticket>", value="This command gets you the details of ticket you provide. It lists the status, penalty that was awarded and who was involved.", inline=False)
-    embed.add_field(name=";incidentreport", value="This command allows you to submit an incident from nextcord. Please read the messages carefully and reply correctly.", inline=False)
-    embed.add_field(name=";submitappeal", value="This command allows you to submit an appeal to a decision that has been made by the stewards. Please use ;gettickets before you start submitting it to make sure you know the case number of the incident you want to appeal", inline=False)
-    return embed
-
 def getStaffHelpCommand():
   embed = nextcord.Embed(title="Staff Help", color=info.color)
   embed.add_field(name=";lobbytier<tierNumber>", value="Sends the lobby is open message. Enter the tier number instead of <tierNumber>. Options: [1,2,3,4,5,M,NA]", inline=False)
@@ -325,10 +313,6 @@ intents.members = True
 bot = commands.Bot(command_prefix=";", help_command=None, intents=intents)
 bot.allowed_mentions = nextcord.AllowedMentions(everyone=True, users=True, roles=True)
 bot.remove_command("help")
-
-@bot.slash_command(name="help", description="Shows the help menu", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
-async def HelpCommand(interaction: Interaction):
-    await interaction.send(embed = GetHelpCommand())
 
 @bot.slash_command(name="staffhelp", description="Shows the staff help menu", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
 async def StaffHelpCommand(interaction: Interaction):
