@@ -21,7 +21,9 @@ class Warn(commands.Cog):
             await channel.send(embed = embed)
             await interaction.send(embed = embed)   
         else:
-            await interaction.send("You do not have permission to use this command!")
+            await interaction.send("You do not have permission to use this command!") 
+    
+    ## TODO: Add warning database to store warnings
 
 
 def setup(bot):
