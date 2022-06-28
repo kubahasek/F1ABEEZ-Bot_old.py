@@ -298,22 +298,6 @@ bot = commands.Bot(command_prefix=";", help_command=None, intents=intents)
 bot.allowed_mentions = nextcord.AllowedMentions(everyone=True, users=True, roles=True)
 bot.remove_command("help")
 
-@bot.slash_command(name="ban", description="Bans a user", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
-@commands.has_any_role("Admin")
-async def ban(interaction: Interaction, user: Member = SlashOption(name="user", description="The user to ban", required=True), reason: str = SlashOption(name="reason", description="The reason for the ban", required=True)):
-  await interaction.response.defer()
-  if(utils.check_roles(interaction.user.roles, ["Admin"])):
-    member = await interaction.guild.fetch_member(user.id)
-    embed = nextcord.Embed(title="A Ban has been issued", color=info.color)
-    embed.add_field(name="User", value=member.name, inline=False)
-    embed.add_field(name="Reason", value=reason, inline=False)
-    channel = bot.get_channel(info.get_channelID(interaction.guild.id, "banChannel"))
-    await channel.send(embed = embed)
-    await member.ban(reason = reason)
-    await interaction.send(embed = embed)   
-  else:
-    await interaction.send("You do not have permission to use this command!")
-
 @bot.command(name="incidentchannel")
 @commands.has_any_role("Admin", "Moderator")
 async def incidentChannel(ctx):
@@ -343,35 +327,6 @@ async def highlightChannel(ctx):
   await ctx.message.delete()
   embed = nextcord.Embed(title="Submit a highlight",description="React to this message to submit a highlight by clicking the 📸 button", color=info.color)
   await ctx.send(embed=embed, view=highlightMenu())
-
-@bot.slash_command(name="calendar", description="Shows the current calendar", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
-async def getCalendar(interaction):
-  await interaction.response.defer()
-  if(int(info.f1abeezID) == interaction.guild.id):
-    try:
-      r = requests.get("https://api.figma.com/v1/images/8mL0mwOKyIUcoLG3goL7wk/?ids=102%3A367&format=png", headers={"X-Figma-Token": info.figmaToken})
-      r = r.json()
-      img = r["images"]["102:367"]
-      embed1 = nextcord.Embed(color=info.color) 
-      embed1.set_image(url=img) 
-      await interaction.send(embed=embed1)
-    except Exception as e:
-      await interaction.send(f"There was an error getting the calendar, please report this issue to the admins.")
-      print("calendar:")
-      print(e)
-  elif(int(info.f2abeezID) == interaction.guild.id):
-    try:
-      r = requests.get("https://api.figma.com/v1/images/8mL0mwOKyIUcoLG3goL7wk/?ids=125%3A2&format=png", headers={"X-Figma-Token": info.figmaToken})
-      r = r.json()
-      img = r["images"]["125:2"]
-      embed2 = nextcord.Embed(color=info.color) 
-      embed2.set_image(url=img) 
-      await interaction.send(embed=embed2)
-    except Exception as e:
-      await interaction.send(f"There was an error getting the calendar, please report this issue to the admins.")
-      print("calendar:")
-      print(e)
-
 
 @bot.slash_command(name="standings", description="Shows the current standings", guild_ids=[int(info.testServerID), int(info.f1abeezID)])
 async def getStandings(interaction: Interaction, tier: str = SlashOption(name="tier", description="The tier to get the standings for", choices={"Tier 1": "1", "Tier 2": "2", "Tier 3": "3", "Tier 4": "4", "Tier M": "M", "Tier H": "H", "Team Standings": "team", "F2 - Tier 1": "f21", "F2 - Tier 2": "f22"})):
