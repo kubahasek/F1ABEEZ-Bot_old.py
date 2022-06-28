@@ -10,11 +10,11 @@ class AcademyDM(commands.Cog):
         self.bot = bot
 
     @nextcord.slash_command(name="sendacademydm", description="Sends a DM to the academy", guild_ids=[int(info.f1abeezID),  int(info.f2abeezID), int(info.testServerID), int(info.f1abeezEsportsID)])
-    async def sendAcademyDM(interaction: Interaction):
+    async def sendAcademyDM(self, interaction: Interaction):
         if(utils.check_roles(interaction.user.roles, ["Admin", "Moderator"])):
             await interaction.response.defer()
             role: nextcord.Role = interaction.guild.get_role(info.get_roleID(interaction.guild_id, "academyRole"))
-            inboxChannel: nextcord.TextChannel = bot.get_channel(870004492639301692)
+            inboxChannel: nextcord.TextChannel = self.bot.get_channel(870004492639301692)
             members: list[nextcord.Member] = interaction.guild.members
             members = [member for member in members if role in member.roles]
             count: int = 0
