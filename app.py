@@ -298,11 +298,6 @@ bot = commands.Bot(command_prefix=";", help_command=None, intents=intents)
 bot.allowed_mentions = nextcord.AllowedMentions(everyone=True, users=True, roles=True)
 bot.remove_command("help")
 
-@bot.slash_command(name="ticketdetail", description="Gets the details for the ticket", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
-async def TicketDetail(interaction: Interaction, ticketID: str = SlashOption(name="ticketid", description="The ticket ID to get the details for", required=True)):
-    await interaction.response.defer()
-    await interaction.send(embed = nt.TicketDetailQuery(ticketID))
-
 @bot.slash_command(name="warn", description="Warns a user", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
 @commands.has_any_role("Admin")
 async def warn(interaction: Interaction, user: Member = SlashOption(name="user", description="The user to warn", required=True), reason: str = SlashOption(name="reason", description="The reason for the warning", required=True)):
