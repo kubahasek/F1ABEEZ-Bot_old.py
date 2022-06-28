@@ -298,11 +298,6 @@ bot = commands.Bot(command_prefix=";", help_command=None, intents=intents)
 bot.allowed_mentions = nextcord.AllowedMentions(everyone=True, users=True, roles=True)
 bot.remove_command("help")
 
-@bot.slash_command(name="getprofile", description="Gets profile info from the database", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
-async def GetProfile(interaction: Interaction, gamertag: str = SlashOption(name="gamertag", description="The gamertag to get the tickets for", required=True)):
-    await interaction.response.defer()
-    await interaction.send(embed=nt.getProfileInfo(gamertag))    
-
 @bot.slash_command(name="getappeals", description="Gets the appeals for the gamertag", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
 async def GetAppeals(interaction: Interaction, gamertag: str = SlashOption(name="gamertag", description="The gamertag to get the tickets for", required=True)):
   await interaction.response.defer()
