@@ -298,21 +298,6 @@ bot = commands.Bot(command_prefix=";", help_command=None, intents=intents)
 bot.allowed_mentions = nextcord.AllowedMentions(everyone=True, users=True, roles=True)
 bot.remove_command("help")
 
-@bot.slash_command(name="warn", description="Warns a user", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
-@commands.has_any_role("Admin")
-async def warn(interaction: Interaction, user: Member = SlashOption(name="user", description="The user to warn", required=True), reason: str = SlashOption(name="reason", description="The reason for the warning", required=True)):
-  await interaction.response.defer()
-  if(utils.check_roles(interaction.user.roles, ["Admin"])):
-    member = await interaction.guild.fetch_member(user.id)
-    embed = nextcord.Embed(title="A Warning has been issued", color=info.color)
-    embed.add_field(name="User", value=member.name, inline=False)
-    embed.add_field(name="Reason", value=reason, inline=False)
-    channel = bot.get_channel(info.get_channelID(interaction.guild.id, "warningChannel"))
-    await channel.send(embed = embed)
-    await interaction.send(embed = embed)   
-  else:
-    await interaction.send("You do not have permission to use this command!")
-
 @bot.slash_command(name="ban", description="Bans a user", guild_ids=[int(info.testServerID), int(info.f1abeezID), int(info.f2abeezID)])
 @commands.has_any_role("Admin")
 async def ban(interaction: Interaction, user: Member = SlashOption(name="user", description="The user to ban", required=True), reason: str = SlashOption(name="reason", description="The reason for the ban", required=True)):
