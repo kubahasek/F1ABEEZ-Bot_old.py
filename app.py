@@ -332,16 +332,6 @@ async def highlightChannel(ctx):
 async def getLineupLink(interaction: Interaction):
   await interaction.response.send_message("<https://www.f1abeez.com/line-ups>")
 
-@bot.slash_command(name="clearchannel", description="Clears a channel without the pinned messages", guild_ids=[int(info.f1abeezID),  int(info.f2abeezID), int(info.testServerID), int(info.f1abeezEsportsID)])
-async def clearChannel(interaction: Interaction):
-  if(utils.check_roles(interaction.user.roles, ["Admin", "Moderator"])):
-    await interaction.response.defer()
-    def check(m: nextcord.Message):
-      return m.pinned == False
-    await interaction.channel.purge(check=check)
-  else:
-    await interaction.send("You do not have permission to use this command!")
-
 @bot.slash_command(name="sendacademydm", description="Sends a DM to the academy", guild_ids=[int(info.f1abeezID),  int(info.f2abeezID), int(info.testServerID), int(info.f1abeezEsportsID)])
 async def sendAcademyDM(interaction: Interaction):
   if(utils.check_roles(interaction.user.roles, ["Admin", "Moderator"])):
