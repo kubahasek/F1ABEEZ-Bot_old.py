@@ -15,7 +15,7 @@ class MemberJoin(commands.Cog):
             role = nextcord.utils.get(member.guild.roles, name="Academy Driver")
             await member.add_roles(role)
         elif(member.guild.id == int(info.f2abeezID)):
-            role = nextcord.utils.get(member.guild.roles, name="Member")
+            role = nextcord.utils.get(member.guild.roles, name="Academy Driver")
             await member.add_roles(role)
         channel = self.bot.get_channel(info.get_channelID(serverID, "welcomeChannel"))
         if(type(channel) != type(None)):
