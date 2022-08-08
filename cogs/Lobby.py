@@ -28,7 +28,7 @@ class Lobby(commands.Cog):
                     reserveTier2ID = info.get_roleID(interaction.guild.id, "reserveTier2Role")
                     if(type(tier2ID) == type(None) or type(reserveTier2ID) == type(None)):
                         logging.error("Could not find tier 2 roles", exc_info=True)
-                    await interaction.send(f"<@&{tier2ID}> <@&{reserveTier2ID}>\n**Lobby is now open!**\nPlease join off <@398941050988920833>\nGamertag is - IRC LEGENDz\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+                    await interaction.send(f"<@&{tier2ID}> <@&{reserveTier2ID}>\n**Lobby is now open!**\nPlease join off <@559096129816363010>\nGamertag is - Razznyk\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
                 case "3":
                     tier3ID = info.get_roleID(interaction.guild.id, "tier3Role")
                     reserveTier3ID = info.get_roleID(interaction.guild.id, "reserveTier3Role")
@@ -46,7 +46,7 @@ class Lobby(commands.Cog):
                     reserveTierMID = info.get_roleID(interaction.guild.id, "reserveTierMRole")
                     if(type(tierMID) == type(None) or type(reserveTierMID) == type(None)):
                         logging.error("Could not find tier M roles", exc_info=True)
-                    await interaction.send(f"<@&{tierMID}> <@&{reserveTierMID}>\n**Lobby is now open!**\nPlease join off <@705761570126561341>\nGamertag is - Sammie230408\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
+                    await interaction.send(f"<@&{tierMID}> <@&{reserveTierMID}>\n**Lobby is now open!**\nPlease join off <@1005536865341939742>\nGamertag is - F1AB LeMoNz\nPlease put a message in this chat if you need an invite.\nIf you have a qualifying ban, make sure to serve it!\nWhile waiting why not check out our website - F1ABEEZ.com")
                 case "NA":
                     tierNAID = info.get_roleID(interaction.guild.id, "tierNARole")
                     reserveTierNAID = info.get_roleID(interaction.guild.id, "reserveTierNARole")
