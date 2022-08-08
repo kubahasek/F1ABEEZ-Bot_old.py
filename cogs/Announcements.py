@@ -69,14 +69,14 @@ class Announcements(commands.Cog):
             tier1URL = f"<https://f1abeez.com/race-reports/t1/{round}>"
             tier2URL = f"<https://f1abeez.com/race-reports/t2/{round}>"
             tier3URL = f"<https://f1abeez.com/race-reports/t3/{round}>"
-            tier4URL = f"<https://f1abeez.com/race-reports/t4/{round}>"
-            tierHURL = f"<https://f1abeez.com/race-reports/th/{round}>"
+            # tier4URL = f"<https://f1abeez.com/race-reports/t4/{round}>"
+            # tierHURL = f"<https://f1abeez.com/race-reports/th/{round}>"
             tierMURL = f"<https://f1abeez.com/race-reports/tm/{round}>"
             f2Tier1URL = f"https://f1abeez.com/race-reports/f2/t1/{round}>"
             f2Tier2URL = f"" ## TODO: add URL
             if(type(channel) != type(None)):
                 if(interaction.guild.id == int(info.f1abeezID)):
-                    await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier 4** - {tier4URL}\n**F1 - Tier H** - {tierHURL}\n**F1 - Tier M** - {tierMURL}\n\nThank you,\nStewards of F1ABEEZ")
+                    await channel.send(f"@everyone\n\n**Race Reports have now been published**\n\n**F1 - Tier 1** - {tier1URL}\n**F1 - Tier 2** - {tier2URL}\n**F1 - Tier 3** - {tier3URL}\n**F1 - Tier M** - {tierMURL}\n\nThank you,\nStewards of F1ABEEZ")
                     await interaction.send("Sent the message")
                 elif(interaction.guild.id == int(info.f2abeezID)):
                     await channel.send(f"@everyone\n\n**F2 - Tier 1** - {f2Tier1URL}\n**F2 - Tier 2** - {f2Tier2URL}\n\nThank you,\nStewards of F2ABEEZ")
